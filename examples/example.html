@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>SVG Funnel</title>
+	<link rel="stylesheet" type="text/css" href="../dist/css/main.min.css">
+    <link rel="stylesheet" type="text/css" href="../dist/css/theme.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html, body {
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(#4CD2D7, #369DCF);
+        }
+
+        .main {
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 24px auto;
+            position: relative;
+            background-color: #09143E;
+            box-shadow: 3px 3px 14px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="funnel">
+        <div class="main">
+        </div>
+    </div>
+
+    <script src="../dist/js/app.js"></script>
+    <script>
+        new SVGFunnel({
+            container: '.main',
+            percentages: [100, 57, 3],
+            color: ['orange', 'red'],
+            gradientDirection: 'vertical',
+            data: [
+                { label: 'Searches', value: 12451 },
+                { label: 'Add To Cart', value: 5669 },
+                { label: 'Buy', value: 321 },
+            ],
+            labelDisplay: 'both', // 'value', 'percentage', 'both'
+            // direction: 'vertical'
+        });
+    </script>
+</body>
+</html>

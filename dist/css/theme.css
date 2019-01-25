@@ -1,0 +1,16 @@
+.svg-funnel-js {
+  width: 640px;
+  height: 300px; }
+  .svg-funnel-js .svg-funnel-js__labels {
+    color: rgba(255, 255, 255, 0.62);
+    padding: 8px 0;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: sans-serif; }
+    .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label {
+      padding: 8px 18px;
+      flex: 1 1 0; }
+  .svg-funnel-js:not(.svg-funnel-js--vertical) .svg-funnel-js__label:not(:first-child) {
+    border-left: 1px solid rgba(255, 255, 255, 0.32); }
+  .svg-funnel-js.svg-funnel-js--vertical .svg-funnel-js__label:not(:first-child) {
+    border-top: 1px solid rgba(255, 255, 255, 0.32); }

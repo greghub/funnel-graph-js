@@ -1,0 +1,35 @@
+@import "variables";
+
+.svg-funnel-js {
+	width: 640px;
+	height: 300px;
+
+	.svg-funnel-js__labels {
+		color: $shadow-white-dark;
+		padding: 8px 0;
+		width: 100%;
+		box-sizing: border-box;
+		font-family: sans-serif;
+
+		.svg-funnel-js__label {
+			padding: 8px 18px;
+			flex: 1 1 0;
+		}
+	}
+
+	&:not(.svg-funnel-js--vertical) {
+		.svg-funnel-js__label {
+			&:not(:first-child) {
+				border-left: 1px solid $shadow-white-medium;
+			}
+		}
+	}
+
+	&.svg-funnel-js--vertical {
+		.svg-funnel-js__label {
+			&:not(:first-child) {
+				border-top: 1px solid $shadow-white-medium;
+			}
+		}
+	}
+}
