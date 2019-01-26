@@ -31,6 +31,7 @@ function () {
     this.labels = SVGFunnel.getLabels(options);
     this.values = SVGFunnel.getValues(options);
     this.createPercentages(this.values);
+    this.colors = SVGFunnel.createColors(options.data);
     this.draw();
   }
 
@@ -86,10 +87,11 @@ function () {
     }
   }, {
     key: "applyGradient",
-    value: function applyGradient(svg, path) {
-      var defs = SVGFunnel.createSVGElement('defs', svg);
+    value: function applyGradient(svg, path, colors, index) {
+      var defs = svg.querySelector('defs') === null ? SVGFunnel.createSVGElement('defs', svg) : svg.querySelector('defs');
+      var gradientName = this.gradientId + index;
       var gradient = SVGFunnel.createSVGElement('linearGradient', defs, {
-        id: this.gradientId
+        id: gradientName
       });
 
       if (this.gradientDirection === 'vertical') {
@@ -101,18 +103,18 @@ function () {
         });
       }
 
-      var numberOfColors = this.color.length;
+      var numberOfColors = colors.length;
 
       for (var i = 0; i < numberOfColors; i++) {
         SVGFunnel.createSVGElement('stop', gradient, {
-          'stop-color': this.color[i],
+          'stop-color': colors[i],
           offset: "".concat(Math.round(100 * i / (numberOfColors - 1)), "%")
         });
       }
 
       SVGFunnel.setAttrs(path, {
-        fill: "url(\"#".concat(this.gradientId, "\")"),
-        stroke: "url(\"#".concat(this.gradientId, "\")")
+        fill: "url(\"#".concat(gradientName, "\")"),
+        stroke: "url(\"#".concat(gradientName, "\")")
       });
     }
   }, {
@@ -122,18 +124,24 @@ function () {
         width: this.getWidth(),
         height: this.getHeight()
       });
-      var path = SVGFunnel.createSVGElement('path', svg);
+      var valuesNum = this.values.length;
 
-      if (this.fillMode === 'solid') {
-        SVGFunnel.setAttrs(path, {
-          fill: this.color,
-          stroke: this.color
-        });
-      } else if (this.fillMode === 'gradient') {
-        this.applyGradient(svg, path);
+      for (var i = 0; i < valuesNum; i++) {
+        var path = SVGFunnel.createSVGElement('path', svg);
+
+        if (this.fillMode === 'solid') {
+          SVGFunnel.setAttrs(path, {
+            fill: this.color,
+            stroke: this.color
+          });
+        } else if (this.fillMode === 'gradient') {
+          var colors = this.colors[i];
+          this.applyGradient(svg, path, colors, i + 1);
+        }
+
+        svg.appendChild(path);
       }
 
-      svg.appendChild(path);
       this.container.appendChild(svg);
     }
   }, {
@@ -182,17 +190,33 @@ function () {
   }, {
     key: "draw",
     value: function draw() {
+      var _this2 = this;
+
       this.makeSVG();
       var svg = this.getSVG();
       this.addLabels();
-      var path = svg.querySelector('path');
+      var paths = svg.querySelectorAll('path');
       var height = this.getHeight();
       var width = this.getWidth();
       var X = this.getXPoints();
       var Y = this.getYPoints();
-      var d = this.direction === 'vertical' ? SVGFunnel.createVerticalPath(X, Y, width) : SVGFunnel.createPath(X, Y, height);
-      path.setAttribute('d', d);
-      return d;
+      paths.forEach(function (path, index) {
+        var offset = 0;
+        var heightNew = height;
+
+        if (index === 1) {
+          heightNew = height / 2;
+          offset = height / 4;
+        }
+
+        if (index === 2) {
+          heightNew = height / 4;
+          offset = height * 3 / 8;
+        }
+
+        var d = _this2.direction === 'vertical' ? SVGFunnel.createVerticalPath(X, Y, width) : SVGFunnel.createPath(X, Y, height, offset, heightNew / height);
+        path.setAttribute('d', d);
+      });
     }
   }], [{
     key: "getLabels",
@@ -243,6 +267,13 @@ function () {
       }
 
       return [];
+    }
+  }, {
+    key: "createColors",
+    value: function createColors(values) {
+      return values.map(function (value) {
+        return value.color;
+      });
     }
   }, {
     key: "createSVGElement",
@@ -307,32 +338,34 @@ function () {
   }, {
     key: "createPath",
     value: function createPath(X, Y, height) {
+      var offset = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
+      var k = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
       var d = 'M';
       var i = 0;
 
       for (i; i < X.length; i++) {
         if (i === 0) {
-          d += "".concat(X[i], ",").concat(Y[i]);
+          d += "".concat(X[i], ",").concat(Y[i] * k + offset);
         } else {
-          d += " C".concat((X[i] + X[i - 1]) / 2, ",").concat(Y[i - 1], " ");
-          d += "".concat((X[i] + X[i - 1]) / 2, ",").concat(Y[i], " ");
-          d += "".concat(X[i], ",").concat(Y[i]);
+          d += " C".concat((X[i] + X[i - 1]) / 2, ",").concat(Y[i - 1] * k + offset, " ");
+          d += "".concat((X[i] + X[i - 1]) / 2, ",").concat(Y[i] * k + offset, " ");
+          d += "".concat(X[i], ",").concat(Y[i] * k + offset);
         }
       }
 
-      d += " v".concat(SVGFunnel.roundPoint(height - Y[Y.length - 1] * 2), " M");
+      d += " v".concat(SVGFunnel.roundPoint(height - (Y[Y.length - 1] * k + offset) * 2), " M");
 
       for (i = X.length - 1; i >= 0; i--) {
         if (i === X.length - 1) {
-          d += "".concat(X[i], ",").concat(height - Y[i]);
+          d += "".concat(X[i], ",").concat(height - (Y[i] * k + offset));
         } else {
-          d += " C".concat((X[i] + X[i + 1]) / 2, ",").concat(height - Y[i + 1], " ");
-          d += "".concat((X[i] + X[i + 1]) / 2, ",").concat(height - Y[i], " ");
-          d += "".concat(X[i], ",").concat(height - Y[i]);
+          d += " C".concat((X[i] + X[i + 1]) / 2, ",").concat(height - (Y[i + 1] * k + offset), " ");
+          d += "".concat((X[i] + X[i + 1]) / 2, ",").concat(height - (Y[i] * k + offset), " ");
+          d += "".concat(X[i], ",").concat(height - (Y[i] * k + offset));
         }
       }
 
-      d += " L".concat(X[0], ",").concat(Y[0]);
+      d += " L".concat(X[0], ",").concat(Y[0] * k + offset);
       return d;
     }
   }, {

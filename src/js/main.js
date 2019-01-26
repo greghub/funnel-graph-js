@@ -9,7 +9,7 @@ class SVGFunnel {
         this.labels = SVGFunnel.getLabels(options);
         this.values = SVGFunnel.getValues(options);
         this.createPercentages(this.values);
-
+        this.colors = SVGFunnel.createColors(options.data);
         this.draw();
     }
 
@@ -106,6 +106,10 @@ class SVGFunnel {
         return this.percentages;
     }
 
+    static createColors(values) {
+        return values.map(value => value.color);
+    }
+
     static createSVGElement(element, container, attributes) {
         const el = document.createElementNS('http://www.w3.org/2000/svg', element);
 
@@ -132,10 +136,11 @@ class SVGFunnel {
         }
     }
 
-    applyGradient(svg, path) {
-        const defs = SVGFunnel.createSVGElement('defs', svg);
+    applyGradient(svg, path, colors, index) {
+        const defs = (svg.querySelector('defs') === null) ? SVGFunnel.createSVGElement('defs', svg) : svg.querySelector('defs');
+        const gradientName = this.gradientId + index;
         const gradient = SVGFunnel.createSVGElement('linearGradient', defs, {
-            id: this.gradientId,
+            id: gradientName,
         });
 
         if (this.gradientDirection === 'vertical') {
@@ -147,18 +152,18 @@ class SVGFunnel {
             });
         }
 
-        const numberOfColors = this.color.length;
+        const numberOfColors = colors.length;
 
         for (let i = 0; i < numberOfColors; i++) {
             SVGFunnel.createSVGElement('stop', gradient, {
-                'stop-color': this.color[i],
+                'stop-color': colors[i],
                 offset: `${Math.round(100 * i / (numberOfColors - 1))}%`,
             });
         }
 
         SVGFunnel.setAttrs(path, {
-            fill: `url("#${this.gradientId}")`,
-            stroke: `url("#${this.gradientId}")`,
+            fill: `url("#${gradientName}")`,
+            stroke: `url("#${gradientName}")`,
         });
     }
 
@@ -168,18 +173,23 @@ class SVGFunnel {
             height: this.getHeight(),
         });
 
-        const path = SVGFunnel.createSVGElement('path', svg);
+        const valuesNum = this.values.length;
+        for (let i = 0; i < valuesNum; i++) {
+            const path = SVGFunnel.createSVGElement('path', svg);
 
-        if (this.fillMode === 'solid') {
-            SVGFunnel.setAttrs(path, {
-                fill: this.color,
-                stroke: this.color,
-            });
-        } else if (this.fillMode === 'gradient') {
-            this.applyGradient(svg, path);
+            if (this.fillMode === 'solid') {
+                SVGFunnel.setAttrs(path, {
+                    fill: this.color,
+                    stroke: this.color,
+                });
+            } else if (this.fillMode === 'gradient') {
+                const colors = this.colors[i];
+                this.applyGradient(svg, path, colors, i + 1);
+            }
+
+            svg.appendChild(path);
         }
 
-        svg.appendChild(path);
         this.container.appendChild(svg);
     }
 
@@ -248,33 +258,33 @@ class SVGFunnel {
         return d;
     }
 
-    static createPath(X, Y, height) {
+    static createPath(X, Y, height, offset = 0, k = 1) {
         let d = 'M';
         let i = 0;
 
         for (i; i < X.length; i++) {
             if (i === 0) {
-                d += `${X[i]},${Y[i]}`;
+                d += `${X[i]},${Y[i] * k + offset}`;
             } else {
-                d += ` C${(X[i] + X[i - 1]) / 2},${Y[i - 1]} `;
-                d += `${(X[i] + X[i - 1]) / 2},${Y[i]} `;
-                d += `${X[i]},${Y[i]}`;
+                d += ` C${(X[i] + X[i - 1]) / 2},${Y[i - 1] * k + offset} `;
+                d += `${(X[i] + X[i - 1]) / 2},${Y[i] * k + offset} `;
+                d += `${X[i]},${Y[i] * k + offset}`;
             }
         }
 
-        d += ` v${SVGFunnel.roundPoint(height - Y[Y.length - 1] * 2)} M`;
+        d += ` v${SVGFunnel.roundPoint(height - (Y[Y.length - 1] * k + offset) * 2)} M`;
 
         for (i = X.length - 1; i >= 0; i--) {
             if (i === X.length - 1) {
-                d += `${X[i]},${height - Y[i]}`;
+                d += `${X[i]},${height - (Y[i] * k + offset)}`;
             } else {
-                d += ` C${(X[i] + X[i + 1]) / 2},${height - Y[i + 1]} `;
-                d += `${(X[i] + X[i + 1]) / 2},${height - Y[i]} `;
-                d += `${X[i]},${height - Y[i]}`;
+                d += ` C${(X[i] + X[i + 1]) / 2},${height - (Y[i + 1] * k + offset)} `;
+                d += `${(X[i] + X[i + 1]) / 2},${height - (Y[i] * k + offset)} `;
+                d += `${X[i]},${height - (Y[i] * k + offset)}`;
             }
         }
 
-        d += ` L${X[0]},${Y[0]}`;
+        d += ` L${X[0]},${Y[0] * k + offset}`;
 
         return d;
     }
@@ -317,16 +327,26 @@ class SVGFunnel {
 
         this.addLabels();
 
-        const path = svg.querySelector('path');
+        const paths = svg.querySelectorAll('path');
         const height = this.getHeight();
         const width = this.getWidth();
         const X = this.getXPoints();
         const Y = this.getYPoints();
-        const d = this.direction === 'vertical' ? SVGFunnel.createVerticalPath(X, Y, width) : SVGFunnel.createPath(X, Y, height);
 
-        path.setAttribute('d', d);
-
-        return d;
+        paths.forEach((path, index) => {
+            let offset = 0;
+            let heightNew = height;
+            if (index === 1) {
+                heightNew = height / 2;
+                offset = height / 4;
+            }
+            if (index === 2) {
+                heightNew = height / 4;
+                offset = height * 3 / 8;
+            }
+            const d = this.direction === 'vertical' ? SVGFunnel.createVerticalPath(X, Y, width) : SVGFunnel.createPath(X, Y, height, offset, heightNew / height);
+            path.setAttribute('d', d);
+        });
     }
 }
 

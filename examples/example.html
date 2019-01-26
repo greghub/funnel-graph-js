@@ -36,13 +36,13 @@
     <script>
         new SVGFunnel({
             container: '.main',
-            percentages: [100, 57, 3],
+            // percentages: [100, 57, 3],
             color: ['orange', 'red'],
-            gradientDirection: 'vertical',
+            gradientDirection: 'horizontal',
             data: [
-                { label: 'Searches', value: 12451 },
-                { label: 'Add To Cart', value: 5669 },
-                { label: 'Buy', value: 321 },
+                { label: 'Searches', value: 100, color: ['#FFB178', '#FF78B1'] },
+                { label: 'Add To Cart', value: 66, color: ['#A0BBFF', '#EC77FF'] },
+                { label: 'Buy', value: 33, color: ['#A0F9FF', '#B377FF'] },
             ],
             labelDisplay: 'both', // 'value', 'percentage', 'both'
             // direction: 'vertical'
