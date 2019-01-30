@@ -40,6 +40,9 @@ And if you want a gradient:
     color: ['orange', 'red']
 }
 ```
+An array containing only one color will have the same effect
+as passing a single color as a string.
+
 If you are using a gradient you can control the gradient direction using:
 
 ```js
@@ -47,7 +50,6 @@ If you are using a gradient you can control the gradient direction using:
     gradientDirection: 'vertical' // defaults to 'horizontal'
 }
 ```
-
 
 There are 3 ways to define data for the funnel graph.
 
@@ -57,22 +59,32 @@ The most simple way is do define a data array:
 data: [12000, 5700, 360]
 ```
 
-this will create the data without titles. However you can still display the values as percentages, as number or both.
+this will create the data without any titles. However you can still display the values as percentages, as number or both.
 
 If you want to add labels to your numbers pass an array of labels to `data`.
 
 ```js
 data: {
-    'labels': ['Impressions', 'Add To Cart', 'Buy'],
-    'values': [12000, 5700, 360]
-}
+    labels: ['Impressions', 'Add To Cart', 'Buy'],
+    colors: ['orange', 'red'],
+    values: [12000, 5700, 360]
+},
 ```
 
 That most explicit way to add data to the funnel graph.
 
-If using one of those two ways, the `color` param must exist. 
-And if you are using gradient as color, then you shall control
+If using one of those two ways, you can control the graph 
+color using `colors` param. Otherwise, the default color will be used. 
+And if you are using gradient as color, then you can control
 gradient direction with `gradientDirection` param. 
+`colors` shall be passed inside `data`, while `gradientDirection` with other options.
+
+```js
+data: {
+    gradientDirection: 'horizontal'
+}
+```
+
 Otherwise it defaults to horizontal (left to right).
 
 ## Two-dimensional funnel graph
@@ -88,25 +100,25 @@ the traffic sources, how much of them are direct, from ads
 and from social media.
 
 ```js
-data: [
+data: {
     labels: ['Impressions', 'Add To Cart', 'Buy'],
-    sublabels: ['Direct', 'Social Media', 'Ads'],
+    subLabels: ['Direct', 'Social Media', 'Ads'],
     colors: [
-        {
-            color: ['#FFB178', '#FF78B1', '#FF3C8E'],
-            gradientDirection: 'vertical'
-        },
-        {
-            color: 'red'
-        },
-        {
-            color: ['blue']
-        }
+        ['#FFB178', '#FF78B1', '#FF3C8E'],
+        'red',
+        ['blue']
     ],
     values: [
         [2000, 4000, 6000],
         [3000, 1000, 1700],
         [200, 30, 130]
     ]
-]
+}
 ```
+
+In a two-dimensional graph each segment shall have it's own color or gradient.
+If using a gradient the `gradientDirection` option will be applied to all of the segments.
+However all supported ways of defining colors in a simple funnel graph can be used here as
+well and you can have both solid colors and gradients applied to segments of a single graph.
+In the above example first segment, "Direct", will have a gradient, 
+"Social Media" will have a solid red color, and "Ads" segment will have a solid blue.   
