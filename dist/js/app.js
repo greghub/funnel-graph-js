@@ -91,27 +91,27 @@ function () {
 
         points.push(totalValues.map(function (value) {
           return SVGFunnel.roundPoint((max - value) / max * dimension);
-        }));
-        var percentagesW = this.getPercentages2d().map(function (percentages) {
-          return _toConsumableArray(percentages).concat(_toConsumableArray(percentages).pop());
-        });
-        percentagesW.push(_toConsumableArray(percentagesW).pop());
-        var pZero = points[0];
+        })); // percentages with duplicated last value
+
+        var percentagesFull = this.getPercentages2d();
+        var pointsOfFirstPath = points[0];
 
         for (var i = 1; i < this.getSubDataSize(); i++) {
           var p = points[i - 1];
           var newPoints = [];
 
-          for (var j = 0; j < p.length; j++) {
+          for (var j = 0; j < this.getDataSize(); j++) {
             newPoints.push(SVGFunnel.roundPoint( // eslint-disable-next-line comma-dangle
-            p[j] + (fullDimension - pZero[j] * 2) * (percentagesW[j][i - 1] / 100)));
-          }
+            p[j] + (fullDimension - pointsOfFirstPath[j] * 2) * (percentagesFull[j][i - 1] / 100)));
+          } // duplicate the last value as points #2 and #3 have the same value on the cross axis
 
+
+          newPoints.push(newPoints.concat().pop());
           points.push(newPoints);
-        } // add points for path "D"
+        } // add points for path "D", that is simply the "inverted" path "A"
 
 
-        points.push(points[0].map(function (point) {
+        points.push(pointsOfFirstPath.map(function (point) {
           return fullDimension - point;
         }));
       } else {
@@ -330,28 +330,13 @@ function () {
     value: function getHeight() {
       return this.container.clientHeight;
     }
-  }, {
-    key: "getYPoints",
-    value: function getYPoints() {
-      var dimension = this.direction === 'vertical' ? this.getWidth() / 2 : this.getHeight() / 2;
-      var percentages = this.percentages.concat(this.percentages[this.percentages.length - 1]);
-      return percentages.map(function (percent) {
-        return SVGFunnel.roundPoint((100 - percent) / 100 * dimension);
-      });
-    }
-  }, {
-    key: "getXPoints",
-    value: function getXPoints() {
-      var YLength = this.percentages.length + 1;
-      var XPoints = [];
-      var dimension = this.direction === 'vertical' ? this.getHeight() : this.getWidth();
+    /*
+    +----------->
+    ^           |
+    |           |
+    <-----------v
+     */
 
-      for (var i = 0; i < YLength; i++) {
-        XPoints.push(SVGFunnel.roundPoint(dimension * i / (YLength - 1)));
-      }
-
-      return XPoints;
-    }
   }, {
     key: "draw",
     value: function draw() {
@@ -441,107 +426,6 @@ function () {
           element.setAttribute(key, attributes[key]);
         });
       }
-    }
-  }, {
-    key: "createVerticalPath",
-    value: function createVerticalPath(X, Y, width) {
-      var d = 'M';
-      var i = 0;
-
-      for (i; i < X.length; i++) {
-        if (i === 0) {
-          d += "".concat(X[i], ",").concat(Y[i]);
-        } else {
-          d += " C".concat(Y[i - 1], ",").concat((X[i] + X[i - 1]) / 2, " ");
-          d += "".concat(Y[i], ",").concat((X[i] + X[i - 1]) / 2, " ");
-          d += "".concat(Y[i], ",").concat(X[i]);
-        }
-      }
-
-      d += " h".concat(SVGFunnel.roundPoint(width - Y[Y.length - 1] * 2), " M");
-
-      for (i = X.length - 1; i >= 0; i--) {
-        if (i === X.length - 1) {
-          d += "".concat(width - Y[i], ",").concat(X[i]);
-        } else {
-          d += " C".concat(width - Y[i + 1], ",").concat((X[i] + X[i + 1]) / 2, " ");
-          d += "".concat(width - Y[i], ",").concat((X[i] + X[i + 1]) / 2, " ");
-          d += "".concat(width - Y[i], ",").concat(X[i]);
-        }
-      }
-
-      d += " L".concat(X[0], ",").concat(Y[0]);
-      return d;
-    }
-    /*
-    +----------->
-    ^           |
-    |           |
-    <-----------v
-     */
-
-  }, {
-    key: "createPath",
-    value: function createPath(X, Y, height) {
-      var d = 'M';
-      var i = 0;
-
-      for (i; i < X.length; i++) {
-        if (i === 0) {
-          d += "".concat(X[i], ",").concat(Y[i]);
-        } else {
-          d += " C".concat((X[i] + X[i - 1]) / 2, ",").concat(Y[i - 1], " ");
-          d += "".concat((X[i] + X[i - 1]) / 2, ",").concat(Y[i], " ");
-          d += "".concat(X[i], ",").concat(Y[i]);
-        }
-      }
-
-      d += " v".concat(SVGFunnel.roundPoint(height - Y[Y.length - 1] * 2), " M");
-
-      for (i = X.length - 1; i >= 0; i--) {
-        if (i === X.length - 1) {
-          d += "".concat(X[i], ",").concat(height - Y[i]);
-        } else {
-          d += " C".concat((X[i] + X[i + 1]) / 2, ",").concat(height - Y[i + 1], " ");
-          d += "".concat((X[i] + X[i + 1]) / 2, ",").concat(height - Y[i], " ");
-          d += "".concat(X[i], ",").concat(height - Y[i]);
-        }
-      }
-
-      d += " L".concat(X[0], ",").concat(Y[0]);
-      return d;
-    }
-  }, {
-    key: "createPathAnimation",
-    value: function createPathAnimation(X, Y, height) {
-      var d = 'M';
-      var i = 0;
-      var center = SVGFunnel.roundPoint(height / 2);
-
-      for (i; i < X.length; i++) {
-        if (i === 0) {
-          d += "".concat(X[i], ",").concat(center);
-        } else {
-          d += " C".concat((X[i] + X[i - 1]) / 2, ",").concat(center, " ");
-          d += "".concat((X[i] + X[i - 1]) / 2, ",").concat(center, " ");
-          d += "".concat(X[i], ",").concat(center);
-        }
-      }
-
-      d += ' v0 M';
-
-      for (i = X.length - 1; i >= 0; i--) {
-        if (i === X.length - 1) {
-          d += "".concat(X[i], ",").concat(center);
-        } else {
-          d += " C".concat((X[i] + X[i + 1]) / 2, ",").concat(center, " ");
-          d += "".concat((X[i] + X[i + 1]) / 2, ",").concat(center, " ");
-          d += "".concat(X[i], ",").concat(center);
-        }
-      }
-
-      d += " L".concat(X[0], ",").concat(center);
-      return d;
     }
   }, {
     key: "createLine",

@@ -70,27 +70,28 @@ class SVGFunnel {
             totalValues.push([...totalValues].pop());
             // get points for path "A"
             points.push(totalValues.map(value => SVGFunnel.roundPoint((max - value) / max * dimension)));
-            const percentagesW = this.getPercentages2d()
-                .map(percentages => [...percentages].concat([...percentages].pop()));
-            percentagesW.push([...percentagesW].pop());
-            const pZero = points[0];
+            // percentages with duplicated last value
+            const percentagesFull = this.getPercentages2d();
+            const pointsOfFirstPath = points[0];
 
             for (let i = 1; i < this.getSubDataSize(); i++) {
                 const p = points[i - 1];
                 const newPoints = [];
 
-                for (let j = 0; j < p.length; j++) {
+                for (let j = 0; j < this.getDataSize(); j++) {
                     newPoints.push(SVGFunnel.roundPoint(
                         // eslint-disable-next-line comma-dangle
-                        p[j] + (fullDimension - pZero[j] * 2) * (percentagesW[j][i - 1] / 100)
+                        p[j] + (fullDimension - pointsOfFirstPath[j] * 2) * (percentagesFull[j][i - 1] / 100)
                     ));
                 }
 
+                // duplicate the last value as points #2 and #3 have the same value on the cross axis
+                newPoints.push([...newPoints].pop());
                 points.push(newPoints);
             }
 
-            // add points for path "D"
-            points.push(points[0].map(point => fullDimension - point));
+            // add points for path "D", that is simply the "inverted" path "A"
+            points.push(pointsOfFirstPath.map(point => fullDimension - point));
         } else {
             // As you can see on the visualization above points #2 and #3 have the same cross axis coordinate
             // so we duplicate the last value
@@ -349,53 +350,6 @@ class SVGFunnel {
         return this.container.clientHeight;
     }
 
-    getYPoints() {
-        const dimension = this.direction === 'vertical' ? this.getWidth() / 2 : this.getHeight() / 2;
-        const percentages = this.percentages.concat(this.percentages[this.percentages.length - 1]);
-        return percentages.map(percent => SVGFunnel.roundPoint((100 - percent) / 100 * dimension));
-    }
-
-    getXPoints() {
-        const YLength = this.percentages.length + 1;
-        const XPoints = [];
-        const dimension = this.direction === 'vertical' ? this.getHeight() : this.getWidth();
-        for (let i = 0; i < YLength; i++) {
-            XPoints.push(SVGFunnel.roundPoint(dimension * i / (YLength - 1)));
-        }
-        return XPoints;
-    }
-
-    static createVerticalPath(X, Y, width) {
-        let d = 'M';
-        let i = 0;
-
-        for (i; i < X.length; i++) {
-            if (i === 0) {
-                d += `${X[i]},${Y[i]}`;
-            } else {
-                d += ` C${Y[i - 1]},${(X[i] + X[i - 1]) / 2} `;
-                d += `${Y[i]},${(X[i] + X[i - 1]) / 2} `;
-                d += `${Y[i]},${X[i]}`;
-            }
-        }
-
-        d += ` h${SVGFunnel.roundPoint(width - Y[Y.length - 1] * 2)} M`;
-
-        for (i = X.length - 1; i >= 0; i--) {
-            if (i === X.length - 1) {
-                d += `${width - Y[i]},${X[i]}`;
-            } else {
-                d += ` C${width - Y[i + 1]},${(X[i] + X[i + 1]) / 2} `;
-                d += `${width - Y[i]},${(X[i] + X[i + 1]) / 2} `;
-                d += `${width - Y[i]},${X[i]}`;
-            }
-        }
-
-        d += ` L${X[0]},${Y[0]}`;
-
-        return d;
-    }
-
     /*
 
 +----------->
@@ -403,69 +357,6 @@ class SVGFunnel {
 |           |
 <-----------v
      */
-
-    static createPath(X, Y, height) {
-        let d = 'M';
-        let i = 0;
-
-        for (i; i < X.length; i++) {
-            if (i === 0) {
-                d += `${X[i]},${Y[i]}`;
-            } else {
-                d += ` C${(X[i] + X[i - 1]) / 2},${Y[i - 1]} `;
-                d += `${(X[i] + X[i - 1]) / 2},${Y[i]} `;
-                d += `${X[i]},${Y[i]}`;
-            }
-        }
-
-        d += ` v${SVGFunnel.roundPoint(height - Y[Y.length - 1] * 2)} M`;
-
-        for (i = X.length - 1; i >= 0; i--) {
-            if (i === X.length - 1) {
-                d += `${X[i]},${height - Y[i]}`;
-            } else {
-                d += ` C${(X[i] + X[i + 1]) / 2},${height - Y[i + 1]} `;
-                d += `${(X[i] + X[i + 1]) / 2},${height - Y[i]} `;
-                d += `${X[i]},${height - Y[i]}`;
-            }
-        }
-
-        d += ` L${X[0]},${Y[0]}`;
-
-        return d;
-    }
-
-    static createPathAnimation(X, Y, height) {
-        let d = 'M';
-        let i = 0;
-        const center = SVGFunnel.roundPoint(height / 2);
-
-        for (i; i < X.length; i++) {
-            if (i === 0) {
-                d += `${X[i]},${center}`;
-            } else {
-                d += ` C${(X[i] + X[i - 1]) / 2},${center} `;
-                d += `${(X[i] + X[i - 1]) / 2},${center} `;
-                d += `${X[i]},${center}`;
-            }
-        }
-
-        d += ' v0 M';
-
-        for (i = X.length - 1; i >= 0; i--) {
-            if (i === X.length - 1) {
-                d += `${X[i]},${center}`;
-            } else {
-                d += ` C${(X[i] + X[i + 1]) / 2},${center} `;
-                d += `${(X[i] + X[i + 1]) / 2},${center} `;
-                d += `${X[i]},${center}`;
-            }
-        }
-
-        d += ` L${X[0]},${center}`;
-
-        return d;
-    }
 
     static createLine(X, Y) {
         let str = 'M';
