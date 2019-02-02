@@ -66,10 +66,10 @@ function () {
     value: function getMainAxisPoints() {
       var size = this.getDataSize();
       var points = [];
-      var dimension = this.direction === 'vertical' ? this.getHeight() : this.getWidth();
+      var fullDimension = this.isVertical() ? this.getHeight() : this.getWidth();
 
       for (var i = 0; i <= size; i++) {
-        points.push(SVGFunnel.roundPoint(dimension * i / size));
+        points.push(SVGFunnel.roundPoint(fullDimension * i / size));
       }
 
       return points;
@@ -78,7 +78,7 @@ function () {
     key: "getCrossAxisPoints",
     value: function getCrossAxisPoints() {
       var points = [];
-      var fullDimension = this.direction === 'vertical' ? this.getWidth() : this.getHeight(); // get half of the graph container height or width, since funnel shape is symmetric
+      var fullDimension = this.getFullDimension(); // get half of the graph container height or width, since funnel shape is symmetric
       // we use this when calculating the "A" shape
 
       var dimension = fullDimension / 2;
@@ -145,6 +145,11 @@ function () {
       return this.getGraphType() === '2d';
     }
   }, {
+    key: "isVertical",
+    value: function isVertical() {
+      return this.direction === 'vertical';
+    }
+  }, {
     key: "getDataSize",
     value: function getDataSize() {
       return this.values.length;
@@ -153,6 +158,11 @@ function () {
     key: "getSubDataSize",
     value: function getSubDataSize() {
       return this.values[0].length;
+    }
+  }, {
+    key: "getFullDimension",
+    value: function getFullDimension() {
+      return this.isVertical() ? this.getWidth() : this.getHeight();
     }
   }, {
     key: "addLabels",
@@ -273,13 +283,14 @@ function () {
       // });
 
 
+      var color = "#".concat(Array.from({
+        length: 6
+      }, function () {
+        return Math.floor(Math.random() * 16).toString(16);
+      }).join(''));
       SVGFunnel.setAttrs(path, {
-        fill: 'none',
-        stroke: "#".concat(Array.from({
-          length: 6
-        }, function () {
-          return Math.floor(Math.random() * 16).toString(16);
-        }).join(''))
+        fill: color,
+        stroke: color
       });
     }
   }, {
@@ -331,31 +342,35 @@ function () {
       return this.container.clientHeight;
     }
     /*
-    +----------->
-    ^           |
-    |           |
-    <-----------v
+        A funnel segment is draw in a clockwise direction.
+        Path 1-2 is drawn,
+        then connected with a straight vertical line 2-3,
+        then a line 3-4 is draw (using YNext points going in backwards direction)
+        then path is closed (connected with the starting point 1).
+         1---------->2
+        ^           |
+        |           v
+        4<----------3
+         On the graph on line 20 it works like this:
+        A#0, A#1, A#2, A#3, B#3, B#2, B#1, B#0, close the path.
+         Points for path "B" are passed as the YNext param.
      */
 
   }, {
     key: "draw",
     value: function draw() {
-      var _this2 = this;
-
       this.makeSVG();
       var svg = this.getSVG();
       this.addLabels();
       var paths = svg.querySelectorAll('path');
-      var X = this.getMainAxisPoints();
-      paths.forEach(function (path, index) {
-        var Y = _this2.getCrossAxisPoints()[index]; // const d = this.direction === 'vertical'
-        //     ? SVGFunnel.createVerticalPath(X, Y, width)
-        //     : SVGFunnel.createPath(X, Y, height);
+      var X = this.isVertical() ? this.getCrossAxisPoints() : this.getMainAxisPoints();
 
-
-        var d = SVGFunnel.createLine(X, Y);
-        path.setAttribute('d', d);
-      });
+      for (var i = 0; i < paths.length - 1; i++) {
+        var Y = this.isVertical() ? this.getMainAxisPoints()[i] : this.getCrossAxisPoints()[i];
+        var YNext = this.isVertical() ? this.getMainAxisPoints()[i + 1] : this.getCrossAxisPoints()[i + 1];
+        var d = SVGFunnel.createPath(X, Y, YNext);
+        paths[i].setAttribute('d', d);
+      }
     }
   }], [{
     key: "getLabels",
@@ -419,6 +434,11 @@ function () {
       return Number(number).toFixed().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
     }
   }, {
+    key: "createCurves",
+    value: function createCurves(x1, y1, x2, y2) {
+      return " C".concat(SVGFunnel.roundPoint((x2 + x1) / 2), ",").concat(y1, " ").concat(SVGFunnel.roundPoint((x2 + x1) / 2), ",").concat(y2, " ").concat(x2, ",").concat(y2);
+    }
+  }, {
     key: "setAttrs",
     value: function setAttrs(element, attributes) {
       if (_typeof(attributes) === 'object') {
@@ -428,14 +448,21 @@ function () {
       }
     }
   }, {
-    key: "createLine",
-    value: function createLine(X, Y) {
-      var str = 'M';
+    key: "createPath",
+    value: function createPath(X, Y, YNext) {
+      var str = "M".concat(X[0], ",").concat(Y[0]);
 
-      for (var i = 0; i < X.length; i++) {
-        str += " ".concat(X[i], ",").concat(Y[i]);
+      for (var i = 0; i < X.length - 1; i++) {
+        str += SVGFunnel.createCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
       }
 
+      str += " L".concat(_toConsumableArray(X).pop(), ",").concat(_toConsumableArray(YNext).pop());
+
+      for (var _i = X.length - 1; _i > 0; _i--) {
+        str += SVGFunnel.createCurves(X[_i], YNext[_i], X[_i - 1], YNext[_i - 1]);
+      }
+
+      str += ' Z';
       return str;
     }
   }]);
