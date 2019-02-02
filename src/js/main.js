@@ -12,6 +12,7 @@ class SVGFunnel {
         this.labels = SVGFunnel.getLabels(options);
         this.values = SVGFunnel.getValues(options);
         this.percentages = this.createPercentages();
+        this.displayPercent = options.displayPercent || false;
 
         this.draw();
     }
@@ -172,7 +173,9 @@ class SVGFunnel {
 
             labelElement.appendChild(title);
             labelElement.appendChild(value);
-            labelElement.appendChild(percentageValue);
+            if (this.displayPercent) {
+                labelElement.appendChild(percentageValue);
+            }
 
             holder.appendChild(labelElement);
         });

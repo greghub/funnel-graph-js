@@ -31,6 +31,7 @@ function () {
     this.labels = SVGFunnel.getLabels(options);
     this.values = SVGFunnel.getValues(options);
     this.percentages = this.createPercentages();
+    this.displayPercent = options.displayPercent || false;
     this.draw();
   }
   /**
@@ -191,7 +192,11 @@ function () {
 
         labelElement.appendChild(title);
         labelElement.appendChild(value);
-        labelElement.appendChild(percentageValue);
+
+        if (_this.displayPercent) {
+          labelElement.appendChild(percentageValue);
+        }
+
         holder.appendChild(labelElement);
       });
       this.container.appendChild(holder);
