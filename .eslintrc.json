@@ -5,7 +5,8 @@
   "extends": "airbnb-base",
   "rules": {
       "indent": ["error", 4],
-      "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
+      "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+      "max-len": ["error", { "code": 121 }]
   },
   "globals": {
       "window": true,

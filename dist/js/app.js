@@ -16,6 +16,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+/* eslint-disable no-trailing-spaces */
 var SVGFunnel =
 /*#__PURE__*/
 function () {
@@ -23,19 +24,137 @@ function () {
     _classCallCheck(this, SVGFunnel);
 
     this.createContainer(options);
-    this.color = options.color || '#2FA3C7';
+    this.color = options.data.colors || '#FFB178';
     this.fillMode = _typeof(this.color) === 'object' ? 'gradient' : 'solid';
-    this.gradientId = this.container.dataset.gradient || 'funnelGradient';
     this.gradientDirection = options.gradientDirection && options.gradientDirection === 'vertical' ? 'vertical' : 'horizontal';
     this.direction = options.direction && options.direction === 'vertical' ? 'vertical' : 'horizontal';
     this.labels = SVGFunnel.getLabels(options);
     this.values = SVGFunnel.getValues(options);
-    this.createPercentages(this.values);
-    this.colors = SVGFunnel.createColors(options.data);
+    this.percentages = this.createPercentages();
     this.draw();
   }
+  /**
+  An example of a two-dimensional funnel graph
+  #0..................
+                     ...#1................
+                                         ......
+  #0********************#1**                    #2.........................#3 (A)
+                            *******************
+                                                #2*************************#3 (B)
+                                                #2+++++++++++++++++++++++++#3 (C)
+                            +++++++++++++++++++
+  #0++++++++++++++++++++#1++                    #2-------------------------#3 (D)
+                                         ------
+                     ---#1----------------
+  #0-----------------
+    Main axis is the primary axis of the graph.
+   In a horizontal graph it's the X axis, and Y is the cross axis.
+   However we use the names "main" and "cross" axis,
+   because in a vertical graph the primary axis is the Y axis
+   and the cross axis is the X axis.
+    First step of drawing the funnel graph is getting the coordinates of points,
+   that are used when drawing the paths.
+    There are 4 paths in the example above: A, B, C and D.
+   Such funnel has 3 labels and 3 subLabels.
+   This means that the main axis has 4 points (number of labels + 1)
+   One the ASCII illustrated graph above, those points are illustrated with a # symbol.
+   */
+
 
   _createClass(SVGFunnel, [{
+    key: "getMainAxisPoints",
+    value: function getMainAxisPoints() {
+      var size = this.getDataSize();
+      var points = [];
+      var dimension = this.direction === 'vertical' ? this.getHeight() : this.getWidth();
+
+      for (var i = 0; i <= size; i++) {
+        points.push(SVGFunnel.roundPoint(dimension * i / size));
+      }
+
+      return points;
+    }
+  }, {
+    key: "getCrossAxisPoints",
+    value: function getCrossAxisPoints() {
+      var points = [];
+      var fullDimension = this.direction === 'vertical' ? this.getWidth() : this.getHeight(); // get half of the graph container height or width, since funnel shape is symmetric
+      // we use this when calculating the "A" shape
+
+      var dimension = fullDimension / 2;
+
+      if (this.is2d()) {
+        var totalValues = this.getValues2d();
+        var max = Math.max.apply(Math, _toConsumableArray(totalValues)); // duplicate last value
+
+        totalValues.push(_toConsumableArray(totalValues).pop()); // get points for path "A"
+
+        points.push(totalValues.map(function (value) {
+          return SVGFunnel.roundPoint((max - value) / max * dimension);
+        }));
+        var percentagesW = this.getPercentages2d().map(function (percentages) {
+          return _toConsumableArray(percentages).concat(_toConsumableArray(percentages).pop());
+        });
+        percentagesW.push(_toConsumableArray(percentagesW).pop());
+        var pZero = points[0];
+
+        for (var i = 1; i < this.getSubDataSize(); i++) {
+          var p = points[i - 1];
+          var newPoints = [];
+
+          for (var j = 0; j < p.length; j++) {
+            newPoints.push(SVGFunnel.roundPoint( // eslint-disable-next-line comma-dangle
+            p[j] + (fullDimension - pZero[j] * 2) * (percentagesW[j][i - 1] / 100)));
+          }
+
+          points.push(newPoints);
+        } // add points for path "D"
+
+
+        points.push(points[0].map(function (point) {
+          return fullDimension - point;
+        }));
+      } else {
+        // As you can see on the visualization above points #2 and #3 have the same cross axis coordinate
+        // so we duplicate the last value
+        var _max = Math.max.apply(Math, _toConsumableArray(this.values));
+
+        var values = _toConsumableArray(this.values).concat(_toConsumableArray(this.values).pop()); // if the graph is simple (not two-dimensional) then we have only paths "A" and "D"
+        // which are symmetric. So we get the points for "A" and then get points for "D" by subtracting "A"
+        // points from graph cross dimension length
+
+
+        points.push(values.map(function (value) {
+          return SVGFunnel.roundPoint((_max - value) / _max * dimension);
+        }));
+        points.push(points[0].map(function (point) {
+          return fullDimension - point;
+        }));
+      }
+
+      return points;
+    }
+  }, {
+    key: "getGraphType",
+    value: function getGraphType() {
+      return this.values && this.values[0] instanceof Array ? '2d' : 'normal';
+    }
+  }, {
+    key: "is2d",
+    value: function is2d() {
+      return this.getGraphType() === '2d';
+    }
+  }, {
+    key: "getDataSize",
+    value: function getDataSize() {
+      return this.values.length;
+    }
+  }, {
+    key: "getSubDataSize",
+    value: function getSubDataSize() {
+      return this.values[0].length;
+    }
+  }, {
     key: "addLabels",
     value: function addLabels() {
       var _this = this;
@@ -51,10 +170,15 @@ function () {
         title.textContent = _this.labels[index] || '';
         var value = document.createElement('div');
         value.setAttribute('class', 'label__value');
-        value.textContent = _this.values[index];
+        var valueNumber = _this.is2d() ? _this.getValues2d()[index] : _this.values[index];
+        value.textContent = SVGFunnel.formatNumber(valueNumber);
         var percentageValue = document.createElement('div');
         percentageValue.setAttribute('class', 'label__percentage');
-        percentageValue.textContent = "".concat(percentage.toString(), "%");
+
+        if (percentage !== 100) {
+          percentageValue.textContent = "".concat(percentage.toString(), "%");
+        }
+
         labelElement.appendChild(title);
         labelElement.appendChild(value);
         labelElement.appendChild(percentageValue);
@@ -77,19 +201,51 @@ function () {
       }
     }
   }, {
-    key: "createPercentages",
-    value: function createPercentages(values) {
-      var max = Math.max.apply(Math, _toConsumableArray(values));
-      this.percentages = values.map(function (percent) {
-        return SVGFunnel.roundPoint(percent * 100 / max);
+    key: "getValues2d",
+    value: function getValues2d() {
+      var values = [];
+      this.values.forEach(function (valueSet) {
+        values.push(valueSet.reduce(function (sum, value) {
+          return sum + value;
+        }, 0));
       });
-      return this.percentages;
+      return values;
+    }
+  }, {
+    key: "getPercentages2d",
+    value: function getPercentages2d() {
+      var percentages = [];
+      this.values.forEach(function (valueSet) {
+        var total = valueSet.reduce(function (sum, value) {
+          return sum + value;
+        }, 0);
+        percentages.push(valueSet.map(function (value) {
+          return SVGFunnel.roundPoint(value * 100 / total);
+        }));
+      });
+      return percentages;
+    }
+  }, {
+    key: "createPercentages",
+    value: function createPercentages() {
+      var values = [];
+
+      if (this.is2d()) {
+        values = this.getValues2d();
+      } else {
+        values = _toConsumableArray(this.values);
+      }
+
+      var max = Math.max.apply(Math, _toConsumableArray(values));
+      return values.map(function (value) {
+        return SVGFunnel.roundPoint(value * 100 / max);
+      });
     }
   }, {
     key: "applyGradient",
     value: function applyGradient(svg, path, colors, index) {
       var defs = svg.querySelector('defs') === null ? SVGFunnel.createSVGElement('defs', svg) : svg.querySelector('defs');
-      var gradientName = this.gradientId + index;
+      var gradientName = "funnelGradient-".concat(index);
       var gradient = SVGFunnel.createSVGElement('linearGradient', defs, {
         id: gradientName
       });
@@ -110,11 +266,20 @@ function () {
           'stop-color': colors[i],
           offset: "".concat(Math.round(100 * i / (numberOfColors - 1)), "%")
         });
-      }
+      } //
+      // SVGFunnel.setAttrs(path, {
+      //     fill: `url("#${gradientName}")`,
+      //     stroke: `url("#${gradientName}")`,
+      // });
+
 
       SVGFunnel.setAttrs(path, {
-        fill: "url(\"#".concat(gradientName, "\")"),
-        stroke: "url(\"#".concat(gradientName, "\")")
+        fill: 'none',
+        stroke: "#".concat(Array.from({
+          length: 6
+        }, function () {
+          return Math.floor(Math.random() * 16).toString(16);
+        }).join(''))
       });
     }
   }, {
@@ -124,7 +289,7 @@ function () {
         width: this.getWidth(),
         height: this.getHeight()
       });
-      var valuesNum = this.values.length;
+      var valuesNum = this.getCrossAxisPoints().length;
 
       for (var i = 0; i < valuesNum; i++) {
         var path = SVGFunnel.createSVGElement('path', svg);
@@ -135,7 +300,7 @@ function () {
             stroke: this.color
           });
         } else if (this.fillMode === 'gradient') {
-          var colors = this.colors[i];
+          var colors = this.color;
           this.applyGradient(svg, path, colors, i + 1);
         }
 
@@ -196,25 +361,14 @@ function () {
       var svg = this.getSVG();
       this.addLabels();
       var paths = svg.querySelectorAll('path');
-      var height = this.getHeight();
-      var width = this.getWidth();
-      var X = this.getXPoints();
-      var Y = this.getYPoints();
+      var X = this.getMainAxisPoints();
       paths.forEach(function (path, index) {
-        var offset = 0;
-        var heightNew = height;
+        var Y = _this2.getCrossAxisPoints()[index]; // const d = this.direction === 'vertical'
+        //     ? SVGFunnel.createVerticalPath(X, Y, width)
+        //     : SVGFunnel.createPath(X, Y, height);
 
-        if (index === 1) {
-          heightNew = height / 2;
-          offset = height / 4;
-        }
 
-        if (index === 2) {
-          heightNew = height / 4;
-          offset = height * 3 / 8;
-        }
-
-        var d = _this2.direction === 'vertical' ? SVGFunnel.createVerticalPath(X, Y, width) : SVGFunnel.createPath(X, Y, height, offset, heightNew / height);
+        var d = SVGFunnel.createLine(X, Y);
         path.setAttribute('d', d);
       });
     }
@@ -226,22 +380,8 @@ function () {
       }
 
       var data = options.data;
-
-      if (data instanceof Array) {
-        if (Number.isInteger(data[0])) {
-          return [];
-        }
-
-        return data.map(function (item) {
-          return item.label;
-        });
-      }
-
-      if (_typeof(data) === 'object') {
-        return Object.keys(options.data);
-      }
-
-      return [];
+      if (typeof data.labels === 'undefined') return [];
+      return data.labels;
     }
   }, {
     key: "getValues",
@@ -263,17 +403,10 @@ function () {
       }
 
       if (_typeof(data) === 'object') {
-        return Object.values(options.data);
+        return options.data.values;
       }
 
       return [];
-    }
-  }, {
-    key: "createColors",
-    value: function createColors(values) {
-      return values.map(function (value) {
-        return value.color;
-      });
     }
   }, {
     key: "createSVGElement",
@@ -294,6 +427,11 @@ function () {
     key: "roundPoint",
     value: function roundPoint(number) {
       return Math.round(number * 10) / 10;
+    }
+  }, {
+    key: "formatNumber",
+    value: function formatNumber(number) {
+      return Number(number).toFixed().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
     }
   }, {
     key: "setAttrs",
@@ -335,37 +473,42 @@ function () {
       d += " L".concat(X[0], ",").concat(Y[0]);
       return d;
     }
+    /*
+    +----------->
+    ^           |
+    |           |
+    <-----------v
+     */
+
   }, {
     key: "createPath",
     value: function createPath(X, Y, height) {
-      var offset = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 0;
-      var k = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1;
       var d = 'M';
       var i = 0;
 
       for (i; i < X.length; i++) {
         if (i === 0) {
-          d += "".concat(X[i], ",").concat(Y[i] * k + offset);
+          d += "".concat(X[i], ",").concat(Y[i]);
         } else {
-          d += " C".concat((X[i] + X[i - 1]) / 2, ",").concat(Y[i - 1] * k + offset, " ");
-          d += "".concat((X[i] + X[i - 1]) / 2, ",").concat(Y[i] * k + offset, " ");
-          d += "".concat(X[i], ",").concat(Y[i] * k + offset);
+          d += " C".concat((X[i] + X[i - 1]) / 2, ",").concat(Y[i - 1], " ");
+          d += "".concat((X[i] + X[i - 1]) / 2, ",").concat(Y[i], " ");
+          d += "".concat(X[i], ",").concat(Y[i]);
         }
       }
 
-      d += " v".concat(SVGFunnel.roundPoint(height - (Y[Y.length - 1] * k + offset) * 2), " M");
+      d += " v".concat(SVGFunnel.roundPoint(height - Y[Y.length - 1] * 2), " M");
 
       for (i = X.length - 1; i >= 0; i--) {
         if (i === X.length - 1) {
-          d += "".concat(X[i], ",").concat(height - (Y[i] * k + offset));
+          d += "".concat(X[i], ",").concat(height - Y[i]);
         } else {
-          d += " C".concat((X[i] + X[i + 1]) / 2, ",").concat(height - (Y[i + 1] * k + offset), " ");
-          d += "".concat((X[i] + X[i + 1]) / 2, ",").concat(height - (Y[i] * k + offset), " ");
-          d += "".concat(X[i], ",").concat(height - (Y[i] * k + offset));
+          d += " C".concat((X[i] + X[i + 1]) / 2, ",").concat(height - Y[i + 1], " ");
+          d += "".concat((X[i] + X[i + 1]) / 2, ",").concat(height - Y[i], " ");
+          d += "".concat(X[i], ",").concat(height - Y[i]);
         }
       }
 
-      d += " L".concat(X[0], ",").concat(Y[0] * k + offset);
+      d += " L".concat(X[0], ",").concat(Y[0]);
       return d;
     }
   }, {
@@ -399,6 +542,17 @@ function () {
 
       d += " L".concat(X[0], ",").concat(center);
       return d;
+    }
+  }, {
+    key: "createLine",
+    value: function createLine(X, Y) {
+      var str = 'M';
+
+      for (var i = 0; i < X.length; i++) {
+        str += " ".concat(X[i], ",").concat(Y[i]);
+      }
+
+      return str;
     }
   }]);
 
