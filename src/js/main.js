@@ -9,6 +9,7 @@ class SVGFunnel {
             : 'horizontal';
         this.direction = (options.direction && options.direction === 'vertical') ? 'vertical' : 'horizontal';
         this.labels = SVGFunnel.getLabels(options);
+        this.subLabels = SVGFunnel.getSubLabels(options);
         this.values = SVGFunnel.getValues(options);
         this.percentages = this.createPercentages();
         this.displayPercent = options.displayPercent || false;
@@ -131,6 +132,34 @@ class SVGFunnel {
         return this.isVertical() ? this.getWidth() : this.getHeight();
     }
 
+    generateLegendBackground(index) {
+        const color = this.colors[index];
+
+        if (typeof color === 'string') {
+            return `background-color: ${color}`;
+        }
+
+        if (color.length === 1) {
+            return `background-color: ${color[0]}`;
+        }
+
+        return `background-image: linear-gradient(${this.gradientDirection === 'horizontal' 
+            ? 'to right, ' 
+            : ''}${color.join(', ')})`;
+    }
+
+    static getSubLabels(options) {
+        if (!options.data) {
+            throw new Error('Data is missing');
+        }
+
+        const { data } = options;
+
+        if (typeof data.subLabels === 'undefined') return [];
+
+        return data.subLabels;
+    }
+
     static getLabels(options) {
         if (!options.data) {
             throw new Error('Data is missing');
@@ -180,6 +209,25 @@ class SVGFunnel {
         });
 
         this.container.appendChild(holder);
+    }
+
+    addSubLabels() {
+        if (this.subLabels) {
+            const subLabelsHolder = document.createElement('div');
+            subLabelsHolder.setAttribute('class', 'svg-funnel-js__subLabels');
+
+            let subLabelsHTML = '';
+
+            this.subLabels.forEach((subLabel, index) => {
+                subLabelsHTML += `<div class="svg-funnel-js__subLabel svg-funnel-js__subLabel-${index + 1}">
+    <div class="svg-funnel-js__subLabel--color" style="${this.generateLegendBackground(index)}"></div>
+    <div class="svg-funnel-js__subLabel--title">${subLabel}</div>
+</div>`;
+            });
+
+            subLabelsHolder.innerHTML = subLabelsHTML;
+            this.container.appendChild(subLabelsHolder);
+        }
     }
 
     createContainer(options) {
@@ -446,6 +494,10 @@ class SVGFunnel {
         const svg = this.getSVG();
 
         this.addLabels();
+
+        if (this.is2d()) {
+            this.addSubLabels();
+        }
 
         const paths = svg.querySelectorAll('path');
 

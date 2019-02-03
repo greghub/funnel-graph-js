@@ -1,14 +1,14 @@
 @import "variables";
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,700");
 
-$value: #21FFA2;
-$secondary: #9896DC;
+$value: #21ffa2;
+$secondary: #9896dc;
 
 .svg-funnel-js {
 	display: block;
 	width: 800px;
 	height: 300px;
-	font-family: 'Open Sans', sans-serif;
+	font-family: "Open Sans", sans-serif;
 
 	.svg-funnel-js__container {
 		width: 100%;
@@ -67,6 +67,30 @@ $secondary: #9896DC;
 
 			&:not(:first-child) {
 				border-top: 1px solid $secondary;
+			}
+		}
+	}
+
+	.svg-funnel-js__subLabels {
+		display: flex;
+		justify-content: center;
+		margin-top: 24px;
+
+		.svg-funnel-js__subLabel {
+			display: flex;
+			font-size: 12px;
+			color: $white;
+			line-height: 16px;
+
+			&:not(:first-child) {
+				margin-left: 16px;
+			}
+
+			.svg-funnel-js__subLabel--color {
+				width: 12px;
+				height: 12px;
+				border-radius: 50%;
+				margin: 2px 8px 2px 0;
 			}
 		}
 	}

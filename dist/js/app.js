@@ -28,6 +28,7 @@ function () {
     this.gradientDirection = options.gradientDirection && options.gradientDirection === 'vertical' ? 'vertical' : 'horizontal';
     this.direction = options.direction && options.direction === 'vertical' ? 'vertical' : 'horizontal';
     this.labels = SVGFunnel.getLabels(options);
+    this.subLabels = SVGFunnel.getSubLabels(options);
     this.values = SVGFunnel.getValues(options);
     this.percentages = this.createPercentages();
     this.displayPercent = options.displayPercent || false;
@@ -165,6 +166,21 @@ function () {
       return this.isVertical() ? this.getWidth() : this.getHeight();
     }
   }, {
+    key: "generateLegendBackground",
+    value: function generateLegendBackground(index) {
+      var color = this.colors[index];
+
+      if (typeof color === 'string') {
+        return "background-color: ".concat(color);
+      }
+
+      if (color.length === 1) {
+        return "background-color: ".concat(color[0]);
+      }
+
+      return "background-image: linear-gradient(".concat(this.gradientDirection === 'horizontal' ? 'to right, ' : '').concat(color.join(', '), ")");
+    }
+  }, {
     key: "addLabels",
     value: function addLabels() {
       var _this = this;
@@ -199,6 +215,22 @@ function () {
         holder.appendChild(labelElement);
       });
       this.container.appendChild(holder);
+    }
+  }, {
+    key: "addSubLabels",
+    value: function addSubLabels() {
+      var _this2 = this;
+
+      if (this.subLabels) {
+        var subLabelsHolder = document.createElement('div');
+        subLabelsHolder.setAttribute('class', 'svg-funnel-js__subLabels');
+        var subLabelsHTML = '';
+        this.subLabels.forEach(function (subLabel, index) {
+          subLabelsHTML += "<div class=\"svg-funnel-js__subLabel svg-funnel-js__subLabel-".concat(index + 1, "\">\n    <div class=\"svg-funnel-js__subLabel--color\" style=\"").concat(_this2.generateLegendBackground(index), "\"></div>\n    <div class=\"svg-funnel-js__subLabel--title\">").concat(subLabel, "</div>\n</div>");
+        });
+        subLabelsHolder.innerHTML = subLabelsHTML;
+        this.container.appendChild(subLabelsHolder);
+      }
     }
   }, {
     key: "createContainer",
@@ -410,6 +442,11 @@ function () {
       this.makeSVG();
       var svg = this.getSVG();
       this.addLabels();
+
+      if (this.is2d()) {
+        this.addSubLabels();
+      }
+
       var paths = svg.querySelectorAll('path');
 
       for (var i = 0; i < paths.length; i++) {
@@ -418,6 +455,17 @@ function () {
       }
     }
   }], [{
+    key: "getSubLabels",
+    value: function getSubLabels(options) {
+      if (!options.data) {
+        throw new Error('Data is missing');
+      }
+
+      var data = options.data;
+      if (typeof data.subLabels === 'undefined') return [];
+      return data.subLabels;
+    }
+  }, {
     key: "getLabels",
     value: function getLabels(options) {
       if (!options.data) {

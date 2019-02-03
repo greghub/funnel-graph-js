@@ -1,3 +1,7 @@
+### 1.2.1 (Feb 3, 2019)
+
+* Add legend for segments in two-dimensional funnel graph
+
 ### 1.1.1 (Feb 3, 2019)
 
 * Add new theme

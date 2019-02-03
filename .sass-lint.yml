@@ -42,3 +42,5 @@ rules:
   variable-name-format: 1
   nesting-depth:
     - 0
+  no-url-domains: 0
+  no-url-protocols: 0
