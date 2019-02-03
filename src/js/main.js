@@ -3,8 +3,7 @@
 class SVGFunnel {
     constructor(options) {
         this.createContainer(options);
-        this.color = options.data.colors || '#FFB178';
-        this.fillMode = (typeof this.color === 'object') ? 'gradient' : 'solid';
+        this.colors = options.data.colors;
         this.gradientDirection = (options.gradientDirection && options.gradientDirection === 'vertical')
             ? 'vertical'
             : 'horizontal';
@@ -310,16 +309,10 @@ class SVGFunnel {
                 offset: `${Math.round(100 * i / (numberOfColors - 1))}%`,
             });
         }
-        //
-        // SVGFunnel.setAttrs(path, {
-        //     fill: `url("#${gradientName}")`,
-        //     stroke: `url("#${gradientName}")`,
-        // });
 
-        const color = `#${Array.from({ length: 6 }, () => Math.floor(Math.random() * 16).toString(16)).join('')}`;
         SVGFunnel.setAttrs(path, {
-            fill: color,
-            stroke: color,
+            fill: `url("#${gradientName}")`,
+            stroke: `url("#${gradientName}")`,
         });
     }
 
@@ -329,18 +322,20 @@ class SVGFunnel {
             height: this.getHeight(),
         });
 
-        const valuesNum = this.getCrossAxisPoints().length;
+        const valuesNum = this.getCrossAxisPoints().length - 1;
         for (let i = 0; i < valuesNum; i++) {
             const path = SVGFunnel.createSVGElement('path', svg);
 
-            if (this.fillMode === 'solid') {
+            const color = (this.is2d()) ? this.colors[i] : this.colors;
+            const fillMode = (typeof color === 'string' || color.length === 1) ? 'solid' : 'gradient';
+
+            if (fillMode === 'solid') {
                 SVGFunnel.setAttrs(path, {
-                    fill: this.color,
-                    stroke: this.color,
+                    fill: color,
+                    stroke: color,
                 });
-            } else if (this.fillMode === 'gradient') {
-                const colors = this.color;
-                this.applyGradient(svg, path, colors, i + 1);
+            } else if (fillMode === 'gradient') {
+                this.applyGradient(svg, path, color, i + 1);
             }
 
             svg.appendChild(path);
@@ -412,7 +407,7 @@ class SVGFunnel {
         const paths = svg.querySelectorAll('path');
         const X = this.isVertical() ? this.getCrossAxisPoints() : this.getMainAxisPoints();
 
-        for (let i = 0; i < paths.length - 1; i++) {
+        for (let i = 0; i < paths.length; i++) {
             const Y = this.isVertical()
                 ? this.getMainAxisPoints()[i]
                 : this.getCrossAxisPoints()[i];

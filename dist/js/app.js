@@ -1,5 +1,7 @@
 "use strict";
 
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -7,8 +9,6 @@ function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread n
 function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -24,8 +24,7 @@ function () {
     _classCallCheck(this, SVGFunnel);
 
     this.createContainer(options);
-    this.color = options.data.colors || '#FFB178';
-    this.fillMode = _typeof(this.color) === 'object' ? 'gradient' : 'solid';
+    this.colors = options.data.colors;
     this.gradientDirection = options.gradientDirection && options.gradientDirection === 'vertical' ? 'vertical' : 'horizontal';
     this.direction = options.direction && options.direction === 'vertical' ? 'vertical' : 'horizontal';
     this.labels = SVGFunnel.getLabels(options);
@@ -281,21 +280,11 @@ function () {
           'stop-color': colors[i],
           offset: "".concat(Math.round(100 * i / (numberOfColors - 1)), "%")
         });
-      } //
-      // SVGFunnel.setAttrs(path, {
-      //     fill: `url("#${gradientName}")`,
-      //     stroke: `url("#${gradientName}")`,
-      // });
+      }
 
-
-      var color = "#".concat(Array.from({
-        length: 6
-      }, function () {
-        return Math.floor(Math.random() * 16).toString(16);
-      }).join(''));
       SVGFunnel.setAttrs(path, {
-        fill: color,
-        stroke: color
+        fill: "url(\"#".concat(gradientName, "\")"),
+        stroke: "url(\"#".concat(gradientName, "\")")
       });
     }
   }, {
@@ -305,19 +294,20 @@ function () {
         width: this.getWidth(),
         height: this.getHeight()
       });
-      var valuesNum = this.getCrossAxisPoints().length;
+      var valuesNum = this.getCrossAxisPoints().length - 1;
 
       for (var i = 0; i < valuesNum; i++) {
         var path = SVGFunnel.createSVGElement('path', svg);
+        var color = this.is2d() ? this.colors[i] : this.colors;
+        var fillMode = typeof color === 'string' || color.length === 1 ? 'solid' : 'gradient';
 
-        if (this.fillMode === 'solid') {
+        if (fillMode === 'solid') {
           SVGFunnel.setAttrs(path, {
-            fill: this.color,
-            stroke: this.color
+            fill: color,
+            stroke: color
           });
-        } else if (this.fillMode === 'gradient') {
-          var colors = this.color;
-          this.applyGradient(svg, path, colors, i + 1);
+        } else if (fillMode === 'gradient') {
+          this.applyGradient(svg, path, color, i + 1);
         }
 
         svg.appendChild(path);
@@ -370,7 +360,7 @@ function () {
       var paths = svg.querySelectorAll('path');
       var X = this.isVertical() ? this.getCrossAxisPoints() : this.getMainAxisPoints();
 
-      for (var i = 0; i < paths.length - 1; i++) {
+      for (var i = 0; i < paths.length; i++) {
         var Y = this.isVertical() ? this.getMainAxisPoints()[i] : this.getCrossAxisPoints()[i];
         var YNext = this.isVertical() ? this.getMainAxisPoints()[i + 1] : this.getCrossAxisPoints()[i + 1];
         var d = SVGFunnel.createPath(X, Y, YNext);
