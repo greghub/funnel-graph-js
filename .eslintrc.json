@@ -6,7 +6,8 @@
   "rules": {
       "indent": ["error", 4],
       "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
-      "max-len": ["error", { "code": 121 }]
+      "max-len": ["error", { "code": 121 }],
+      "comma-dangle": ["error", "never"]
   },
   "globals": {
       "window": true,
