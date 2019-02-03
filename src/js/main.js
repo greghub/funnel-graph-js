@@ -275,6 +275,10 @@ class SVGFunnel {
         return ` C${SVGFunnel.roundPoint((x2 + x1) / 2)},${y1} ${SVGFunnel.roundPoint((x2 + x1) / 2)},${y2} ${x2},${y2}`;
     }
 
+    static createVerticalCurves(x1, y1, x2, y2) {
+        return ` C${x1},${SVGFunnel.roundPoint((y2 + y1) / 2)} ${x2},${SVGFunnel.roundPoint((y2 + y1) / 2)} ${x2},${y2}`;
+    }
+
     static setAttrs(element, attributes) {
         if (typeof attributes === 'object') {
             Object.keys(attributes).forEach((key) => {
@@ -380,7 +384,11 @@ class SVGFunnel {
         Points for path "B" are passed as the YNext param.
      */
 
-    static createPath(X, Y, YNext) {
+    createPath(index) {
+        const X = this.getMainAxisPoints();
+        const Y = this.getCrossAxisPoints()[index];
+        const YNext = this.getCrossAxisPoints()[index + 1];
+
         let str = `M${X[0]},${Y[0]}`;
 
         for (let i = 0; i < X.length - 1; i++) {
@@ -398,6 +406,37 @@ class SVGFunnel {
         return str;
     }
 
+    /*
+        In a vertical path we go counter-clockwise
+
+        1<----------4
+        |           ^
+        v           |
+        2---------->3
+     */
+
+    createVerticalPath(index) {
+        const X = this.getCrossAxisPoints()[index];
+        const XNext = this.getCrossAxisPoints()[index + 1];
+        const Y = this.getMainAxisPoints();
+
+        let str = `M${X[0]},${Y[0]}`;
+
+        for (let i = 0; i < X.length - 1; i++) {
+            str += SVGFunnel.createVerticalCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
+        }
+
+        str += ` L${[...XNext].pop()},${[...Y].pop()}`;
+
+        for (let i = X.length - 1; i > 0; i--) {
+            str += SVGFunnel.createVerticalCurves(XNext[i], Y[i], XNext[i - 1], Y[i - 1]);
+        }
+
+        str += ' Z';
+
+        return str;
+    }
+
     draw() {
         this.makeSVG();
         const svg = this.getSVG();
@@ -405,18 +444,9 @@ class SVGFunnel {
         this.addLabels();
 
         const paths = svg.querySelectorAll('path');
-        const X = this.isVertical() ? this.getCrossAxisPoints() : this.getMainAxisPoints();
 
         for (let i = 0; i < paths.length; i++) {
-            const Y = this.isVertical()
-                ? this.getMainAxisPoints()[i]
-                : this.getCrossAxisPoints()[i];
-
-            const YNext = this.isVertical()
-                ? this.getMainAxisPoints()[i + 1]
-                : this.getCrossAxisPoints()[i + 1];
-
-            const d = SVGFunnel.createPath(X, Y, YNext);
+            const d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
             paths[i].setAttribute('d', d);
         }
     }

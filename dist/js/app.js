@@ -352,18 +352,65 @@ function () {
      */
 
   }, {
+    key: "createPath",
+    value: function createPath(index) {
+      var X = this.getMainAxisPoints();
+      var Y = this.getCrossAxisPoints()[index];
+      var YNext = this.getCrossAxisPoints()[index + 1];
+      var str = "M".concat(X[0], ",").concat(Y[0]);
+
+      for (var i = 0; i < X.length - 1; i++) {
+        str += SVGFunnel.createCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
+      }
+
+      str += " L".concat(_toConsumableArray(X).pop(), ",").concat(_toConsumableArray(YNext).pop());
+
+      for (var _i = X.length - 1; _i > 0; _i--) {
+        str += SVGFunnel.createCurves(X[_i], YNext[_i], X[_i - 1], YNext[_i - 1]);
+      }
+
+      str += ' Z';
+      return str;
+    }
+    /*
+        In a vertical path we go counter-clockwise
+         1<----------4
+        |           ^
+        v           |
+        2---------->3
+     */
+
+  }, {
+    key: "createVerticalPath",
+    value: function createVerticalPath(index) {
+      var X = this.getCrossAxisPoints()[index];
+      var XNext = this.getCrossAxisPoints()[index + 1];
+      var Y = this.getMainAxisPoints();
+      var str = "M".concat(X[0], ",").concat(Y[0]);
+
+      for (var i = 0; i < X.length - 1; i++) {
+        str += SVGFunnel.createVerticalCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
+      }
+
+      str += " L".concat(_toConsumableArray(XNext).pop(), ",").concat(_toConsumableArray(Y).pop());
+
+      for (var _i2 = X.length - 1; _i2 > 0; _i2--) {
+        str += SVGFunnel.createVerticalCurves(XNext[_i2], Y[_i2], XNext[_i2 - 1], Y[_i2 - 1]);
+      }
+
+      str += ' Z';
+      return str;
+    }
+  }, {
     key: "draw",
     value: function draw() {
       this.makeSVG();
       var svg = this.getSVG();
       this.addLabels();
       var paths = svg.querySelectorAll('path');
-      var X = this.isVertical() ? this.getCrossAxisPoints() : this.getMainAxisPoints();
 
       for (var i = 0; i < paths.length; i++) {
-        var Y = this.isVertical() ? this.getMainAxisPoints()[i] : this.getCrossAxisPoints()[i];
-        var YNext = this.isVertical() ? this.getMainAxisPoints()[i + 1] : this.getCrossAxisPoints()[i + 1];
-        var d = SVGFunnel.createPath(X, Y, YNext);
+        var d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
         paths[i].setAttribute('d', d);
       }
     }
@@ -434,6 +481,11 @@ function () {
       return " C".concat(SVGFunnel.roundPoint((x2 + x1) / 2), ",").concat(y1, " ").concat(SVGFunnel.roundPoint((x2 + x1) / 2), ",").concat(y2, " ").concat(x2, ",").concat(y2);
     }
   }, {
+    key: "createVerticalCurves",
+    value: function createVerticalCurves(x1, y1, x2, y2) {
+      return " C".concat(x1, ",").concat(SVGFunnel.roundPoint((y2 + y1) / 2), " ").concat(x2, ",").concat(SVGFunnel.roundPoint((y2 + y1) / 2), " ").concat(x2, ",").concat(y2);
+    }
+  }, {
     key: "setAttrs",
     value: function setAttrs(element, attributes) {
       if (_typeof(attributes) === 'object') {
@@ -441,24 +493,6 @@ function () {
           element.setAttribute(key, attributes[key]);
         });
       }
-    }
-  }, {
-    key: "createPath",
-    value: function createPath(X, Y, YNext) {
-      var str = "M".concat(X[0], ",").concat(Y[0]);
-
-      for (var i = 0; i < X.length - 1; i++) {
-        str += SVGFunnel.createCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
-      }
-
-      str += " L".concat(_toConsumableArray(X).pop(), ",").concat(_toConsumableArray(YNext).pop());
-
-      for (var _i = X.length - 1; _i > 0; _i--) {
-        str += SVGFunnel.createCurves(X[_i], YNext[_i], X[_i - 1], YNext[_i - 1]);
-      }
-
-      str += ' Z';
-      return str;
     }
   }]);
 
