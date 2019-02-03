@@ -13,29 +13,22 @@
 
         body {
             margin: 0;
-            background: linear-gradient(#4CD2D7, #369DCF);
+            background: #393862;
         }
 
-        .main {
-            border-radius: 3px;
-            overflow: hidden;
+        .funnel {
             margin: 24px auto;
-            position: relative;
-            background-color: #09143E;
-            box-shadow: 3px 3px 14px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
 <body>
     <div class="funnel">
-        <div class="main">
-        </div>
     </div>
 
     <script src="../dist/js/app.js"></script>
     <script>
         new SVGFunnel({
-            container: '.main',
+            container: '.funnel',
             gradientDirection: 'horizontal',
             // data: {
             //     colors: ['orange', 'red'],

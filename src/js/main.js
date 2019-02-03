@@ -170,8 +170,8 @@ class SVGFunnel {
                 percentageValue.textContent = `${percentage.toString()}%`;
             }
 
-            labelElement.appendChild(title);
             labelElement.appendChild(value);
+            labelElement.appendChild(title);
             if (this.displayPercent) {
                 labelElement.appendChild(percentageValue);
             }
@@ -189,6 +189,10 @@ class SVGFunnel {
 
         this.container = document.querySelector(options.container);
         this.container.classList.add('svg-funnel-js');
+
+        this.graphContainer = document.createElement('div');
+        this.graphContainer.classList.add('svg-funnel-js__container');
+        this.container.appendChild(this.graphContainer);
 
         if (options.direction === 'vertical') {
             this.container.classList.add('svg-funnel-js--vertical');
@@ -321,7 +325,7 @@ class SVGFunnel {
     }
 
     makeSVG() {
-        const svg = SVGFunnel.createSVGElement('svg', this.container, {
+        const svg = SVGFunnel.createSVGElement('svg', this.graphContainer, {
             width: this.getWidth(),
             height: this.getHeight(),
         });
@@ -345,7 +349,7 @@ class SVGFunnel {
             svg.appendChild(path);
         }
 
-        this.container.appendChild(svg);
+        this.graphContainer.appendChild(svg);
     }
 
     getSVG() {
@@ -359,11 +363,11 @@ class SVGFunnel {
     }
 
     getWidth() {
-        return this.container.clientWidth;
+        return this.graphContainer.clientWidth;
     }
 
     getHeight() {
-        return this.container.clientHeight;
+        return this.graphContainer.clientHeight;
     }
 
     /*

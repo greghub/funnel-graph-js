@@ -1,6 +1,6 @@
 {
   "name": "svg-funnel-js",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "SVG Funnel js",
   "main": "main.js",
   "scripts": {

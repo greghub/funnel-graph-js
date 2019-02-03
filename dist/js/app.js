@@ -189,8 +189,8 @@ function () {
           percentageValue.textContent = "".concat(percentage.toString(), "%");
         }
 
-        labelElement.appendChild(title);
         labelElement.appendChild(value);
+        labelElement.appendChild(title);
 
         if (_this.displayPercent) {
           labelElement.appendChild(percentageValue);
@@ -209,6 +209,9 @@ function () {
 
       this.container = document.querySelector(options.container);
       this.container.classList.add('svg-funnel-js');
+      this.graphContainer = document.createElement('div');
+      this.graphContainer.classList.add('svg-funnel-js__container');
+      this.container.appendChild(this.graphContainer);
 
       if (options.direction === 'vertical') {
         this.container.classList.add('svg-funnel-js--vertical');
@@ -290,7 +293,7 @@ function () {
   }, {
     key: "makeSVG",
     value: function makeSVG() {
-      var svg = SVGFunnel.createSVGElement('svg', this.container, {
+      var svg = SVGFunnel.createSVGElement('svg', this.graphContainer, {
         width: this.getWidth(),
         height: this.getHeight()
       });
@@ -313,7 +316,7 @@ function () {
         svg.appendChild(path);
       }
 
-      this.container.appendChild(svg);
+      this.graphContainer.appendChild(svg);
     }
   }, {
     key: "getSVG",
@@ -329,12 +332,12 @@ function () {
   }, {
     key: "getWidth",
     value: function getWidth() {
-      return this.container.clientWidth;
+      return this.graphContainer.clientWidth;
     }
   }, {
     key: "getHeight",
     value: function getHeight() {
-      return this.container.clientHeight;
+      return this.graphContainer.clientHeight;
     }
     /*
         A funnel segment is draw in a clockwise direction.
