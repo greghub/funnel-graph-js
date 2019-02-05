@@ -46,8 +46,8 @@ const stylesLint = () => gulp.src('./src/scss/**/*.scss')
 
 const startServer = () => server.init({
     server: {
-        baseDir: './',
-    },
+        baseDir: './'
+    }
 });
 
 const watchHTML = () => gulp.watch('./*.html').on('change', server.reload);
@@ -72,7 +72,7 @@ export {
     serve,
     watch,
     compile,
-    lint,
+    lint
 };
 
 export default defaultTasks;

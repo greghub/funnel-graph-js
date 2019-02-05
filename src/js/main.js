@@ -345,7 +345,7 @@ class SVGFunnel {
             : svg.querySelector('defs');
         const gradientName = `funnelGradient-${index}`;
         const gradient = SVGFunnel.createSVGElement('linearGradient', defs, {
-            id: gradientName,
+            id: gradientName
         });
 
         if (this.gradientDirection === 'vertical') {
@@ -353,7 +353,7 @@ class SVGFunnel {
                 x1: '0',
                 x2: '0',
                 y1: '0',
-                y2: '1',
+                y2: '1'
             });
         }
 
@@ -362,20 +362,20 @@ class SVGFunnel {
         for (let i = 0; i < numberOfColors; i++) {
             SVGFunnel.createSVGElement('stop', gradient, {
                 'stop-color': colors[i],
-                offset: `${Math.round(100 * i / (numberOfColors - 1))}%`,
+                offset: `${Math.round(100 * i / (numberOfColors - 1))}%`
             });
         }
 
         SVGFunnel.setAttrs(path, {
             fill: `url("#${gradientName}")`,
-            stroke: `url("#${gradientName}")`,
+            stroke: `url("#${gradientName}")`
         });
     }
 
     makeSVG() {
         const svg = SVGFunnel.createSVGElement('svg', this.graphContainer, {
             width: this.getWidth(),
-            height: this.getHeight(),
+            height: this.getHeight()
         });
 
         const valuesNum = this.getCrossAxisPoints().length - 1;
@@ -388,7 +388,7 @@ class SVGFunnel {
             if (fillMode === 'solid') {
                 SVGFunnel.setAttrs(path, {
                     fill: color,
-                    stroke: color,
+                    stroke: color
                 });
             } else if (fillMode === 'gradient') {
                 this.applyGradient(svg, path, color, i + 1);
