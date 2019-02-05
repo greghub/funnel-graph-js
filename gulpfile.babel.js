@@ -5,9 +5,11 @@ import sass from 'gulp-sass';
 import postcss from 'gulp-postcss';
 import cssnano from 'cssnano';
 import autoprefixer from 'autoprefixer';
-import babel from 'gulp-babel';
 import eslint from 'gulp-eslint';
 import sasslint from 'gulp-sass-lint';
+import browserify from 'browserify';
+import babelify from 'babelify';
+import source from 'vinyl-source-stream';
 
 const server = browserSync.create();
 
@@ -25,11 +27,12 @@ const styles = () => {
     );
 };
 
-const scripts = () => gulp.src('src/js/main.js')
-    .pipe(babel({
-        presets: ['@babel/preset-env'],
-    }))
-    .pipe(rename('app.js'))
+const scripts = () => browserify({
+    entries: './src/js/main.js',
+    debug: true
+}).transform(babelify, { presets: ['@babel/preset-env'] })
+    .bundle()
+    .pipe(source('app.js'))
     .pipe(gulp.dest('dist/js'))
     .pipe(server.stream());
 
