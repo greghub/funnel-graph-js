@@ -4,7 +4,8 @@
   "description": "SVG Funnel js",
   "main": "main.js",
   "scripts": {
-    "start": "gulp"
+    "start": "gulp",
+    "test": "mocha"
   },
   "author": "Greg Hovanesyan",
   "license": "MIT",
@@ -18,6 +19,7 @@
     "babelify": "^10.0.0",
     "browser-sync": "^2.18.8",
     "browserify": "^16.2.3",
+    "chai": "^4.2.0",
     "cssnano": "^4.1.8",
     "eslint": "^5.13.0",
     "eslint-config-airbnb-base": "^13.1.0",
@@ -30,6 +32,7 @@
     "gulp-sass": "^4.0.2",
     "gulp-sass-lint": "^1.4.0",
     "gulp-util": "^3.0.8",
+    "mocha": "^5.2.0",
     "vinyl-source-stream": "^2.0.0"
   }
 }
