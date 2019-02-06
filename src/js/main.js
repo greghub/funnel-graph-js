@@ -1,6 +1,6 @@
 /* eslint-disable no-trailing-spaces */
 
-class SVGFunnel {
+class FunnelGraph {
     constructor(options) {
         this.createContainer(options);
         this.colors = options.data.colors;
@@ -8,9 +8,9 @@ class SVGFunnel {
             ? 'vertical'
             : 'horizontal';
         this.direction = (options.direction && options.direction === 'vertical') ? 'vertical' : 'horizontal';
-        this.labels = SVGFunnel.getLabels(options);
-        this.subLabels = SVGFunnel.getSubLabels(options);
-        this.values = SVGFunnel.getValues(options);
+        this.labels = FunnelGraph.getLabels(options);
+        this.subLabels = FunnelGraph.getSubLabels(options);
+        this.values = FunnelGraph.getValues(options);
         this.percentages = this.createPercentages();
         this.displayPercent = options.displayPercent || false;
 
@@ -52,7 +52,7 @@ class SVGFunnel {
         const points = [];
         const fullDimension = this.isVertical() ? this.getHeight() : this.getWidth();
         for (let i = 0; i <= size; i++) {
-            points.push(SVGFunnel.roundPoint(fullDimension * i / size));
+            points.push(FunnelGraph.roundPoint(fullDimension * i / size));
         }
         return points;
     }
@@ -70,7 +70,7 @@ class SVGFunnel {
             // duplicate last value
             totalValues.push([...totalValues].pop());
             // get points for path "A"
-            points.push(totalValues.map(value => SVGFunnel.roundPoint((max - value) / max * dimension)));
+            points.push(totalValues.map(value => FunnelGraph.roundPoint((max - value) / max * dimension)));
             // percentages with duplicated last value
             const percentagesFull = this.getPercentages2d();
             const pointsOfFirstPath = points[0];
@@ -80,7 +80,7 @@ class SVGFunnel {
                 const newPoints = [];
 
                 for (let j = 0; j < this.getDataSize(); j++) {
-                    newPoints.push(SVGFunnel.roundPoint(
+                    newPoints.push(FunnelGraph.roundPoint(
                         // eslint-disable-next-line comma-dangle
                         p[j] + (fullDimension - pointsOfFirstPath[j] * 2) * (percentagesFull[j][i - 1] / 100)
                     ));
@@ -101,7 +101,7 @@ class SVGFunnel {
             // if the graph is simple (not two-dimensional) then we have only paths "A" and "D"
             // which are symmetric. So we get the points for "A" and then get points for "D" by subtracting "A"
             // points from graph cross dimension length
-            points.push(values.map(value => SVGFunnel.roundPoint((max - value) / max * dimension)));
+            points.push(values.map(value => FunnelGraph.roundPoint((max - value) / max * dimension)));
             points.push(points[0].map(point => fullDimension - point));
         }
 
@@ -190,7 +190,7 @@ class SVGFunnel {
             value.setAttribute('class', 'label__value');
 
             const valueNumber = this.is2d() ? this.getValues2d()[index] : this.values[index];
-            value.textContent = SVGFunnel.formatNumber(valueNumber);
+            value.textContent = FunnelGraph.formatNumber(valueNumber);
 
             const percentageValue = document.createElement('div');
             percentageValue.setAttribute('class', 'label__percentage');
@@ -282,7 +282,7 @@ class SVGFunnel {
 
         this.values.forEach((valueSet) => {
             const total = valueSet.reduce((sum, value) => sum + value, 0);
-            percentages.push(valueSet.map(value => SVGFunnel.roundPoint(value * 100 / total)));
+            percentages.push(valueSet.map(value => FunnelGraph.roundPoint(value * 100 / total)));
         });
 
         return percentages;
@@ -298,14 +298,14 @@ class SVGFunnel {
         }
 
         const max = Math.max(...values);
-        return values.map(value => SVGFunnel.roundPoint(value * 100 / max));
+        return values.map(value => FunnelGraph.roundPoint(value * 100 / max));
     }
 
     static createSVGElement(element, container, attributes) {
         const el = document.createElementNS('http://www.w3.org/2000/svg', element);
 
         if (typeof attributes === 'object') {
-            SVGFunnel.setAttrs(el, attributes);
+            FunnelGraph.setAttrs(el, attributes);
         }
 
         if (typeof container !== 'undefined') {
@@ -324,11 +324,11 @@ class SVGFunnel {
     }
 
     static createCurves(x1, y1, x2, y2) {
-        return ` C${SVGFunnel.roundPoint((x2 + x1) / 2)},${y1} ${SVGFunnel.roundPoint((x2 + x1) / 2)},${y2} ${x2},${y2}`;
+        return ` C${FunnelGraph.roundPoint((x2 + x1) / 2)},${y1} ${FunnelGraph.roundPoint((x2 + x1) / 2)},${y2} ${x2},${y2}`;
     }
 
     static createVerticalCurves(x1, y1, x2, y2) {
-        return ` C${x1},${SVGFunnel.roundPoint((y2 + y1) / 2)} ${x2},${SVGFunnel.roundPoint((y2 + y1) / 2)} ${x2},${y2}`;
+        return ` C${x1},${FunnelGraph.roundPoint((y2 + y1) / 2)} ${x2},${FunnelGraph.roundPoint((y2 + y1) / 2)} ${x2},${y2}`;
     }
 
     static setAttrs(element, attributes) {
@@ -341,15 +341,15 @@ class SVGFunnel {
 
     applyGradient(svg, path, colors, index) {
         const defs = (svg.querySelector('defs') === null)
-            ? SVGFunnel.createSVGElement('defs', svg)
+            ? FunnelGraph.createSVGElement('defs', svg)
             : svg.querySelector('defs');
         const gradientName = `funnelGradient-${index}`;
-        const gradient = SVGFunnel.createSVGElement('linearGradient', defs, {
+        const gradient = FunnelGraph.createSVGElement('linearGradient', defs, {
             id: gradientName
         });
 
         if (this.gradientDirection === 'vertical') {
-            SVGFunnel.setAttrs(gradient, {
+            FunnelGraph.setAttrs(gradient, {
                 x1: '0',
                 x2: '0',
                 y1: '0',
@@ -360,33 +360,33 @@ class SVGFunnel {
         const numberOfColors = colors.length;
 
         for (let i = 0; i < numberOfColors; i++) {
-            SVGFunnel.createSVGElement('stop', gradient, {
+            FunnelGraph.createSVGElement('stop', gradient, {
                 'stop-color': colors[i],
                 offset: `${Math.round(100 * i / (numberOfColors - 1))}%`
             });
         }
 
-        SVGFunnel.setAttrs(path, {
+        FunnelGraph.setAttrs(path, {
             fill: `url("#${gradientName}")`,
             stroke: `url("#${gradientName}")`
         });
     }
 
     makeSVG() {
-        const svg = SVGFunnel.createSVGElement('svg', this.graphContainer, {
+        const svg = FunnelGraph.createSVGElement('svg', this.graphContainer, {
             width: this.getWidth(),
             height: this.getHeight()
         });
 
         const valuesNum = this.getCrossAxisPoints().length - 1;
         for (let i = 0; i < valuesNum; i++) {
-            const path = SVGFunnel.createSVGElement('path', svg);
+            const path = FunnelGraph.createSVGElement('path', svg);
 
             const color = (this.is2d()) ? this.colors[i] : this.colors;
             const fillMode = (typeof color === 'string' || color.length === 1) ? 'solid' : 'gradient';
 
             if (fillMode === 'solid') {
-                SVGFunnel.setAttrs(path, {
+                FunnelGraph.setAttrs(path, {
                     fill: color,
                     stroke: color
                 });
@@ -444,13 +444,13 @@ class SVGFunnel {
         let str = `M${X[0]},${Y[0]}`;
 
         for (let i = 0; i < X.length - 1; i++) {
-            str += SVGFunnel.createCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
+            str += FunnelGraph.createCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
         }
 
         str += ` L${[...X].pop()},${[...YNext].pop()}`;
 
         for (let i = X.length - 1; i > 0; i--) {
-            str += SVGFunnel.createCurves(X[i], YNext[i], X[i - 1], YNext[i - 1]);
+            str += FunnelGraph.createCurves(X[i], YNext[i], X[i - 1], YNext[i - 1]);
         }
 
         str += ' Z';
@@ -475,13 +475,13 @@ class SVGFunnel {
         let str = `M${X[0]},${Y[0]}`;
 
         for (let i = 0; i < X.length - 1; i++) {
-            str += SVGFunnel.createVerticalCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
+            str += FunnelGraph.createVerticalCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
         }
 
         str += ` L${[...XNext].pop()},${[...Y].pop()}`;
 
         for (let i = X.length - 1; i > 0; i--) {
-            str += SVGFunnel.createVerticalCurves(XNext[i], Y[i], XNext[i - 1], Y[i - 1]);
+            str += FunnelGraph.createVerticalCurves(XNext[i], Y[i], XNext[i - 1], Y[i - 1]);
         }
 
         str += ' Z';
@@ -508,4 +508,4 @@ class SVGFunnel {
     }
 }
 
-window.SVGFunnel = SVGFunnel;
+window.FunnelGraph = FunnelGraph;

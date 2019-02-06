@@ -1,4 +1,4 @@
-# SvgFunnel.js
+# FunnelGraph.js
 
 You can choose how you want to display your data on funnel graph. 
 You can display exact numbers, you can display percentages or both.
