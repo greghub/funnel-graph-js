@@ -29,7 +29,7 @@ const styles = () => {
 
 const scripts = () => browserify({
     entries: './src/js/index.js',
-    debug: true
+    standalone: 'FunnelGraph'
 }).transform(babelify, { presets: ['@babel/preset-env'] })
     .bundle()
     .pipe(source('funnel-graph.js'))
