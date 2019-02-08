@@ -1,4 +1,7 @@
 /* eslint-disable no-trailing-spaces */
+import { roundPoint, formatNumber } from './number';
+import { createCurves, createVerticalCurves } from './path';
+import { generateLegendBackground } from './graph';
 
 class FunnelGraph {
     constructor(options) {
@@ -52,7 +55,7 @@ class FunnelGraph {
         const points = [];
         const fullDimension = this.isVertical() ? this.getHeight() : this.getWidth();
         for (let i = 0; i <= size; i++) {
-            points.push(FunnelGraph.roundPoint(fullDimension * i / size));
+            points.push(roundPoint(fullDimension * i / size));
         }
         return points;
     }
@@ -70,7 +73,7 @@ class FunnelGraph {
             // duplicate last value
             totalValues.push([...totalValues].pop());
             // get points for path "A"
-            points.push(totalValues.map(value => FunnelGraph.roundPoint((max - value) / max * dimension)));
+            points.push(totalValues.map(value => roundPoint((max - value) / max * dimension)));
             // percentages with duplicated last value
             const percentagesFull = this.getPercentages2d();
             const pointsOfFirstPath = points[0];
@@ -80,7 +83,7 @@ class FunnelGraph {
                 const newPoints = [];
 
                 for (let j = 0; j < this.getDataSize(); j++) {
-                    newPoints.push(FunnelGraph.roundPoint(
+                    newPoints.push(roundPoint(
                         // eslint-disable-next-line comma-dangle
                         p[j] + (fullDimension - pointsOfFirstPath[j] * 2) * (percentagesFull[j][i - 1] / 100)
                     ));
@@ -101,7 +104,7 @@ class FunnelGraph {
             // if the graph is simple (not two-dimensional) then we have only paths "A" and "D"
             // which are symmetric. So we get the points for "A" and then get points for "D" by subtracting "A"
             // points from graph cross dimension length
-            points.push(values.map(value => FunnelGraph.roundPoint((max - value) / max * dimension)));
+            points.push(values.map(value => roundPoint((max - value) / max * dimension)));
             points.push(points[0].map(point => fullDimension - point));
         }
 
@@ -130,22 +133,6 @@ class FunnelGraph {
 
     getFullDimension() {
         return this.isVertical() ? this.getWidth() : this.getHeight();
-    }
-
-    generateLegendBackground(index) {
-        const color = this.colors[index];
-
-        if (typeof color === 'string') {
-            return `background-color: ${color}`;
-        }
-
-        if (color.length === 1) {
-            return `background-color: ${color[0]}`;
-        }
-
-        return `background-image: linear-gradient(${this.gradientDirection === 'horizontal' 
-            ? 'to right, ' 
-            : ''}${color.join(', ')})`;
     }
 
     static getSubLabels(options) {
@@ -190,7 +177,7 @@ class FunnelGraph {
             value.setAttribute('class', 'label__value');
 
             const valueNumber = this.is2d() ? this.getValues2d()[index] : this.values[index];
-            value.textContent = FunnelGraph.formatNumber(valueNumber);
+            value.textContent = formatNumber(valueNumber);
 
             const percentageValue = document.createElement('div');
             percentageValue.setAttribute('class', 'label__percentage');
@@ -220,7 +207,8 @@ class FunnelGraph {
 
             this.subLabels.forEach((subLabel, index) => {
                 subLabelsHTML += `<div class="svg-funnel-js__subLabel svg-funnel-js__subLabel-${index + 1}">
-    <div class="svg-funnel-js__subLabel--color" style="${this.generateLegendBackground(index)}"></div>
+    <div class="svg-funnel-js__subLabel--color" 
+        style="${generateLegendBackground(this.colors[index], this.gradientDirection)}"></div>
     <div class="svg-funnel-js__subLabel--title">${subLabel}</div>
 </div>`;
             });
@@ -282,7 +270,7 @@ class FunnelGraph {
 
         this.values.forEach((valueSet) => {
             const total = valueSet.reduce((sum, value) => sum + value, 0);
-            percentages.push(valueSet.map(value => FunnelGraph.roundPoint(value * 100 / total)));
+            percentages.push(valueSet.map(value => roundPoint(value * 100 / total)));
         });
 
         return percentages;
@@ -298,7 +286,7 @@ class FunnelGraph {
         }
 
         const max = Math.max(...values);
-        return values.map(value => FunnelGraph.roundPoint(value * 100 / max));
+        return values.map(value => roundPoint(value * 100 / max));
     }
 
     static createSVGElement(element, container, attributes) {
@@ -313,22 +301,6 @@ class FunnelGraph {
         }
 
         return el;
-    }
-
-    static roundPoint(number) {
-        return Math.round(number * 10) / 10;
-    }
-
-    static formatNumber(number) {
-        return Number(number).toFixed().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-    }
-
-    static createCurves(x1, y1, x2, y2) {
-        return ` C${FunnelGraph.roundPoint((x2 + x1) / 2)},${y1} ${FunnelGraph.roundPoint((x2 + x1) / 2)},${y2} ${x2},${y2}`;
-    }
-
-    static createVerticalCurves(x1, y1, x2, y2) {
-        return ` C${x1},${FunnelGraph.roundPoint((y2 + y1) / 2)} ${x2},${FunnelGraph.roundPoint((y2 + y1) / 2)} ${x2},${y2}`;
     }
 
     static setAttrs(element, attributes) {
@@ -444,13 +416,13 @@ class FunnelGraph {
         let str = `M${X[0]},${Y[0]}`;
 
         for (let i = 0; i < X.length - 1; i++) {
-            str += FunnelGraph.createCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
+            str += createCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
         }
 
         str += ` L${[...X].pop()},${[...YNext].pop()}`;
 
         for (let i = X.length - 1; i > 0; i--) {
-            str += FunnelGraph.createCurves(X[i], YNext[i], X[i - 1], YNext[i - 1]);
+            str += createCurves(X[i], YNext[i], X[i - 1], YNext[i - 1]);
         }
 
         str += ' Z';
@@ -475,13 +447,13 @@ class FunnelGraph {
         let str = `M${X[0]},${Y[0]}`;
 
         for (let i = 0; i < X.length - 1; i++) {
-            str += FunnelGraph.createVerticalCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
+            str += createVerticalCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
         }
 
         str += ` L${[...XNext].pop()},${[...Y].pop()}`;
 
         for (let i = X.length - 1; i > 0; i--) {
-            str += FunnelGraph.createVerticalCurves(XNext[i], Y[i], XNext[i - 1], Y[i - 1]);
+            str += createVerticalCurves(XNext[i], Y[i], XNext[i - 1], Y[i - 1]);
         }
 
         str += ' Z';
