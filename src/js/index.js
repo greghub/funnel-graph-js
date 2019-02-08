@@ -16,8 +16,6 @@ class FunnelGraph {
         this.values = FunnelGraph.getValues(options);
         this.percentages = this.createPercentages();
         this.displayPercent = options.displayPercent || false;
-
-        this.draw();
     }
 
     /**

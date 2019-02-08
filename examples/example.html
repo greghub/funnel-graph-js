@@ -54,13 +54,15 @@
             ]
         };
 
-        new FunnelGraph({
+        let graph = new FunnelGraph({
             container: '.funnel',
             gradientDirection: 'horizontal',
             data: dataExample3,
             displayPercent: true,
             direction: 'horizontal'
         });
+
+        graph.draw();
     </script>
 </body>
 </html>
