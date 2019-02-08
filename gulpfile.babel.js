@@ -10,6 +10,8 @@ import sasslint from 'gulp-sass-lint';
 import browserify from 'browserify';
 import babelify from 'babelify';
 import source from 'vinyl-source-stream';
+import streamify from 'gulp-streamify';
+import uglify from 'gulp-uglify';
 
 const server = browserSync.create();
 
@@ -33,6 +35,9 @@ const scripts = () => browserify({
 }).transform(babelify, { presets: ['@babel/preset-env'] })
     .bundle()
     .pipe(source('funnel-graph.js'))
+    .pipe(gulp.dest('dist/js'))
+    .pipe(streamify(uglify()))
+    .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest('dist/js'))
     .pipe(server.stream());
 

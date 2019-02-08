@@ -31,6 +31,8 @@
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^4.0.2",
     "gulp-sass-lint": "^1.4.0",
+    "gulp-streamify": "^1.0.2",
+    "gulp-uglify": "^3.0.1",
     "gulp-util": "^3.0.8",
     "mocha": "^5.2.0",
     "vinyl-source-stream": "^2.0.0"
