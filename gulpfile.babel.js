@@ -28,11 +28,11 @@ const styles = () => {
 };
 
 const scripts = () => browserify({
-    entries: './src/js/main.js',
+    entries: './src/js/index.js',
     debug: true
 }).transform(babelify, { presets: ['@babel/preset-env'] })
     .bundle()
-    .pipe(source('app.js'))
+    .pipe(source('funnel-graph.js'))
     .pipe(gulp.dest('dist/js'))
     .pipe(server.stream());
 
