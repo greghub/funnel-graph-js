@@ -122,3 +122,13 @@ However all supported ways of defining colors in a simple funnel graph can be us
 well and you can have both solid colors and gradients applied to segments of a single graph.
 In the above example first segment, "Direct", will have a gradient, 
 "Social Media" will have a solid red color, and "Ads" segment will have a solid blue.   
+
+## Options
+
+| Option | Description | Type | Required | Options | Default | Example |
+|--------|-------------|------|----------|---------|---------|---------|
+| `container` | Selector of the element that will hold the chart | `string` | Yes | | '.funnel-container' |
+| `direction` | Whether the chart visualization is displayed vertically or horizontally | `string` | No | 'vertical', 'horizontal' | 'horizontal' | |
+| `gradientDirection` | Whether the gradient applied to the segments of the graph is displayed from top to bottom or from left to right | `string` | No | 'vertical', 'horizontal', 'horizontal' | |
+| `displayPercent` | Where to display the automatically calculate percentage values below the labels | `boolean` | No | `true`, `false` | `true` | |
+| `data` | Object containing information about values, labels and colors of the chart | `object` | Yes | | | |
