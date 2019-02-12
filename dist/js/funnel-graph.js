@@ -63,7 +63,7 @@ function () {
   function FunnelGraph(options) {
     _classCallCheck(this, FunnelGraph);
 
-    this.createContainer(options);
+    this.containerSelector = options.container;
     this.colors = options.data.colors;
     this.gradientDirection = options.gradientDirection && options.gradientDirection === 'vertical' ? 'vertical' : 'horizontal';
     this.direction = options.direction && options.direction === 'vertical' ? 'vertical' : 'horizontal';
@@ -72,6 +72,8 @@ function () {
     this.values = FunnelGraph.getValues(options);
     this.percentages = this.createPercentages();
     this.displayPercent = options.displayPercent || false;
+    this.height = options.height;
+    this.width = options.width;
   }
   /**
   An example of a two-dimensional funnel graph
@@ -258,18 +260,18 @@ function () {
     }
   }, {
     key: "createContainer",
-    value: function createContainer(options) {
-      if (!options.container) {
+    value: function createContainer() {
+      if (!this.containerSelector) {
         throw new Error('Container is missing');
       }
 
-      this.container = document.querySelector(options.container);
+      this.container = document.querySelector(this.containerSelector);
       this.container.classList.add('svg-funnel-js');
       this.graphContainer = document.createElement('div');
       this.graphContainer.classList.add('svg-funnel-js__container');
       this.container.appendChild(this.graphContainer);
 
-      if (options.direction === 'vertical') {
+      if (this.direction === 'vertical') {
         this.container.classList.add('svg-funnel-js--vertical');
       }
     }
@@ -388,12 +390,12 @@ function () {
   }, {
     key: "getWidth",
     value: function getWidth() {
-      return this.graphContainer.clientWidth;
+      return this.width || this.graphContainer.clientWidth;
     }
   }, {
     key: "getHeight",
     value: function getHeight() {
-      return this.graphContainer.clientHeight;
+      return this.height || this.graphContainer.clientHeight;
     }
     /*
         A funnel segment is draw in a clockwise direction.
@@ -463,6 +465,7 @@ function () {
   }, {
     key: "draw",
     value: function draw() {
+      this.createContainer();
       this.makeSVG();
       var svg = this.getSVG();
       this.addLabels();
