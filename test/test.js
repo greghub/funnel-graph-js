@@ -51,36 +51,26 @@ describe('Add tests for background color generator', () => {
 });
 
 describe('Add tests for paths', () => {
-    let dataExample1 = {
-        colors: ['#FFB178', '#FF3C8E'],
-        values: [12000, 5700, 360]
-    };
-
-    let dataExample2 = {
+    const data = {
         labels: ['Impressions', 'Add To Cart', 'Buy'],
-        colors: ['#FFB178', '#FF3C8E'],
-        values: [12000, 5700, 360]
-    };
-
-    let dataExample3 = {
-        labels: ['Impressions', 'Add To Cart', 'Buy'],
-        subLabels: ['Direct', 'Social Media', 'Ads'],
+        subLabels: ['Direct', 'Social Media', 'Ads', 'Other'],
         colors: [
             ['#FFB178', '#FF78B1', '#FF3C8E'],
             ['#A0BBFF', '#EC77FF'],
             ['#A0F9FF', '#B377FF'],
+            '#E478FF'
         ],
         values: [
-            [2000, 4000, 6000],
-            [3000, 1000, 1000],
-            [800, 300, 100]
+            [2000, 4000, 6000, 500],
+            [3000, 1000, 1700, 600],
+            [800, 300, 130, 400]
         ]
     };
 
-    var graph = new FunnelGraph({
+    const graph = new FunnelGraph({
         container: '.funnel',
         gradientDirection: 'horizontal',
-        data: dataExample3,
+        data,
         displayPercent: true,
         direction: 'horizontal',
         width: 90,
@@ -93,10 +83,11 @@ describe('Add tests for paths', () => {
 
     it('can create main axis points for curves', () => {
         assert.deepEqual(graph.getCrossAxisPoints(), [
-            [0, 17.5, 27, 27],
-            [10, 32.5, 31, 31],
-            [30, 37.5, 32.5, 32.5],
-            [60, 42.5, 33, 33]
+            [0, 14.9, 26.1, 26.1],
+            [9.6, 29.3, 29.9, 29.9],
+            [28.8, 34.1, 31.3, 31.3],
+            [57.6, 42.3, 31.9, 31.9],
+            [60, 45.1, 33.9, 33.9]
         ]);
     });
 });
