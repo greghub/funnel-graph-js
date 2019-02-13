@@ -8,9 +8,10 @@ other numbers as a fraction of the largest number.
 For example: 12000, 5700 and 360 will be displayed as 47.5% and 3% 
 (100% is skipped in order to avoid redundancy).
 
-| 12000 | 5700  | 360 |
-|-------|-------|-----|
-|       | 47.5% | 3%  |
+Provided values | 12000 | 5700  | 360 |
+|---------------|-------|-------|-----|
+Display values | 12,000 | 5,700  | 360 |
+Calculated percentages |       | 47.5% | 3%  |
 
 If you want to hide percentages you set `displayPercent` to `false`:
 
@@ -130,5 +131,7 @@ In the above example first segment, "Direct", will have a gradient,
 | `container` | Selector of the element that will hold the chart | `string` | Yes | | '.funnel-container' |
 | `direction` | Whether the chart visualization is displayed vertically or horizontally | `string` | No | 'vertical', 'horizontal' | 'horizontal' | |
 | `gradientDirection` | Whether the gradient applied to the segments of the graph is displayed from top to bottom or from left to right | `string` | No | 'vertical', 'horizontal', 'horizontal' | |
-| `displayPercent` | Where to display the automatically calculate percentage values below the labels | `boolean` | No | `true`, `false` | `true` | |
+| `displayPercent` | Whether to display the automatically calculated percentage values below the labels | `boolean` | No | `true`, `false` | `true` | |
 | `data` | Object containing information about values, labels and colors of the chart | `object` | Yes | | | |
+| `width` | Width of the funnel graph | `number` | No | | container width | 800 |
+| `height` | Height of the funnel graph | `number` | No | | container height | 300 |
