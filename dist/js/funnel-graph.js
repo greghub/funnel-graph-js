@@ -4,7 +4,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.generateLegendBackground = void 0;
+exports.getDefaultColors = exports.defaultColors = exports.generateLegendBackground = void 0;
 
 var generateLegendBackground = function generateLegendBackground(color) {
   var direction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'horizontal';
@@ -21,6 +21,26 @@ var generateLegendBackground = function generateLegendBackground(color) {
 };
 
 exports.generateLegendBackground = generateLegendBackground;
+var defaultColors = ['#FF4589', '#FF5050', '#05DF9D', '#4FF2FD', '#2D9CDB', '#A0BBFF', '#FFD76F', '#F2C94C', '#FF9A9A', '#FFB178'];
+exports.defaultColors = defaultColors;
+
+var getDefaultColors = function getDefaultColors(number) {
+  var colors = [].concat(defaultColors);
+  var colorSet = [];
+
+  for (var i = 0; i < number; i++) {
+    // get a random color
+    var index = Math.abs(Math.round(Math.random() * (colors.length - 1))); // push it to the list
+
+    colorSet.push(colors[index]); // and remove it, so that it is not chosen again
+
+    colors.splice(index, 1);
+  }
+
+  return colorSet;
+};
+
+exports.getDefaultColors = getDefaultColors;
 
 },{}],2:[function(require,module,exports){
 "use strict";
@@ -64,13 +84,13 @@ function () {
     _classCallCheck(this, FunnelGraph);
 
     this.containerSelector = options.container;
-    this.colors = options.data.colors;
     this.gradientDirection = options.gradientDirection && options.gradientDirection === 'vertical' ? 'vertical' : 'horizontal';
     this.direction = options.direction && options.direction === 'vertical' ? 'vertical' : 'horizontal';
     this.labels = FunnelGraph.getLabels(options);
     this.subLabels = FunnelGraph.getSubLabels(options);
     this.values = FunnelGraph.getValues(options);
     this.percentages = this.createPercentages();
+    this.colors = options.data.colors || (0, _graph.getDefaultColors)(this.is2d() ? this.getSubDataSize() : 2);
     this.displayPercent = options.displayPercent || false;
     this.height = options.height;
     this.width = options.width;

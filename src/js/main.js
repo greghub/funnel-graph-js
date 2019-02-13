@@ -1,12 +1,11 @@
 /* eslint-disable no-trailing-spaces */
 import { roundPoint, formatNumber } from './number';
 import { createCurves, createVerticalCurves } from './path';
-import { generateLegendBackground } from './graph';
+import { generateLegendBackground, getDefaultColors } from './graph';
 
 class FunnelGraph {
     constructor(options) {
         this.containerSelector = options.container;
-        this.colors = options.data.colors;
         this.gradientDirection = (options.gradientDirection && options.gradientDirection === 'vertical')
             ? 'vertical'
             : 'horizontal';
@@ -15,6 +14,7 @@ class FunnelGraph {
         this.subLabels = FunnelGraph.getSubLabels(options);
         this.values = FunnelGraph.getValues(options);
         this.percentages = this.createPercentages();
+        this.colors = options.data.colors || getDefaultColors(this.is2d() ? this.getSubDataSize() : 2);
         this.displayPercent = options.displayPercent || false;
         this.height = options.height;
         this.width = options.width;
