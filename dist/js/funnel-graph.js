@@ -4,7 +4,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getDefaultColors = exports.defaultColors = exports.generateLegendBackground = void 0;
+exports.areEqual = exports.getDefaultColors = exports.generateLegendBackground = void 0;
 
 var generateLegendBackground = function generateLegendBackground(color) {
   var direction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'horizontal';
@@ -22,7 +22,6 @@ var generateLegendBackground = function generateLegendBackground(color) {
 
 exports.generateLegendBackground = generateLegendBackground;
 var defaultColors = ['#FF4589', '#FF5050', '#05DF9D', '#4FF2FD', '#2D9CDB', '#A0BBFF', '#FFD76F', '#F2C94C', '#FF9A9A', '#FFB178'];
-exports.defaultColors = defaultColors;
 
 var getDefaultColors = function getDefaultColors(number) {
   var colors = [].concat(defaultColors);
@@ -39,8 +38,30 @@ var getDefaultColors = function getDefaultColors(number) {
 
   return colorSet;
 };
+/*
+    Used in comparing existing values to value provided on update
+    It is limited to comparing arrays on purpose
+    Name is slightly unusual, in order not to be confused with Lodash method
+ */
+
 
 exports.getDefaultColors = getDefaultColors;
+
+var areEqual = function areEqual(value, newValue) {
+  // If values are not of the same type
+  var type = Object.prototype.toString.call(value);
+  if (type !== Object.prototype.toString.call(newValue)) return false;
+  if (type !== '[object Array]') return false;
+  if (value.length !== newValue.length) return false;
+
+  for (var i = 0; i < value.length; i++) {
+    if (value[i] !== newValue[i]) return false;
+  }
+
+  return true;
+};
+
+exports.areEqual = areEqual;
 
 },{}],2:[function(require,module,exports){
 "use strict";

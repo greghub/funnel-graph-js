@@ -33,4 +33,24 @@ const getDefaultColors = (number) => {
     return colorSet;
 };
 
-export { generateLegendBackground, defaultColors, getDefaultColors };
+/*
+    Used in comparing existing values to value provided on update
+    It is limited to comparing arrays on purpose
+    Name is slightly unusual, in order not to be confused with Lodash method
+ */
+const areEqual = (value, newValue) => {
+    // If values are not of the same type
+    const type = Object.prototype.toString.call(value);
+    if (type !== Object.prototype.toString.call(newValue)) return false;
+    if (type !== '[object Array]') return false;
+
+    if (value.length !== newValue.length) return false;
+
+    for (let i = 0; i < value.length; i++) {
+        if (value[i] !== newValue[i]) return false;
+    }
+
+    return true;
+};
+
+export { generateLegendBackground, getDefaultColors, areEqual };
