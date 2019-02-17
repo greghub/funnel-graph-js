@@ -311,6 +311,12 @@ class FunnelGraph {
         }
     }
 
+    static removeAttrs(element, ...attributes) {
+        attributes.forEach((attribute) => {
+            element.removeAttribute(attribute);
+        });
+    }
+
     applyGradient(svg, path, colors, index) {
         const defs = (svg.querySelector('defs') === null)
             ? FunnelGraph.createSVGElement('defs', svg)
@@ -477,6 +483,49 @@ class FunnelGraph {
         for (let i = 0; i < paths.length; i++) {
             const d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
             paths[i].setAttribute('d', d);
+        }
+    }
+
+    /*
+        Methods
+     */
+
+    gradientMakeVertical() {
+        if (this.gradientDirection === 'vertical') return true;
+
+        this.gradientDirection = 'vertical';
+        const gradients = this.graphContainer.querySelectorAll('linearGradient');
+
+        gradients.forEach((gradient) => {
+            FunnelGraph.setAttrs(gradient, {
+                x1: '0',
+                x2: '0',
+                y1: '0',
+                y2: '1'
+            });
+        });
+
+        return true;
+    }
+
+    gradientMakeHorizontal() {
+        if (this.gradientDirection === 'horizontal') return true;
+
+        this.gradientDirection = 'horizontal';
+        const gradients = this.graphContainer.querySelectorAll('linearGradient');
+
+        gradients.forEach((gradient) => {
+            FunnelGraph.removeAttrs(gradient, 'x1', 'x2', 'y1', 'y2');
+        });
+
+        return true;
+    }
+
+    gradientToggleDirection() {
+        if (this.gradientDirection === 'horizontal') {
+            this.gradientMakeVertical();
+        } else {
+            this.gradientMakeHorizontal();
         }
     }
 }

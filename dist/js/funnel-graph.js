@@ -522,6 +522,46 @@ function () {
         paths[i].setAttribute('d', d);
       }
     }
+    /*
+        Methods
+     */
+
+  }, {
+    key: "gradientMakeVertical",
+    value: function gradientMakeVertical() {
+      if (this.gradientDirection === 'vertical') return true;
+      this.gradientDirection = 'vertical';
+      var gradients = this.graphContainer.querySelectorAll('linearGradient');
+      gradients.forEach(function (gradient) {
+        FunnelGraph.setAttrs(gradient, {
+          x1: '0',
+          x2: '0',
+          y1: '0',
+          y2: '1'
+        });
+      });
+      return true;
+    }
+  }, {
+    key: "gradientMakeHorizontal",
+    value: function gradientMakeHorizontal() {
+      if (this.gradientDirection === 'horizontal') return true;
+      this.gradientDirection = 'horizontal';
+      var gradients = this.graphContainer.querySelectorAll('linearGradient');
+      gradients.forEach(function (gradient) {
+        FunnelGraph.removeAttrs(gradient, 'x1', 'x2', 'y1', 'y2');
+      });
+      return true;
+    }
+  }, {
+    key: "gradientToggleDirection",
+    value: function gradientToggleDirection() {
+      if (this.gradientDirection === 'horizontal') {
+        this.gradientMakeVertical();
+      } else {
+        this.gradientMakeHorizontal();
+      }
+    }
   }], [{
     key: "getSubLabels",
     value: function getSubLabels(options) {
@@ -592,6 +632,17 @@ function () {
           element.setAttribute(key, attributes[key]);
         });
       }
+    }
+  }, {
+    key: "removeAttrs",
+    value: function removeAttrs(element) {
+      for (var _len = arguments.length, attributes = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        attributes[_key - 1] = arguments[_key];
+      }
+
+      attributes.forEach(function (attribute) {
+        element.removeAttribute(attribute);
+      });
     }
   }]);
 

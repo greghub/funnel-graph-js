@@ -19,10 +19,27 @@
         .funnel {
             margin: 24px auto;
         }
+
+        .method-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 48px;
+        }
+
+        button {
+            margin-left: 8px;
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
     <div class="funnel">
+    </div>
+
+    <div class="method-buttons">
+        <button id="gradientMakeVertical">Gradient Make Vertical</button>
+        <button id="gradientMakeHorizontal">Gradient Make Horizontal</button>
+        <button id="gradientToggleDirection">Gradient Toggle Direction</button>
     </div>
 
     <script src="../dist/js/funnel-graph.min.js"></script>
@@ -62,6 +79,19 @@
         });
 
         graph.draw();
+
+        document.querySelector('#gradientMakeVertical').addEventListener('click', () => {
+            graph.gradientMakeVertical();
+        });
+
+        document.querySelector('#gradientMakeHorizontal').addEventListener('click', () => {
+            graph.gradientMakeHorizontal();
+        });
+
+        document.querySelector('#gradientToggleDirection').addEventListener('click', () => {
+            graph.gradientToggleDirection();
+        });
+
     </script>
 </body>
 </html>

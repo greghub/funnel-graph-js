@@ -143,7 +143,7 @@ In the above example first segment, "Direct", will have a gradient,
 | `makeVertical()` | |
 | `makeHorizontal()` | |
 | `toggleDirection()` | |
-| `gradientMakeVertical()` | |
-| `gradientMakeHorizontal()` | |
-| `gradientToggleDirection()` | |
+| `gradientMakeVertical()` | Display gradient on all sections from top to bottom |
+| `gradientMakeHorizontal()` | Display gradient on all sections from left to right  |
+| `gradientToggleDirection()` | Toggle direction of gradient on all sections |
 | `update({options})` | |
