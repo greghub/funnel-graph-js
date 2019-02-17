@@ -135,3 +135,15 @@ In the above example first segment, "Direct", will have a gradient,
 | `data` | Object containing information about values, labels and colors of the chart | `object` | Yes | | | |
 | `width` | Width of the funnel graph | `number` | No | | Container width | 800 |
 | `height` | Height of the funnel graph | `number` | No | | Container height | 300 |
+
+## Methods
+
+| Method | Description |
+|--------|-------------|
+| `makeVertical()` | |
+| `makeHorizontal()` | |
+| `toggleDirection()` | |
+| `gradientMakeVertical()` | |
+| `gradientMakeHorizontal()` | |
+| `gradientToggleDirection()` | |
+| `update({options})` | |
