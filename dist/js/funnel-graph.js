@@ -4,7 +4,47 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.areEqual = exports.getDefaultColors = exports.generateLegendBackground = void 0;
+exports.removeAttrs = exports.setAttrs = exports.createSVGElement = exports.areEqual = exports.getDefaultColors = exports.generateLegendBackground = void 0;
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+var setAttrs = function setAttrs(element, attributes) {
+  if (_typeof(attributes) === 'object') {
+    Object.keys(attributes).forEach(function (key) {
+      element.setAttribute(key, attributes[key]);
+    });
+  }
+};
+
+exports.setAttrs = setAttrs;
+
+var removeAttrs = function removeAttrs(element) {
+  for (var _len = arguments.length, attributes = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    attributes[_key - 1] = arguments[_key];
+  }
+
+  attributes.forEach(function (attribute) {
+    element.removeAttribute(attribute);
+  });
+};
+
+exports.removeAttrs = removeAttrs;
+
+var createSVGElement = function createSVGElement(element, container, attributes) {
+  var el = document.createElementNS('http://www.w3.org/2000/svg', element);
+
+  if (_typeof(attributes) === 'object') {
+    setAttrs(el, attributes);
+  }
+
+  if (typeof container !== 'undefined') {
+    container.appendChild(el);
+  }
+
+  return el;
+};
+
+exports.createSVGElement = createSVGElement;
 
 var generateLegendBackground = function generateLegendBackground(color) {
   var direction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'horizontal';
@@ -360,14 +400,14 @@ function () {
   }, {
     key: "applyGradient",
     value: function applyGradient(svg, path, colors, index) {
-      var defs = svg.querySelector('defs') === null ? FunnelGraph.createSVGElement('defs', svg) : svg.querySelector('defs');
+      var defs = svg.querySelector('defs') === null ? (0, _graph.createSVGElement)('defs', svg) : svg.querySelector('defs');
       var gradientName = "funnelGradient-".concat(index);
-      var gradient = FunnelGraph.createSVGElement('linearGradient', defs, {
+      var gradient = (0, _graph.createSVGElement)('linearGradient', defs, {
         id: gradientName
       });
 
       if (this.gradientDirection === 'vertical') {
-        FunnelGraph.setAttrs(gradient, {
+        (0, _graph.setAttrs)(gradient, {
           x1: '0',
           x2: '0',
           y1: '0',
@@ -378,13 +418,13 @@ function () {
       var numberOfColors = colors.length;
 
       for (var i = 0; i < numberOfColors; i++) {
-        FunnelGraph.createSVGElement('stop', gradient, {
+        (0, _graph.createSVGElement)('stop', gradient, {
           'stop-color': colors[i],
           offset: "".concat(Math.round(100 * i / (numberOfColors - 1)), "%")
         });
       }
 
-      FunnelGraph.setAttrs(path, {
+      (0, _graph.setAttrs)(path, {
         fill: "url(\"#".concat(gradientName, "\")"),
         stroke: "url(\"#".concat(gradientName, "\")")
       });
@@ -392,19 +432,19 @@ function () {
   }, {
     key: "makeSVG",
     value: function makeSVG() {
-      var svg = FunnelGraph.createSVGElement('svg', this.graphContainer, {
+      var svg = (0, _graph.createSVGElement)('svg', this.graphContainer, {
         width: this.getWidth(),
         height: this.getHeight()
       });
       var valuesNum = this.getCrossAxisPoints().length - 1;
 
       for (var i = 0; i < valuesNum; i++) {
-        var path = FunnelGraph.createSVGElement('path', svg);
+        var path = (0, _graph.createSVGElement)('path', svg);
         var color = this.is2d() ? this.colors[i] : this.colors;
         var fillMode = typeof color === 'string' || color.length === 1 ? 'solid' : 'gradient';
 
         if (fillMode === 'solid') {
-          FunnelGraph.setAttrs(path, {
+          (0, _graph.setAttrs)(path, {
             fill: color,
             stroke: color
           });
@@ -533,7 +573,7 @@ function () {
       this.gradientDirection = 'vertical';
       var gradients = this.graphContainer.querySelectorAll('linearGradient');
       gradients.forEach(function (gradient) {
-        FunnelGraph.setAttrs(gradient, {
+        (0, _graph.setAttrs)(gradient, {
           x1: '0',
           x2: '0',
           y1: '0',
@@ -549,7 +589,7 @@ function () {
       this.gradientDirection = 'horizontal';
       var gradients = this.graphContainer.querySelectorAll('linearGradient');
       gradients.forEach(function (gradient) {
-        FunnelGraph.removeAttrs(gradient, 'x1', 'x2', 'y1', 'y2');
+        (0, _graph.removeAttrs)(gradient, 'x1', 'x2', 'y1', 'y2');
       });
       return true;
     }
@@ -608,41 +648,6 @@ function () {
       }
 
       return [];
-    }
-  }, {
-    key: "createSVGElement",
-    value: function createSVGElement(element, container, attributes) {
-      var el = document.createElementNS('http://www.w3.org/2000/svg', element);
-
-      if (_typeof(attributes) === 'object') {
-        FunnelGraph.setAttrs(el, attributes);
-      }
-
-      if (typeof container !== 'undefined') {
-        container.appendChild(el);
-      }
-
-      return el;
-    }
-  }, {
-    key: "setAttrs",
-    value: function setAttrs(element, attributes) {
-      if (_typeof(attributes) === 'object') {
-        Object.keys(attributes).forEach(function (key) {
-          element.setAttribute(key, attributes[key]);
-        });
-      }
-    }
-  }, {
-    key: "removeAttrs",
-    value: function removeAttrs(element) {
-      for (var _len = arguments.length, attributes = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        attributes[_key - 1] = arguments[_key];
-      }
-
-      attributes.forEach(function (attribute) {
-        element.removeAttribute(attribute);
-      });
     }
   }]);
 

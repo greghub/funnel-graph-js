@@ -1,7 +1,7 @@
 /* eslint-disable no-trailing-spaces */
 import { roundPoint, formatNumber } from './number';
 import { createCurves, createVerticalCurves } from './path';
-import { generateLegendBackground, getDefaultColors } from './graph';
+import { generateLegendBackground, getDefaultColors, createSVGElement, setAttrs, removeAttrs } from './graph';
 
 class FunnelGraph {
     constructor(options) {
@@ -289,45 +289,17 @@ class FunnelGraph {
         return values.map(value => roundPoint(value * 100 / max));
     }
 
-    static createSVGElement(element, container, attributes) {
-        const el = document.createElementNS('http://www.w3.org/2000/svg', element);
-
-        if (typeof attributes === 'object') {
-            FunnelGraph.setAttrs(el, attributes);
-        }
-
-        if (typeof container !== 'undefined') {
-            container.appendChild(el);
-        }
-
-        return el;
-    }
-
-    static setAttrs(element, attributes) {
-        if (typeof attributes === 'object') {
-            Object.keys(attributes).forEach((key) => {
-                element.setAttribute(key, attributes[key]);
-            });
-        }
-    }
-
-    static removeAttrs(element, ...attributes) {
-        attributes.forEach((attribute) => {
-            element.removeAttribute(attribute);
-        });
-    }
-
     applyGradient(svg, path, colors, index) {
         const defs = (svg.querySelector('defs') === null)
-            ? FunnelGraph.createSVGElement('defs', svg)
+            ? createSVGElement('defs', svg)
             : svg.querySelector('defs');
         const gradientName = `funnelGradient-${index}`;
-        const gradient = FunnelGraph.createSVGElement('linearGradient', defs, {
+        const gradient = createSVGElement('linearGradient', defs, {
             id: gradientName
         });
 
         if (this.gradientDirection === 'vertical') {
-            FunnelGraph.setAttrs(gradient, {
+            setAttrs(gradient, {
                 x1: '0',
                 x2: '0',
                 y1: '0',
@@ -338,33 +310,33 @@ class FunnelGraph {
         const numberOfColors = colors.length;
 
         for (let i = 0; i < numberOfColors; i++) {
-            FunnelGraph.createSVGElement('stop', gradient, {
+            createSVGElement('stop', gradient, {
                 'stop-color': colors[i],
                 offset: `${Math.round(100 * i / (numberOfColors - 1))}%`
             });
         }
 
-        FunnelGraph.setAttrs(path, {
+        setAttrs(path, {
             fill: `url("#${gradientName}")`,
             stroke: `url("#${gradientName}")`
         });
     }
 
     makeSVG() {
-        const svg = FunnelGraph.createSVGElement('svg', this.graphContainer, {
+        const svg = createSVGElement('svg', this.graphContainer, {
             width: this.getWidth(),
             height: this.getHeight()
         });
 
         const valuesNum = this.getCrossAxisPoints().length - 1;
         for (let i = 0; i < valuesNum; i++) {
-            const path = FunnelGraph.createSVGElement('path', svg);
+            const path = createSVGElement('path', svg);
 
             const color = (this.is2d()) ? this.colors[i] : this.colors;
             const fillMode = (typeof color === 'string' || color.length === 1) ? 'solid' : 'gradient';
 
             if (fillMode === 'solid') {
-                FunnelGraph.setAttrs(path, {
+                setAttrs(path, {
                     fill: color,
                     stroke: color
                 });
@@ -497,7 +469,7 @@ class FunnelGraph {
         const gradients = this.graphContainer.querySelectorAll('linearGradient');
 
         gradients.forEach((gradient) => {
-            FunnelGraph.setAttrs(gradient, {
+            setAttrs(gradient, {
                 x1: '0',
                 x2: '0',
                 y1: '0',
@@ -515,7 +487,7 @@ class FunnelGraph {
         const gradients = this.graphContainer.querySelectorAll('linearGradient');
 
         gradients.forEach((gradient) => {
-            FunnelGraph.removeAttrs(gradient, 'x1', 'x2', 'y1', 'y2');
+            removeAttrs(gradient, 'x1', 'x2', 'y1', 'y2');
         });
 
         return true;
