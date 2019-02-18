@@ -1,7 +1,9 @@
 /* eslint-disable no-trailing-spaces */
 import { roundPoint, formatNumber } from './number';
 import { createCurves, createVerticalCurves } from './path';
-import { generateLegendBackground, getDefaultColors, createSVGElement, setAttrs, removeAttrs } from './graph';
+import {
+    generateLegendBackground, getDefaultColors, createSVGElement, setAttrs, removeAttrs
+} from './graph';
 
 class FunnelGraph {
     constructor(options) {
@@ -461,6 +463,54 @@ class FunnelGraph {
     /*
         Methods
      */
+
+    makeVertical() {
+        if (this.direction === 'vertical') return true;
+
+        this.direction = 'vertical';
+        this.container.classList.add('svg-funnel-js--vertical');
+
+        const svg = this.getSVG();
+        const paths = svg.querySelectorAll('path');
+
+        const height = this.getHeight();
+        const width = this.getWidth();
+        setAttrs(svg, { height, width });
+
+        for (let i = 0; i < paths.length; i++) {
+            paths[i].setAttribute('d', this.createVerticalPath(i));
+        }
+
+        return true;
+    }
+
+    makeHorizontal() {
+        if (this.direction === 'horizontal') return true;
+
+        this.direction = 'horizontal';
+        this.container.classList.remove('svg-funnel-js--vertical');
+
+        const svg = this.getSVG();
+        const paths = svg.querySelectorAll('path');
+
+        const height = this.getHeight();
+        const width = this.getWidth();
+        setAttrs(svg, { height, width });
+
+        for (let i = 0; i < paths.length; i++) {
+            paths[i].setAttribute('d', this.createPath(i));
+        }
+
+        return true;
+    }
+
+    toggleDirection() {
+        if (this.direction === 'horizontal') {
+            this.makeVertical();
+        } else {
+            this.makeHorizontal();
+        }
+    }
 
     gradientMakeVertical() {
         if (this.gradientDirection === 'vertical') return true;

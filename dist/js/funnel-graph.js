@@ -567,6 +567,57 @@ function () {
      */
 
   }, {
+    key: "makeVertical",
+    value: function makeVertical() {
+      if (this.direction === 'vertical') return true;
+      this.direction = 'vertical';
+      this.container.classList.add('svg-funnel-js--vertical');
+      var svg = this.getSVG();
+      var paths = svg.querySelectorAll('path');
+      var height = this.getHeight();
+      var width = this.getWidth();
+      (0, _graph.setAttrs)(svg, {
+        height: height,
+        width: width
+      });
+
+      for (var i = 0; i < paths.length; i++) {
+        paths[i].setAttribute('d', this.createVerticalPath(i));
+      }
+
+      return true;
+    }
+  }, {
+    key: "makeHorizontal",
+    value: function makeHorizontal() {
+      if (this.direction === 'horizontal') return true;
+      this.direction = 'horizontal';
+      this.container.classList.remove('svg-funnel-js--vertical');
+      var svg = this.getSVG();
+      var paths = svg.querySelectorAll('path');
+      var height = this.getHeight();
+      var width = this.getWidth();
+      (0, _graph.setAttrs)(svg, {
+        height: height,
+        width: width
+      });
+
+      for (var i = 0; i < paths.length; i++) {
+        paths[i].setAttribute('d', this.createPath(i));
+      }
+
+      return true;
+    }
+  }, {
+    key: "toggleDirection",
+    value: function toggleDirection() {
+      if (this.direction === 'horizontal') {
+        this.makeVertical();
+      } else {
+        this.makeHorizontal();
+      }
+    }
+  }, {
     key: "gradientMakeVertical",
     value: function gradientMakeVertical() {
       if (this.gradientDirection === 'vertical') return true;

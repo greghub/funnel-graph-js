@@ -37,6 +37,9 @@
     </div>
 
     <div class="method-buttons">
+        <button id="makeVertical">Make Vertical</button>
+        <button id="makeHorizontal">Make Horizontal</button>
+        <button id="toggleDirection">Toggle Direction</button>
         <button id="gradientMakeVertical">Gradient Make Vertical</button>
         <button id="gradientMakeHorizontal">Gradient Make Horizontal</button>
         <button id="gradientToggleDirection">Gradient Toggle Direction</button>
@@ -80,6 +83,20 @@
 
         graph.draw();
 
+        // direction methods
+        document.querySelector('#makeVertical').addEventListener('click', () => {
+            graph.makeVertical();
+        });
+
+        document.querySelector('#makeHorizontal').addEventListener('click', () => {
+            graph.makeHorizontal();
+        });
+
+        document.querySelector('#toggleDirection').addEventListener('click', () => {
+            graph.toggleDirection();
+        });
+
+        // gradient methods
         document.querySelector('#gradientMakeVertical').addEventListener('click', () => {
             graph.gradientMakeVertical();
         });

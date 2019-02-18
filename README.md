@@ -140,9 +140,9 @@ In the above example first segment, "Direct", will have a gradient,
 
 | Method | Description |
 |--------|-------------|
-| `makeVertical()` | |
-| `makeHorizontal()` | |
-| `toggleDirection()` | |
+| `makeVertical()` | Display chart vertically |
+| `makeHorizontal()` | Display chart horizontally |
+| `toggleDirection()` | Toggle direction of chart |
 | `gradientMakeVertical()` | Display gradient on all sections from top to bottom |
 | `gradientMakeHorizontal()` | Display gradient on all sections from left to right  |
 | `gradientToggleDirection()` | Toggle direction of gradient on all sections |
