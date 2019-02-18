@@ -653,6 +653,42 @@ function () {
         this.gradientMakeHorizontal();
       }
     }
+  }, {
+    key: "updateWidth",
+    value: function updateWidth(w) {
+      this.width = w;
+      var svg = this.getSVG();
+      var paths = svg.querySelectorAll('path');
+      var width = this.getWidth();
+      (0, _graph.setAttrs)(svg, {
+        width: width
+      });
+
+      for (var i = 0; i < paths.length; i++) {
+        var d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
+        paths[i].setAttribute('d', d);
+      }
+
+      return true;
+    }
+  }, {
+    key: "updateHeight",
+    value: function updateHeight(h) {
+      this.height = h;
+      var svg = this.getSVG();
+      var paths = svg.querySelectorAll('path');
+      var height = this.getHeight();
+      (0, _graph.setAttrs)(svg, {
+        height: height
+      });
+
+      for (var i = 0; i < paths.length; i++) {
+        var d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
+        paths[i].setAttribute('d', d);
+      }
+
+      return true;
+    }
   }], [{
     key: "getSubLabels",
     value: function getSubLabels(options) {

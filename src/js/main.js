@@ -550,6 +550,38 @@ class FunnelGraph {
             this.gradientMakeHorizontal();
         }
     }
+
+    updateWidth(w) {
+        this.width = w;
+        const svg = this.getSVG();
+        const paths = svg.querySelectorAll('path');
+
+        const width = this.getWidth();
+        setAttrs(svg, { width });
+
+        for (let i = 0; i < paths.length; i++) {
+            const d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
+            paths[i].setAttribute('d', d);
+        }
+
+        return true;
+    }
+
+    updateHeight(h) {
+        this.height = h;
+        const svg = this.getSVG();
+        const paths = svg.querySelectorAll('path');
+
+        const height = this.getHeight();
+        setAttrs(svg, { height });
+
+        for (let i = 0; i < paths.length; i++) {
+            const d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
+            paths[i].setAttribute('d', d);
+        }
+
+        return true;
+    }
 }
 
 export default FunnelGraph;
