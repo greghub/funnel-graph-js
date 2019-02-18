@@ -441,10 +441,19 @@ class FunnelGraph {
         return str;
     }
 
+    drawPaths() {
+        const svg = this.getSVG();
+        const paths = svg.querySelectorAll('path');
+
+        for (let i = 0; i < paths.length; i++) {
+            const d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
+            paths[i].setAttribute('d', d);
+        }
+    }
+
     draw() {
         this.createContainer();
         this.makeSVG();
-        const svg = this.getSVG();
 
         this.addLabels();
 
@@ -452,12 +461,7 @@ class FunnelGraph {
             this.addSubLabels();
         }
 
-        const paths = svg.querySelectorAll('path');
-
-        for (let i = 0; i < paths.length; i++) {
-            const d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
-            paths[i].setAttribute('d', d);
-        }
+        this.drawPaths();
     }
 
     /*
@@ -471,15 +475,11 @@ class FunnelGraph {
         this.container.classList.add('svg-funnel-js--vertical');
 
         const svg = this.getSVG();
-        const paths = svg.querySelectorAll('path');
-
         const height = this.getHeight();
         const width = this.getWidth();
         setAttrs(svg, { height, width });
 
-        for (let i = 0; i < paths.length; i++) {
-            paths[i].setAttribute('d', this.createVerticalPath(i));
-        }
+        this.drawPaths();
 
         return true;
     }
@@ -491,15 +491,11 @@ class FunnelGraph {
         this.container.classList.remove('svg-funnel-js--vertical');
 
         const svg = this.getSVG();
-        const paths = svg.querySelectorAll('path');
-
         const height = this.getHeight();
         const width = this.getWidth();
         setAttrs(svg, { height, width });
 
-        for (let i = 0; i < paths.length; i++) {
-            paths[i].setAttribute('d', this.createPath(i));
-        }
+        this.drawPaths();
 
         return true;
     }
@@ -554,15 +550,10 @@ class FunnelGraph {
     updateWidth(w) {
         this.width = w;
         const svg = this.getSVG();
-        const paths = svg.querySelectorAll('path');
-
         const width = this.getWidth();
         setAttrs(svg, { width });
 
-        for (let i = 0; i < paths.length; i++) {
-            const d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
-            paths[i].setAttribute('d', d);
-        }
+        this.drawPaths();
 
         return true;
     }
@@ -570,15 +561,10 @@ class FunnelGraph {
     updateHeight(h) {
         this.height = h;
         const svg = this.getSVG();
-        const paths = svg.querySelectorAll('path');
-
         const height = this.getHeight();
         setAttrs(svg, { height });
 
-        for (let i = 0; i < paths.length; i++) {
-            const d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
-            paths[i].setAttribute('d', d);
-        }
+        this.drawPaths();
 
         return true;
     }

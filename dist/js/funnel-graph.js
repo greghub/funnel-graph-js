@@ -544,23 +544,28 @@ function () {
       return str;
     }
   }, {
-    key: "draw",
-    value: function draw() {
-      this.createContainer();
-      this.makeSVG();
+    key: "drawPaths",
+    value: function drawPaths() {
       var svg = this.getSVG();
-      this.addLabels();
-
-      if (this.is2d()) {
-        this.addSubLabels();
-      }
-
       var paths = svg.querySelectorAll('path');
 
       for (var i = 0; i < paths.length; i++) {
         var d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
         paths[i].setAttribute('d', d);
       }
+    }
+  }, {
+    key: "draw",
+    value: function draw() {
+      this.createContainer();
+      this.makeSVG();
+      this.addLabels();
+
+      if (this.is2d()) {
+        this.addSubLabels();
+      }
+
+      this.drawPaths();
     }
     /*
         Methods
@@ -573,18 +578,13 @@ function () {
       this.direction = 'vertical';
       this.container.classList.add('svg-funnel-js--vertical');
       var svg = this.getSVG();
-      var paths = svg.querySelectorAll('path');
       var height = this.getHeight();
       var width = this.getWidth();
       (0, _graph.setAttrs)(svg, {
         height: height,
         width: width
       });
-
-      for (var i = 0; i < paths.length; i++) {
-        paths[i].setAttribute('d', this.createVerticalPath(i));
-      }
-
+      this.drawPaths();
       return true;
     }
   }, {
@@ -594,18 +594,13 @@ function () {
       this.direction = 'horizontal';
       this.container.classList.remove('svg-funnel-js--vertical');
       var svg = this.getSVG();
-      var paths = svg.querySelectorAll('path');
       var height = this.getHeight();
       var width = this.getWidth();
       (0, _graph.setAttrs)(svg, {
         height: height,
         width: width
       });
-
-      for (var i = 0; i < paths.length; i++) {
-        paths[i].setAttribute('d', this.createPath(i));
-      }
-
+      this.drawPaths();
       return true;
     }
   }, {
@@ -658,17 +653,11 @@ function () {
     value: function updateWidth(w) {
       this.width = w;
       var svg = this.getSVG();
-      var paths = svg.querySelectorAll('path');
       var width = this.getWidth();
       (0, _graph.setAttrs)(svg, {
         width: width
       });
-
-      for (var i = 0; i < paths.length; i++) {
-        var d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
-        paths[i].setAttribute('d', d);
-      }
-
+      this.drawPaths();
       return true;
     }
   }, {
@@ -676,17 +665,11 @@ function () {
     value: function updateHeight(h) {
       this.height = h;
       var svg = this.getSVG();
-      var paths = svg.querySelectorAll('path');
       var height = this.getHeight();
       (0, _graph.setAttrs)(svg, {
         height: height
       });
-
-      for (var i = 0; i < paths.length; i++) {
-        var d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
-        paths[i].setAttribute('d', d);
-      }
-
+      this.drawPaths();
       return true;
     }
   }], [{
