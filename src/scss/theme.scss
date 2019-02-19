@@ -106,6 +106,13 @@
 				border-top: 1px solid $secondary;
 			}
 		}
+
+		.label__segment-percentages {
+			.segment-percentage__list {
+				display: flex;
+				justify-content: space-around;
+			}
+		}
 	}
 
 	.svg-funnel-js__subLabels {

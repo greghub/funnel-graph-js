@@ -69,6 +69,9 @@
       padding-top: 24px; }
       .svg-funnel-js.svg-funnel-js--vertical .svg-funnel-js__label:not(:first-child) {
         border-top: 1px solid #9896dc; }
+    .svg-funnel-js.svg-funnel-js--vertical .label__segment-percentages .segment-percentage__list {
+      display: flex;
+      justify-content: space-around; }
   .svg-funnel-js .svg-funnel-js__subLabels {
     display: flex;
     justify-content: center;
