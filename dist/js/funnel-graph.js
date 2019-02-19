@@ -729,6 +729,60 @@ function () {
         this.addSubLabels();
       }
     }
+  }, {
+    key: "update",
+    value: function update(o) {
+      var _this3 = this;
+
+      if (typeof o.displayPercent !== 'undefined') {
+        if (this.displayPercent !== o.displayPercent) {
+          if (this.displayPercent === true) {
+            this.container.querySelectorAll('.label__percentage').forEach(function (label) {
+              label.remove();
+            });
+          } else {
+            this.container.querySelectorAll('.svg-funnel-js__label').forEach(function (label, index) {
+              var percentage = _this3.percentages[index];
+              var percentageValue = document.createElement('div');
+              percentageValue.setAttribute('class', 'label__percentage');
+
+              if (percentage !== 100) {
+                percentageValue.textContent = "".concat(percentage.toString(), "%");
+                label.appendChild(percentageValue);
+              }
+            });
+          }
+        }
+      }
+
+      if (typeof o.height !== 'undefined') {
+        this.updateHeight(o.height);
+      }
+
+      if (typeof o.width !== 'undefined') {
+        this.updateWidth(o.width);
+      }
+
+      if (typeof o.gradientDirection !== 'undefined') {
+        if (o.gradientDirection === 'vertical') {
+          this.gradientMakeVertical();
+        } else if (o.gradientDirection === 'horizontal') {
+          this.gradientMakeHorizontal();
+        }
+      }
+
+      if (typeof o.direction !== 'undefined') {
+        if (o.direction === 'vertical') {
+          this.makeVertical();
+        } else if (o.direction === 'horizontal') {
+          this.makeHorizontal();
+        }
+      }
+
+      if (typeof o.data !== 'undefined') {
+        this.updateData(o.data);
+      }
+    }
   }], [{
     key: "getSubLabels",
     value: function getSubLabels(options) {

@@ -2,7 +2,7 @@
 import { roundPoint, formatNumber } from './number';
 import { createCurves, createVerticalCurves } from './path';
 import {
-    generateLegendBackground, getDefaultColors, createSVGElement, setAttrs, removeAttrs, areEqual
+    generateLegendBackground, getDefaultColors, createSVGElement, setAttrs, removeAttrs
 } from './graph';
 
 class FunnelGraph {
@@ -595,6 +595,52 @@ class FunnelGraph {
             this.container.querySelector('.svg-funnel-js__subLabels').remove();
             this.subLabels = FunnelGraph.getSubLabels({ data: d });
             this.addSubLabels();
+        }
+    }
+
+    update(o) {
+        if (typeof o.displayPercent !== 'undefined') {
+            if (this.displayPercent !== o.displayPercent) {
+                if (this.displayPercent === true) {
+                    this.container.querySelectorAll('.label__percentage').forEach((label) => {
+                        label.remove();
+                    });
+                } else {
+                    this.container.querySelectorAll('.svg-funnel-js__label').forEach((label, index) => {
+                        const percentage = this.percentages[index];
+                        const percentageValue = document.createElement('div');
+                        percentageValue.setAttribute('class', 'label__percentage');
+
+                        if (percentage !== 100) {
+                            percentageValue.textContent = `${percentage.toString()}%`;
+                            label.appendChild(percentageValue);
+                        }
+                    });
+                }
+            }
+        }
+        if (typeof o.height !== 'undefined') {
+            this.updateHeight(o.height);
+        }
+        if (typeof o.width !== 'undefined') {
+            this.updateWidth(o.width);
+        }
+        if (typeof o.gradientDirection !== 'undefined') {
+            if (o.gradientDirection === 'vertical') {
+                this.gradientMakeVertical();
+            } else if (o.gradientDirection === 'horizontal') {
+                this.gradientMakeHorizontal();
+            }
+        }
+        if (typeof o.direction !== 'undefined') {
+            if (o.direction === 'vertical') {
+                this.makeVertical();
+            } else if (o.direction === 'horizontal') {
+                this.makeHorizontal();
+            }
+        }
+        if (typeof o.data !== 'undefined') {
+            this.updateData(o.data);
         }
     }
 }
