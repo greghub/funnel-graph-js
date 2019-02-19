@@ -336,6 +336,22 @@ function () {
           labelElement.appendChild(percentageValue);
         }
 
+        if (_this.is2d()) {
+          var segmentPercentages = document.createElement('div');
+          segmentPercentages.setAttribute('class', 'label__segment-percentages');
+          var percenageList = '<ul class="segment-percentage__list">';
+
+          var twoDimPercentages = _this.getPercentages2d();
+
+          _this.subLabels.forEach(function (subLabel, j) {
+            percenageList += "<li>".concat(_this.subLabels[j], ":\n    <span class=\"percentage__list-label\">").concat(twoDimPercentages[index][j], "%</span>\n </li>");
+          });
+
+          percenageList += '</ul>';
+          segmentPercentages.innerHTML = percenageList;
+          labelElement.appendChild(segmentPercentages);
+        }
+
         holder.appendChild(labelElement);
       });
       this.container.appendChild(holder);

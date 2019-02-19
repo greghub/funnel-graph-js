@@ -11,7 +11,8 @@
     width: 100%;
     box-sizing: border-box; }
     .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label {
-      flex: 1 1 0; }
+      flex: 1 1 0;
+      position: relative; }
       .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label .label__value {
         font-size: 24px;
         color: #fff;
@@ -25,6 +26,33 @@
         font-size: 16px;
         font-weight: bold;
         color: #9896dc; }
+      .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label .label__segment-percentages {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100%;
+        left: 0;
+        padding: 8px 24px 8px 24px;
+        box-sizing: border-box;
+        background-color: rgba(8, 7, 48, 0.8);
+        margin-top: 32px;
+        opacity: 0;
+        transition: opacity 0.1s ease;
+        cursor: default; }
+        .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label .label__segment-percentages ul {
+          margin: 0;
+          padding: 0;
+          list-style-type: none; }
+          .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label .label__segment-percentages ul li {
+            font-size: 16px;
+            line-height: 16px;
+            color: #fff;
+            margin: 24px 0; }
+            .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label .label__segment-percentages ul li .percentage__list-label {
+              font-weight: bold;
+              color: #05DF9D; }
+      .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label:hover .label__segment-percentages {
+        opacity: 1; }
   .svg-funnel-js:not(.svg-funnel-js--vertical) {
     padding-top: 80px;
     padding-bottom: 16px; }
