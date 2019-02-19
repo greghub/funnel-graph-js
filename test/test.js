@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { roundPoint, formatNumber } from '../src/js/number';
 import { createCurves, createVerticalCurves } from '../src/js/path';
-import { generateLegendBackground } from '../src/js/graph';
+import { generateLegendBackground, areEqual } from '../src/js/graph';
 import FunnelGraph from '../src/js/index';
 
 const assert = require('assert');
@@ -47,6 +47,26 @@ describe('Add tests for background color generator', () => {
             generateLegendBackground(['red', 'orange'], 'vertical'),
             'background-image: linear-gradient(red, orange)'
         );
+    });
+});
+
+describe('Add tests for equality method', () => {
+    it('can compare one dimensional arrays', () => {
+        assert.strictEqual(areEqual([10, 20, 30], [10, 20, 30]), true);
+        assert.notStrictEqual(areEqual([10, 20, 31], [10, 20, 30]), true);
+        assert.notStrictEqual(areEqual([10, 20, 30, 40], [10, 20, 30]), true);
+    });
+    it('can compare two dimensional arrays', () => {
+        assert.strictEqual(areEqual([
+            [10, 20, 30], ['a', 'b', 'c'], [1, 'b', 0]
+        ], [
+            [10, 20, 30], ['a', 'b', 'c'], [1, 'b', 0]
+        ]), true);
+        assert.notStrictEqual(areEqual([
+            [10, 20, 30], ['a', 'b', 'c'], [1, 'b', 0]
+        ], [
+            [10, 20, 30], ['a', 'b', 'c'], [1, 'b', 'c']
+        ]), true);
     });
 });
 
