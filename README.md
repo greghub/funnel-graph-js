@@ -148,4 +148,5 @@ In the above example first segment, "Direct", will have a gradient,
 | `gradientToggleDirection()` | Toggle direction of gradient on all sections |
 | `updateHeight()` | Update funnel graph height |
 | `updateWidth()` | Update funnel graph width |
+| `updateData({options})` | Update funnel graph data |
 | `update({options})` | |

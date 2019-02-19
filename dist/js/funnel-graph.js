@@ -95,7 +95,23 @@ var areEqual = function areEqual(value, newValue) {
   if (value.length !== newValue.length) return false;
 
   for (var i = 0; i < value.length; i++) {
-    if (value[i] !== newValue[i]) return false;
+    // if the it's a two dimensional array
+    var currentType = Object.prototype.toString.call(value[i]);
+    if (currentType !== Object.prototype.toString.call(newValue[i])) return false;
+
+    if (currentType === '[object Array]') {
+      // if row lengths are not equal then arrays are not equal
+      if (value[i].length !== newValue[i].length) return false; // compare each element in the row
+
+      for (var j = 0; j < value[i].length; j++) {
+        if (value[i][j] !== newValue[i][j]) {
+          return false;
+        }
+      }
+    } else if (value[i] !== newValue[i]) {
+      // if it's a one dimensional array element
+      return false;
+    }
   }
 
   return true;
@@ -153,6 +169,7 @@ function () {
     this.percentages = this.createPercentages();
     this.colors = options.data.colors || (0, _graph.getDefaultColors)(this.is2d() ? this.getSubDataSize() : 2);
     this.displayPercent = options.displayPercent || false;
+    this.data = options.data;
     this.height = options.height;
     this.width = options.width;
   }
@@ -671,6 +688,46 @@ function () {
       });
       this.drawPaths();
       return true;
+    } // @TODO: refactor data update
+
+  }, {
+    key: "updateData",
+    value: function updateData(d) {
+      if (typeof d.labels !== 'undefined') {
+        this.container.querySelector('.svg-funnel-js__labels').remove();
+        this.labels = FunnelGraph.getLabels({
+          data: d
+        });
+        this.addLabels();
+      }
+
+      if (typeof d.colors !== 'undefined') {
+        this.colors = d.colors || (0, _graph.getDefaultColors)(this.is2d() ? this.getSubDataSize() : 2);
+      }
+
+      if (typeof d.values !== 'undefined') {
+        if (Object.prototype.toString.call(d.values[0]) !== Object.prototype.toString.call(this.values[0])) {
+          this.container.querySelector('svg').remove();
+          this.values = FunnelGraph.getValues({
+            data: d
+          });
+          this.makeSVG();
+          this.drawPaths();
+        } else {
+          this.values = FunnelGraph.getValues({
+            data: d
+          });
+          this.drawPaths();
+        }
+      }
+
+      if (typeof d.subLabels !== 'undefined') {
+        this.container.querySelector('.svg-funnel-js__subLabels').remove();
+        this.subLabels = FunnelGraph.getSubLabels({
+          data: d
+        });
+        this.addSubLabels();
+      }
     }
   }], [{
     key: "getSubLabels",

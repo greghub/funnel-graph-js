@@ -2,7 +2,7 @@
 import { roundPoint, formatNumber } from './number';
 import { createCurves, createVerticalCurves } from './path';
 import {
-    generateLegendBackground, getDefaultColors, createSVGElement, setAttrs, removeAttrs
+    generateLegendBackground, getDefaultColors, createSVGElement, setAttrs, removeAttrs, areEqual
 } from './graph';
 
 class FunnelGraph {
@@ -18,6 +18,7 @@ class FunnelGraph {
         this.percentages = this.createPercentages();
         this.colors = options.data.colors || getDefaultColors(this.is2d() ? this.getSubDataSize() : 2);
         this.displayPercent = options.displayPercent || false;
+        this.data = options.data;
         this.height = options.height;
         this.width = options.width;
     }
@@ -567,6 +568,34 @@ class FunnelGraph {
         this.drawPaths();
 
         return true;
+    }
+
+    // @TODO: refactor data update
+    updateData(d) {
+        if (typeof d.labels !== 'undefined') {
+            this.container.querySelector('.svg-funnel-js__labels').remove();
+            this.labels = FunnelGraph.getLabels({ data: d });
+            this.addLabels();
+        }
+        if (typeof d.colors !== 'undefined') {
+            this.colors = d.colors || getDefaultColors(this.is2d() ? this.getSubDataSize() : 2);
+        }
+        if (typeof d.values !== 'undefined') {
+            if (Object.prototype.toString.call(d.values[0]) !== Object.prototype.toString.call(this.values[0])) {
+                this.container.querySelector('svg').remove();
+                this.values = FunnelGraph.getValues({ data: d });
+                this.makeSVG();
+                this.drawPaths();
+            } else {
+                this.values = FunnelGraph.getValues({ data: d });
+                this.drawPaths();
+            }
+        }
+        if (typeof d.subLabels !== 'undefined') {
+            this.container.querySelector('.svg-funnel-js__subLabels').remove();
+            this.subLabels = FunnelGraph.getSubLabels({ data: d });
+            this.addSubLabels();
+        }
     }
 }
 

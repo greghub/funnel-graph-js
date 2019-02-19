@@ -75,10 +75,27 @@ const areEqual = (value, newValue) => {
     if (value.length !== newValue.length) return false;
 
     for (let i = 0; i < value.length; i++) {
-        if (value[i] !== newValue[i]) return false;
+        // if the it's a two dimensional array
+        const currentType = Object.prototype.toString.call(value[i]);
+        if (currentType !== Object.prototype.toString.call(newValue[i])) return false;
+        if (currentType === '[object Array]') {
+            // if row lengths are not equal then arrays are not equal
+            if (value[i].length !== newValue[i].length) return false;
+            // compare each element in the row
+            for (let j = 0; j < value[i].length; j++) {
+                if (value[i][j] !== newValue[i][j]) {
+                    return false;
+                }
+            }
+        } else if (value[i] !== newValue[i]) {
+            // if it's a one dimensional array element
+            return false;
+        }
     }
 
     return true;
 };
 
-export { generateLegendBackground, getDefaultColors, areEqual, createSVGElement, setAttrs, removeAttrs };
+export {
+    generateLegendBackground, getDefaultColors, areEqual, createSVGElement, setAttrs, removeAttrs
+};

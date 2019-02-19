@@ -110,4 +110,24 @@ describe('Add tests for paths', () => {
             [60, 45.1, 33.9, 33.9]
         ]);
     });
+
+    it('can update data', () => {
+        const updatedData = {
+            values: [
+                [3500, 3500, 7500],
+                [3300, 5400, 5000],
+                [600, 600, 6730]
+            ]
+        };
+
+        graph.values = FunnelGraph.getValues({ data: updatedData });
+
+        assert.deepEqual(graph.getMainAxisPoints(), [0, 30, 60, 90]);
+        assert.deepEqual(graph.getCrossAxisPoints(), [
+            [0, 1.7, 13.6, 13.6],
+            [14.5, 15.3, 16.1, 16.1],
+            [29, 37.6, 18.6, 18.6],
+            [60, 58.3, 46.4, 46.4]
+        ]);
+    });
 });
