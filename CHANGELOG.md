@@ -1,3 +1,10 @@
+### 1.3.1 (Feb 19, 2019)
+
+* Add Browserify and make modules
+* Add tests
+* Add methods to update graph
+* Add segment percentages
+
 ### 1.2.1 (Feb 3, 2019)
 
 * Add legend for segments in two-dimensional funnel graph
