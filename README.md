@@ -144,7 +144,9 @@ Otherwise it defaults to horizontal (left to right).
 If you want to break down your data into more details,
 you can use two-dimensional svg funnel graph. It will
 generate a graph like this: 
+
 <img width="640" src="https://i.imgur.com/3Zw9m2l.jpg" alt="SVG Two Dimensional Funnel Graph">
+
 
 In this example we will add more details to the previous example.
 We have Impressions, Add To Cart and Buy data, however this time
