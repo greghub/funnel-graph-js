@@ -15,7 +15,29 @@ possibility to generate a two-dimensional funnel chart.
 
 ## Installation
 
-Add `funnel-graph.js` or `funnel-graph.min.js`, and `main.css` or `main.min.css`.
+You can get the code by installing the NPM package, loading files from a CDN or downloading the repo. 
+
+#### NPM
+
+Run the following script to install:
+```
+npm i funnel-graph-js
+```
+
+#### CDN
+
+Add from jsDelivr: 
+
+```html
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/greghub/funnel-graph-js/dist/css/main.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/greghub/funnel-graph-js/dist/css/theme.min.css">
+
+<script src="https://cdn.jsdelivr.net/gh/greghub/funnel-graph-js/dist/js/funnel-graph.js"></script>
+```
+
+#### Download
+
+Download the repo ZIP, add `funnel-graph.js` or `funnel-graph.min.js`, and `main.css` or `main.min.css`.
 Optionally add `theme.min.css` to include the styling for labels, legend etc. 
 It is recommended to add the theme, to display the chart correctly.
 
