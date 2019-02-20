@@ -1,5 +1,53 @@
 # FunnelGraph.js
 
+Funnel Graph JS is a library for generating a funnel chart. It generates an SVG chart, adds labels, legend and other info.
+Some of the features include generating horizontal and vertical funnel charts, applying solid colors and gradients,
+possibility to generate a two-dimensional funnel chart. 
+
+<img width="640" src="https://i.imgur.com/3Zw9m2l.jpg" alt="SVG Two Dimensional Funnel Graph">
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Usage](#usage)
+- [Options](#options)
+- [Methods](#methods)
+
+## Installation
+
+Add `funnel-graph.js` or `funnel-graph.min.js`, and `main.css` or `main.min.css`.
+Optionally add `theme.min.css` to include the styling for labels, legend etc. 
+It is recommended to add the theme, to display the chart correctly.
+
+FunnelGraph.js is built in a way that most of the styling is controlled by theme file,
+so it is possible to adapt every element to your design. The chart is a SVG element and 
+`colors` property of the options controls the colors of the chart.
+
+CSS:
+```html
+<link rel="stylesheet" type="text/css" href="../dist/css/main.min.css">
+<link rel="stylesheet" type="text/css" href="../dist/css/theme.min.css">
+```
+
+JS:
+```html
+<script src="../dist/js/funnel-graph.js"></script>
+```
+
+## Usage
+
+```js
+var graph = new FunnelGraph({
+    container: '.funnel',
+    gradientDirection: 'horizontal',
+    data: {...},
+    displayPercent: true,
+    direction: 'horizontal'
+});
+
+graph.draw();
+```
+
 You can choose how you want to display your data on funnel graph. 
 You can display exact numbers, you can display percentages or both.
 The library will generate percentages automatically,
@@ -74,6 +122,9 @@ data: {
 
 That most explicit way to add data to the funnel graph.
 
+
+<img width="640" src="https://i.imgur.com/c2qbxGQ.jpg" alt="SVG Funnel Graph">
+
 If using one of those two ways, you can control the graph 
 color using `colors` param. Otherwise, the default color will be used. 
 And if you are using gradient as color, then you can control
@@ -92,7 +143,8 @@ Otherwise it defaults to horizontal (left to right).
 
 If you want to break down your data into more details,
 you can use two-dimensional svg funnel graph. It will
-generate a graph like this: [image]
+generate a graph like this: 
+<img width="640" src="https://i.imgur.com/3Zw9m2l.jpg" alt="SVG Two Dimensional Funnel Graph">
 
 In this example we will add more details to the previous example.
 We have Impressions, Add To Cart and Buy data, however this time
@@ -138,15 +190,15 @@ In the above example first segment, "Direct", will have a gradient,
 
 ## Methods
 
-| Method | Description |
-|--------|-------------|
-| `makeVertical()` | Display chart vertically |
-| `makeHorizontal()` | Display chart horizontally |
-| `toggleDirection()` | Toggle direction of chart |
-| `gradientMakeVertical()` | Display gradient on all sections from top to bottom |
-| `gradientMakeHorizontal()` | Display gradient on all sections from left to right  |
-| `gradientToggleDirection()` | Toggle direction of gradient on all sections |
-| `updateHeight()` | Update funnel graph height |
-| `updateWidth()` | Update funnel graph width |
-| `updateData({options})` | Update funnel graph data |
-| `update({options})` | |
+| Method | Description | Example |
+|--------|-------------|---------|
+| `makeVertical()` | Display chart vertically | |
+| `makeHorizontal()` | Display chart horizontally | |
+| `toggleDirection()` | Toggle direction of chart | |
+| `gradientMakeVertical()` | Display gradient on all sections from top to bottom | |
+| `gradientMakeHorizontal()` | Display gradient on all sections from left to right | |
+| `gradientToggleDirection()` | Toggle direction of gradient on all sections | |
+| `updateHeight()` | Update funnel graph height | |
+| `updateWidth()` | Update funnel graph width | |
+| `updateData({data})` | Update funnel graph data | ```labels: ['Stage 1', 'Stage 2', 'Stage 3']``` |
+| `update({options})` | Update funnel options | ```gradientDirection: 'horizontal', data: {...}, displayPercent: true, direction: 'horizontal', height: 300, width: 500``` |
