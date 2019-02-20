@@ -209,7 +209,7 @@ class FunnelGraph {
                 });
                 percenageList += '</ul>';
                 segmentPercentages.innerHTML = percenageList;
-                    labelElement.appendChild(segmentPercentages);
+                labelElement.appendChild(segmentPercentages);
             }
 
             holder.appendChild(labelElement);
