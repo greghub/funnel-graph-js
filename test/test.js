@@ -2,7 +2,7 @@
 import { roundPoint, formatNumber } from '../src/js/number';
 import { createCurves, createVerticalCurves, createPath } from '../src/js/path';
 import { generateLegendBackground, areEqual } from '../src/js/graph';
-import FunnelGraph from '../src/js/index';
+import FunnelGraph from '../index';
 
 const assert = require('assert');
 
