@@ -6,7 +6,7 @@
 ![GitHub file size in bytes](https://img.shields.io/github/size/greghub/funnel-graph-js/dist/js/funnel-graph.min.js.svg)
 ![GitHub](https://img.shields.io/github/license/greghub/funnel-graph-js.svg)
 ![GitHub last commit](https://img.shields.io/github/last-commit/greghub/funnel-graph-js.svg)
-![Gitter](https://img.shields.io/gitter/room/greghub/funnel-graph-js.svg)
+[![Gitter](https://img.shields.io/gitter/room/greghub/funnel-graph-js.svg)](https://gitter.im/funnel-graph-js/community)
 
 Funnel Graph JS is a library for generating a funnel chart. It generates an SVG chart, adds labels, legend and other info.
 Some of the features include generating horizontal and vertical funnel charts, applying solid colors and gradients,
