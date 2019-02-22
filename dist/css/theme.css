@@ -32,7 +32,7 @@
         transform: translateY(-50%);
         width: 100%;
         left: 0;
-        padding: 8px 24px 8px 24px;
+        padding: 8px 24px;
         box-sizing: border-box;
         background-color: rgba(8, 7, 48, 0.8);
         margin-top: 32px;
@@ -50,7 +50,7 @@
             margin: 24px 0; }
             .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label .label__segment-percentages ul li .percentage__list-label {
               font-weight: bold;
-              color: #05DF9D; }
+              color: #05df9d; }
       .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label:hover .label__segment-percentages {
         opacity: 1; }
   .svg-funnel-js:not(.svg-funnel-js--vertical) {

@@ -45,9 +45,9 @@
 				transform: translateY(-50%);
 				width: 100%;
 				left: 0;
-				padding: 8px 24px 8px 24px;
+				padding: 8px 24px;
 				box-sizing: border-box;
-				background-color: rgba(8, 7, 48, 0.8);
+				background-color: $percentage-hover;
 				margin-top: 32px;
 				opacity: 0;
 				transition: opacity 0.1s ease;

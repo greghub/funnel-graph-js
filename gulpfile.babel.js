@@ -30,7 +30,7 @@ const styles = () => {
 };
 
 const scripts = () => browserify({
-    entries: './src/js/index.js',
+    entries: './index.js',
     standalone: 'FunnelGraph'
 }).transform(babelify, { presets: ['@babel/preset-env'] })
     .bundle()

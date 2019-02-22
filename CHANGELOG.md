@@ -1,3 +1,9 @@
+### 1.3.3 (Feb 22, 2019)
+
+* Fix package importing
+* Add repository to package.json
+* Fix SCSS linting warnings
+
 ### 1.3.2 (Feb 22, 2019)
 
 * Move path creation to separate module
