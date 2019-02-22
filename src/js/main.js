@@ -1,6 +1,6 @@
 /* eslint-disable no-trailing-spaces */
 import { roundPoint, formatNumber } from './number';
-import { createCurves, createVerticalCurves } from './path';
+import { createPath, createVerticalPath } from './path';
 import {
     generateLegendBackground, getDefaultColors, createSVGElement, setAttrs, removeAttrs
 } from './graph';
@@ -388,84 +388,26 @@ class FunnelGraph {
         return this.height || this.graphContainer.clientHeight;
     }
 
-    /*
-        A funnel segment is draw in a clockwise direction.
-        Path 1-2 is drawn,
-        then connected with a straight vertical line 2-3,
-        then a line 3-4 is draw (using YNext points going in backwards direction)
-        then path is closed (connected with the starting point 1).
-
-        1---------->2
-        ^           |
-        |           v
-        4<----------3
-
-        On the graph on line 20 it works like this:
-        A#0, A#1, A#2, A#3, B#3, B#2, B#1, B#0, close the path.
-
-        Points for path "B" are passed as the YNext param.
-     */
-
-    createPath(index) {
-        const X = this.getMainAxisPoints();
-        const Y = this.getCrossAxisPoints()[index];
-        const YNext = this.getCrossAxisPoints()[index + 1];
-
-        let str = `M${X[0]},${Y[0]}`;
-
-        for (let i = 0; i < X.length - 1; i++) {
-            str += createCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
-        }
-
-        str += ` L${[...X].pop()},${[...YNext].pop()}`;
-
-        for (let i = X.length - 1; i > 0; i--) {
-            str += createCurves(X[i], YNext[i], X[i - 1], YNext[i - 1]);
-        }
-
-        str += ' Z';
-
-        return str;
-    }
-
-    /*
-        In a vertical path we go counter-clockwise
-
-        1<----------4
-        |           ^
-        v           |
-        2---------->3
-     */
-
-    createVerticalPath(index) {
-        const X = this.getCrossAxisPoints()[index];
-        const XNext = this.getCrossAxisPoints()[index + 1];
-        const Y = this.getMainAxisPoints();
-
-        let str = `M${X[0]},${Y[0]}`;
-
-        for (let i = 0; i < X.length - 1; i++) {
-            str += createVerticalCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
-        }
-
-        str += ` L${[...XNext].pop()},${[...Y].pop()}`;
-
-        for (let i = X.length - 1; i > 0; i--) {
-            str += createVerticalCurves(XNext[i], Y[i], XNext[i - 1], Y[i - 1]);
-        }
-
-        str += ' Z';
-
-        return str;
-    }
-
     drawPaths() {
         const svg = this.getSVG();
         const paths = svg.querySelectorAll('path');
 
         for (let i = 0; i < paths.length; i++) {
-            const d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
-            paths[i].setAttribute('d', d);
+            if (this.isVertical()) {
+                const X = this.getCrossAxisPoints()[i];
+                const XNext = this.getCrossAxisPoints()[i + 1];
+                const Y = this.getMainAxisPoints();
+
+                const d = createVerticalPath(i, X, XNext, Y);
+                paths[i].setAttribute('d', d);
+            } else {
+                const X = this.getMainAxisPoints();
+                const Y = this.getCrossAxisPoints()[i];
+                const YNext = this.getCrossAxisPoints()[i + 1];
+
+                const d = createPath(i, X, Y, YNext);
+                paths[i].setAttribute('d', d);
+            }
         }
     }
 

@@ -1,3 +1,7 @@
+### 1.3.2 (Feb 22, 2019)
+
+* Move path creation to separate module
+
 ### 1.3.1 (Feb 19, 2019)
 
 * Add Browserify and make modules

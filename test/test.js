@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 import { roundPoint, formatNumber } from '../src/js/number';
-import { createCurves, createVerticalCurves } from '../src/js/path';
+import { createCurves, createVerticalCurves, createPath } from '../src/js/path';
 import { generateLegendBackground, areEqual } from '../src/js/graph';
 import FunnelGraph from '../src/js/index';
 
@@ -109,6 +109,24 @@ describe('Add tests for paths', () => {
             [57.6, 42.3, 31.9, 31.9],
             [60, 45.1, 33.9, 33.9]
         ]);
+    });
+
+    it('can create all paths', () => {
+        const length = graph.getCrossAxisPoints().length - 1;
+        const paths = [];
+
+        for (let i = 0; i < length; i++) {
+            const X = graph.getMainAxisPoints();
+            const Y = graph.getCrossAxisPoints()[i];
+            const YNext = graph.getCrossAxisPoints()[i + 1];
+            const d = createPath(i, X, Y, YNext);
+
+            paths.push(d);
+        }
+        assert.deepEqual(paths, ['M0,0 C15,0 15,14.9 30,14.9 C45,14.9 45,26.1 60,26.1 C75,26.1 75,26.1 90,26.1 L90,29.9 C75,29.9 75,29.9 60,29.9 C45,29.9 45,29.3 30,29.3 C15,29.3 15,9.6 0,9.6 Z',
+            'M0,9.6 C15,9.6 15,29.3 30,29.3 C45,29.3 45,29.9 60,29.9 C75,29.9 75,29.9 90,29.9 L90,31.3 C75,31.3 75,31.3 60,31.3 C45,31.3 45,34.1 30,34.1 C15,34.1 15,28.8 0,28.8 Z',
+            'M0,28.8 C15,28.8 15,34.1 30,34.1 C45,34.1 45,31.3 60,31.3 C75,31.3 75,31.3 90,31.3 L90,31.9 C75,31.9 75,31.9 60,31.9 C45,31.9 45,42.3 30,42.3 C15,42.3 15,57.6 0,57.6 Z',
+            'M0,57.6 C15,57.6 15,42.3 30,42.3 C45,42.3 45,31.9 60,31.9 C75,31.9 75,31.9 90,31.9 L90,33.9 C75,33.9 75,33.9 60,33.9 C45,33.9 45,45.1 30,45.1 C15,45.1 15,60 0,60 Z']);
     });
 
     it('can update data', () => {

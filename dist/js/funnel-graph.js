@@ -511,71 +511,6 @@ function () {
     value: function getHeight() {
       return this.height || this.graphContainer.clientHeight;
     }
-    /*
-        A funnel segment is draw in a clockwise direction.
-        Path 1-2 is drawn,
-        then connected with a straight vertical line 2-3,
-        then a line 3-4 is draw (using YNext points going in backwards direction)
-        then path is closed (connected with the starting point 1).
-         1---------->2
-        ^           |
-        |           v
-        4<----------3
-         On the graph on line 20 it works like this:
-        A#0, A#1, A#2, A#3, B#3, B#2, B#1, B#0, close the path.
-         Points for path "B" are passed as the YNext param.
-     */
-
-  }, {
-    key: "createPath",
-    value: function createPath(index) {
-      var X = this.getMainAxisPoints();
-      var Y = this.getCrossAxisPoints()[index];
-      var YNext = this.getCrossAxisPoints()[index + 1];
-      var str = "M".concat(X[0], ",").concat(Y[0]);
-
-      for (var i = 0; i < X.length - 1; i++) {
-        str += (0, _path.createCurves)(X[i], Y[i], X[i + 1], Y[i + 1]);
-      }
-
-      str += " L".concat(_toConsumableArray(X).pop(), ",").concat(_toConsumableArray(YNext).pop());
-
-      for (var _i = X.length - 1; _i > 0; _i--) {
-        str += (0, _path.createCurves)(X[_i], YNext[_i], X[_i - 1], YNext[_i - 1]);
-      }
-
-      str += ' Z';
-      return str;
-    }
-    /*
-        In a vertical path we go counter-clockwise
-         1<----------4
-        |           ^
-        v           |
-        2---------->3
-     */
-
-  }, {
-    key: "createVerticalPath",
-    value: function createVerticalPath(index) {
-      var X = this.getCrossAxisPoints()[index];
-      var XNext = this.getCrossAxisPoints()[index + 1];
-      var Y = this.getMainAxisPoints();
-      var str = "M".concat(X[0], ",").concat(Y[0]);
-
-      for (var i = 0; i < X.length - 1; i++) {
-        str += (0, _path.createVerticalCurves)(X[i], Y[i], X[i + 1], Y[i + 1]);
-      }
-
-      str += " L".concat(_toConsumableArray(XNext).pop(), ",").concat(_toConsumableArray(Y).pop());
-
-      for (var _i2 = X.length - 1; _i2 > 0; _i2--) {
-        str += (0, _path.createVerticalCurves)(XNext[_i2], Y[_i2], XNext[_i2 - 1], Y[_i2 - 1]);
-      }
-
-      str += ' Z';
-      return str;
-    }
   }, {
     key: "drawPaths",
     value: function drawPaths() {
@@ -583,8 +518,22 @@ function () {
       var paths = svg.querySelectorAll('path');
 
       for (var i = 0; i < paths.length; i++) {
-        var d = this.isVertical() ? this.createVerticalPath(i) : this.createPath(i);
-        paths[i].setAttribute('d', d);
+        if (this.isVertical()) {
+          var X = this.getCrossAxisPoints()[i];
+          var XNext = this.getCrossAxisPoints()[i + 1];
+          var Y = this.getMainAxisPoints();
+          var d = (0, _path.createVerticalPath)(i, X, XNext, Y);
+          paths[i].setAttribute('d', d);
+        } else {
+          var _X = this.getMainAxisPoints();
+
+          var _Y = this.getCrossAxisPoints()[i];
+          var YNext = this.getCrossAxisPoints()[i + 1];
+
+          var _d = (0, _path.createPath)(i, _X, _Y, YNext);
+
+          paths[i].setAttribute('d', _d);
+        }
       }
     }
   }, {
@@ -880,9 +829,17 @@ exports.formatNumber = formatNumber;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createVerticalCurves = exports.createCurves = void 0;
+exports.createVerticalPath = exports.createPath = exports.createVerticalCurves = exports.createCurves = void 0;
 
 var _number = require("./number");
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 var createCurves = function createCurves(x1, y1, x2, y2) {
   return " C".concat((0, _number.roundPoint)((x2 + x1) / 2), ",").concat(y1, " ") + "".concat((0, _number.roundPoint)((x2 + x1) / 2), ",").concat(y2, " ").concat(x2, ",").concat(y2);
@@ -893,8 +850,73 @@ exports.createCurves = createCurves;
 var createVerticalCurves = function createVerticalCurves(x1, y1, x2, y2) {
   return " C".concat(x1, ",").concat((0, _number.roundPoint)((y2 + y1) / 2), " ") + "".concat(x2, ",").concat((0, _number.roundPoint)((y2 + y1) / 2), " ").concat(x2, ",").concat(y2);
 };
+/*
+    A funnel segment is draw in a clockwise direction.
+    Path 1-2 is drawn,
+    then connected with a straight vertical line 2-3,
+    then a line 3-4 is draw (using YNext points going in backwards direction)
+    then path is closed (connected with the starting point 1).
+
+    1---------->2
+    ^           |
+    |           v
+    4<----------3
+
+    On the graph on line 20 it works like this:
+    A#0, A#1, A#2, A#3, B#3, B#2, B#1, B#0, close the path.
+
+    Points for path "B" are passed as the YNext param.
+ */
+
 
 exports.createVerticalCurves = createVerticalCurves;
+
+var createPath = function createPath(index, X, Y, YNext) {
+  var str = "M".concat(X[0], ",").concat(Y[0]);
+
+  for (var i = 0; i < X.length - 1; i++) {
+    str += createCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
+  }
+
+  str += " L".concat(_toConsumableArray(X).pop(), ",").concat(_toConsumableArray(YNext).pop());
+
+  for (var _i = X.length - 1; _i > 0; _i--) {
+    str += createCurves(X[_i], YNext[_i], X[_i - 1], YNext[_i - 1]);
+  }
+
+  str += ' Z';
+  return str;
+};
+/*
+    In a vertical path we go counter-clockwise
+
+    1<----------4
+    |           ^
+    v           |
+    2---------->3
+ */
+
+
+exports.createPath = createPath;
+
+var createVerticalPath = function createVerticalPath(index, X, XNext, Y) {
+  var str = "M".concat(X[0], ",").concat(Y[0]);
+
+  for (var i = 0; i < X.length - 1; i++) {
+    str += createVerticalCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
+  }
+
+  str += " L".concat(_toConsumableArray(XNext).pop(), ",").concat(_toConsumableArray(Y).pop());
+
+  for (var _i2 = X.length - 1; _i2 > 0; _i2--) {
+    str += createVerticalCurves(XNext[_i2], Y[_i2], XNext[_i2 - 1], Y[_i2 - 1]);
+  }
+
+  str += ' Z';
+  return str;
+};
+
+exports.createVerticalPath = createVerticalPath;
 
 },{"./number":4}]},{},[2])(2)
 });
