@@ -97,5 +97,5 @@ const areEqual = (value, newValue) => {
 };
 
 export {
-    generateLegendBackground, getDefaultColors, areEqual, createSVGElement, setAttrs, removeAttrs
+    generateLegendBackground, getDefaultColors, areEqual, createSVGElement, setAttrs, removeAttrs, defaultColors
 };

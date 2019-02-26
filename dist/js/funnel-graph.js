@@ -9,7 +9,7 @@ module.exports = require('./src/js/main').default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.removeAttrs = exports.setAttrs = exports.createSVGElement = exports.areEqual = exports.getDefaultColors = exports.generateLegendBackground = void 0;
+exports.defaultColors = exports.removeAttrs = exports.setAttrs = exports.createSVGElement = exports.areEqual = exports.getDefaultColors = exports.generateLegendBackground = void 0;
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -67,6 +67,7 @@ var generateLegendBackground = function generateLegendBackground(color) {
 
 exports.generateLegendBackground = generateLegendBackground;
 var defaultColors = ['#FF4589', '#FF5050', '#05DF9D', '#4FF2FD', '#2D9CDB', '#A0BBFF', '#FFD76F', '#F2C94C', '#FF9A9A', '#FFB178'];
+exports.defaultColors = defaultColors;
 
 var getDefaultColors = function getDefaultColors(number) {
   var colors = [].concat(defaultColors);
@@ -390,6 +391,30 @@ function () {
       }
     }
   }, {
+    key: "setValues",
+    value: function setValues(v) {
+      this.values = v;
+      return this;
+    }
+  }, {
+    key: "setDirection",
+    value: function setDirection(d) {
+      this.direction = d;
+      return this;
+    }
+  }, {
+    key: "setHeight",
+    value: function setHeight(h) {
+      this.height = h;
+      return this;
+    }
+  }, {
+    key: "setWidth",
+    value: function setWidth(w) {
+      this.width = w;
+      return this;
+    }
+  }, {
     key: "getValues2d",
     value: function getValues2d() {
       var values = [];
@@ -512,18 +537,18 @@ function () {
       return this.height || this.graphContainer.clientHeight;
     }
   }, {
-    key: "drawPaths",
-    value: function drawPaths() {
-      var svg = this.getSVG();
-      var paths = svg.querySelectorAll('path');
+    key: "getPathDefinitions",
+    value: function getPathDefinitions() {
+      var valuesNum = this.getCrossAxisPoints().length - 1;
+      var paths = [];
 
-      for (var i = 0; i < paths.length; i++) {
+      for (var i = 0; i < valuesNum; i++) {
         if (this.isVertical()) {
           var X = this.getCrossAxisPoints()[i];
           var XNext = this.getCrossAxisPoints()[i + 1];
           var Y = this.getMainAxisPoints();
           var d = (0, _path.createVerticalPath)(i, X, XNext, Y);
-          paths[i].setAttribute('d', d);
+          paths.push(d);
         } else {
           var _X = this.getMainAxisPoints();
 
@@ -532,9 +557,21 @@ function () {
 
           var _d = (0, _path.createPath)(i, _X, _Y, YNext);
 
-          paths[i].setAttribute('d', _d);
+          paths.push(_d);
         }
       }
+
+      return paths;
+    }
+  }, {
+    key: "drawPaths",
+    value: function drawPaths() {
+      var svg = this.getSVG();
+      var paths = svg.querySelectorAll('path');
+      var definitions = this.getPathDefinitions();
+      definitions.forEach(function (definition, index) {
+        paths[index].setAttribute('d', definition);
+      });
     }
   }, {
     key: "draw",
@@ -779,18 +816,8 @@ function () {
 
       var data = options.data;
 
-      if (data instanceof Array) {
-        if (Number.isInteger(data[0])) {
-          return data;
-        }
-
-        return data.map(function (item) {
-          return item.value;
-        });
-      }
-
       if (_typeof(data) === 'object') {
-        return options.data.values;
+        return data.values;
       }
 
       return [];

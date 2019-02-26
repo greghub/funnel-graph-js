@@ -255,6 +255,26 @@ class FunnelGraph {
         }
     }
 
+    setValues(v) {
+        this.values = v;
+        return this;
+    }
+
+    setDirection(d) {
+        this.direction = d;
+        return this;
+    }
+
+    setHeight(h) {
+        this.height = h;
+        return this;
+    }
+
+    setWidth(w) {
+        this.width = w;
+        return this;
+    }
+
     static getValues(options) {
         if (!options.data) {
             return [];
@@ -262,14 +282,8 @@ class FunnelGraph {
 
         const { data } = options;
 
-        if (data instanceof Array) {
-            if (Number.isInteger(data[0])) {
-                return data;
-            }
-            return data.map(item => item.value);
-        }
         if (typeof data === 'object') {
-            return options.data.values;
+            return data.values;
         }
 
         return [];
@@ -388,27 +402,38 @@ class FunnelGraph {
         return this.height || this.graphContainer.clientHeight;
     }
 
-    drawPaths() {
-        const svg = this.getSVG();
-        const paths = svg.querySelectorAll('path');
-
-        for (let i = 0; i < paths.length; i++) {
+    getPathDefinitions() {
+        const valuesNum = this.getCrossAxisPoints().length - 1;
+        const paths = [];
+        for (let i = 0; i < valuesNum; i++) {
             if (this.isVertical()) {
                 const X = this.getCrossAxisPoints()[i];
                 const XNext = this.getCrossAxisPoints()[i + 1];
                 const Y = this.getMainAxisPoints();
 
                 const d = createVerticalPath(i, X, XNext, Y);
-                paths[i].setAttribute('d', d);
+                paths.push(d);
             } else {
                 const X = this.getMainAxisPoints();
                 const Y = this.getCrossAxisPoints()[i];
                 const YNext = this.getCrossAxisPoints()[i + 1];
 
                 const d = createPath(i, X, Y, YNext);
-                paths[i].setAttribute('d', d);
+                paths.push(d);
             }
         }
+
+        return paths;
+    }
+
+    drawPaths() {
+        const svg = this.getSVG();
+        const paths = svg.querySelectorAll('path');
+        const definitions = this.getPathDefinitions();
+
+        definitions.forEach((definition, index) => {
+            paths[index].setAttribute('d', definition);
+        });
     }
 
     draw() {
