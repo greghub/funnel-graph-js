@@ -163,8 +163,6 @@ class FunnelGraph {
     }
 
     addLabels() {
-        this.container.style.position = 'relative';
-
         const holder = document.createElement('div');
         holder.setAttribute('class', 'svg-funnel-js__labels');
 

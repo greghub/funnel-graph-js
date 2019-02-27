@@ -1,8 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,700");
 .svg-funnel-js {
   display: block;
-  width: 800px;
-  height: 300px;
   font-family: "Open Sans", sans-serif; }
   .svg-funnel-js .svg-funnel-js__container {
     width: 100%;
@@ -35,7 +33,7 @@
         padding: 8px 24px;
         box-sizing: border-box;
         background-color: rgba(8, 7, 48, 0.8);
-        margin-top: 32px;
+        margin-top: 24px;
         opacity: 0;
         transition: opacity 0.1s ease;
         cursor: default; }
@@ -44,38 +42,43 @@
           padding: 0;
           list-style-type: none; }
           .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label .label__segment-percentages ul li {
-            font-size: 16px;
+            font-size: 13px;
             line-height: 16px;
             color: #fff;
-            margin: 24px 0; }
+            margin: 18px 0; }
             .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label .label__segment-percentages ul li .percentage__list-label {
               font-weight: bold;
               color: #05df9d; }
       .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label:hover .label__segment-percentages {
         opacity: 1; }
   .svg-funnel-js:not(.svg-funnel-js--vertical) {
-    padding-top: 80px;
+    padding-top: 64px;
     padding-bottom: 16px; }
     .svg-funnel-js:not(.svg-funnel-js--vertical) .svg-funnel-js__label {
       padding-left: 24px; }
       .svg-funnel-js:not(.svg-funnel-js--vertical) .svg-funnel-js__label:not(:first-child) {
         border-left: 1px solid #9896dc; }
   .svg-funnel-js.svg-funnel-js--vertical {
-    width: 500px;
-    height: 800px;
     padding-left: 120px;
     padding-right: 16px; }
     .svg-funnel-js.svg-funnel-js--vertical .svg-funnel-js__label {
       padding-top: 24px; }
       .svg-funnel-js.svg-funnel-js--vertical .svg-funnel-js__label:not(:first-child) {
         border-top: 1px solid #9896dc; }
-    .svg-funnel-js.svg-funnel-js--vertical .label__segment-percentages .segment-percentage__list {
-      display: flex;
-      justify-content: space-around; }
+      .svg-funnel-js.svg-funnel-js--vertical .svg-funnel-js__label .label__segment-percentages {
+        margin-top: 0;
+        margin-left: 106px;
+        width: calc(100% - 106px); }
+        .svg-funnel-js.svg-funnel-js--vertical .svg-funnel-js__label .label__segment-percentages .segment-percentage__list {
+          display: flex;
+          justify-content: space-around; }
   .svg-funnel-js .svg-funnel-js__subLabels {
     display: flex;
     justify-content: center;
-    margin-top: 24px; }
+    margin-top: 24px;
+    position: absolute;
+    width: 100%;
+    left: 0; }
     .svg-funnel-js .svg-funnel-js__subLabels .svg-funnel-js__subLabel {
       display: flex;
       font-size: 12px;

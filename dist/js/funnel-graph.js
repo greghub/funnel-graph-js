@@ -310,7 +310,6 @@ function () {
     value: function addLabels() {
       var _this = this;
 
-      this.container.style.position = 'relative';
       var holder = document.createElement('div');
       holder.setAttribute('class', 'svg-funnel-js__labels');
       this.percentages.forEach(function (percentage, index) {

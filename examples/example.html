@@ -21,6 +21,10 @@
             margin: 24px auto;
         }
 
+        .flex {
+            display: flex;
+        }
+
         .method-buttons {
             display: flex;
             justify-content: center;
@@ -34,7 +38,9 @@
     </style>
 </head>
 <body>
-    <div class="funnel">
+    <div class="flex">
+        <div class="funnel">
+        </div>
     </div>
 
     <div class="method-buttons">
@@ -79,22 +85,24 @@
             gradientDirection: 'horizontal',
             data: dataExample3,
             displayPercent: true,
-            direction: 'horizontal'
+            direction: 'horizontal',
+            width: 800,
+            height: 300
         });
 
         graph.draw();
 
         // direction methods
         document.querySelector('#makeVertical').addEventListener('click', () => {
+            graph.setWidth(300);
+            graph.setHeight(400);
             graph.makeVertical();
         });
 
         document.querySelector('#makeHorizontal').addEventListener('click', () => {
+            graph.setWidth(800);
+            graph.setHeight(300);
             graph.makeHorizontal();
-        });
-
-        document.querySelector('#toggleDirection').addEventListener('click', () => {
-            graph.toggleDirection();
         });
 
         // gradient methods

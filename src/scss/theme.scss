@@ -3,8 +3,6 @@
 
 .svg-funnel-js {
 	display: block;
-	width: 800px;
-	height: 300px;
 	font-family: "Open Sans", sans-serif;
 
 	.svg-funnel-js__container {
@@ -48,7 +46,7 @@
 				padding: 8px 24px;
 				box-sizing: border-box;
 				background-color: $percentage-hover;
-				margin-top: 32px;
+				margin-top: 24px;
 				opacity: 0;
 				transition: opacity 0.1s ease;
 				cursor: default;
@@ -59,10 +57,10 @@
 					list-style-type: none;
 
 					li {
-						font-size: 16px;
+						font-size: 13px;
 						line-height: 16px;
 						color: $white;
-						margin: 24px 0;
+						margin: 18px 0;
 
 						.percentage__list-label {
 							font-weight: bold;
@@ -81,7 +79,7 @@
 	}
 
 	&:not(.svg-funnel-js--vertical) {
-		padding-top: 80px;
+		padding-top: 64px;
 		padding-bottom: 16px;
 
 		.svg-funnel-js__label {
@@ -94,8 +92,6 @@
 	}
 
 	&.svg-funnel-js--vertical {
-		width: 500px;
-		height: 800px;
 		padding-left: 120px;
 		padding-right: 16px;
 
@@ -105,12 +101,16 @@
 			&:not(:first-child) {
 				border-top: 1px solid $secondary;
 			}
-		}
 
-		.label__segment-percentages {
-			.segment-percentage__list {
-				display: flex;
-				justify-content: space-around;
+			.label__segment-percentages {
+				margin-top: 0;
+				margin-left: 106px;
+				width: calc(100% - 106px);
+
+				.segment-percentage__list {
+					display: flex;
+					justify-content: space-around;
+				}
 			}
 		}
 	}
@@ -119,6 +119,9 @@
 		display: flex;
 		justify-content: center;
 		margin-top: 24px;
+		position: absolute;
+		width: 100%;
+		left: 0;
 
 		.svg-funnel-js__subLabel {
 			display: flex;
