@@ -1,3 +1,7 @@
+### 1.3.4 (Feb 27, 2019)
+
+* Update theme
+
 ### 1.3.3 (Feb 22, 2019)
 
 * Fix package importing
