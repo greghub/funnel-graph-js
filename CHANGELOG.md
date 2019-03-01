@@ -1,3 +1,7 @@
+### 1.3.5 (Mar 1, 2019)
+
+* Add method to create center line for shapes
+
 ### 1.3.4 (Feb 27, 2019)
 
 * Update theme

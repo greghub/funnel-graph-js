@@ -424,6 +424,38 @@ class FunnelGraph {
         return paths;
     }
 
+    getPathMedian(i) {
+        if (this.isVertical()) {
+            const cross = this.getCrossAxisPoints()[i];
+            const next = this.getCrossAxisPoints()[i + 1];
+            const Y = this.getMainAxisPoints();
+            const X = [];
+            const XNext = [];
+
+            cross.forEach((point, index) => {
+                const m = (point + next[index]) / 2;
+                X.push(m - 1);
+                XNext.push(m + 1);
+            });
+
+            return createVerticalPath(i, X, XNext, Y);
+        }
+
+        const X = this.getMainAxisPoints();
+        const cross = this.getCrossAxisPoints()[i];
+        const next = this.getCrossAxisPoints()[i + 1];
+        const Y = [];
+        const YNext = [];
+
+        cross.forEach((point, index) => {
+            const m = (point + next[index]) / 2;
+            Y.push(m - 1);
+            YNext.push(m + 1);
+        });
+
+        return createPath(i, X, Y, YNext);
+    }
+
     drawPaths() {
         const svg = this.getSVG();
         const paths = svg.querySelectorAll('path');

@@ -563,6 +563,41 @@ function () {
       return paths;
     }
   }, {
+    key: "getPathMedian",
+    value: function getPathMedian(i) {
+      if (this.isVertical()) {
+        var _cross = this.getCrossAxisPoints()[i];
+        var _next = this.getCrossAxisPoints()[i + 1];
+
+        var _Y2 = this.getMainAxisPoints();
+
+        var _X2 = [];
+        var XNext = [];
+
+        _cross.forEach(function (point, index) {
+          var m = (point + _next[index]) / 2;
+
+          _X2.push(m - 1);
+
+          XNext.push(m + 1);
+        });
+
+        return (0, _path.createVerticalPath)(i, _X2, XNext, _Y2);
+      }
+
+      var X = this.getMainAxisPoints();
+      var cross = this.getCrossAxisPoints()[i];
+      var next = this.getCrossAxisPoints()[i + 1];
+      var Y = [];
+      var YNext = [];
+      cross.forEach(function (point, index) {
+        var m = (point + next[index]) / 2;
+        Y.push(m - 1);
+        YNext.push(m + 1);
+      });
+      return (0, _path.createPath)(i, X, Y, YNext);
+    }
+  }, {
     key: "drawPaths",
     value: function drawPaths() {
       var svg = this.getSVG();
