@@ -4,7 +4,6 @@ body {
   -moz-osx-font-smoothing: grayscale; }
 
 .svg-funnel-js {
-  display: block;
   font-family: "Open Sans", sans-serif; }
   .svg-funnel-js .svg-funnel-js__container {
     width: 100%;
