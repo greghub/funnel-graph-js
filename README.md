@@ -14,6 +14,8 @@ possibility to generate a two-dimensional funnel chart.
 
 <img width="640" src="https://i.imgur.com/3Zw9m2l.jpg" alt="SVG Two Dimensional Funnel Graph">
 
+FunnelGraph.js is also available as a Vue.js component: [Vue Funnel Graph](https://github.com/greghub/vue-funnel-graph-js)
+
 ## Table of Contents
 
 - [Installation](#installation)
