@@ -173,6 +173,7 @@ function () {
     this.data = options.data;
     this.height = options.height;
     this.width = options.width;
+    this.subLabelValue = options.subLabelValue || 'percent';
   }
   /**
   An example of a two-dimensional funnel graph
@@ -339,16 +340,17 @@ function () {
         if (_this.is2d()) {
           var segmentPercentages = document.createElement('div');
           segmentPercentages.setAttribute('class', 'label__segment-percentages');
-          var percenageList = '<ul class="segment-percentage__list">';
+          var percentageList = '<ul class="segment-percentage__list">';
 
           var twoDimPercentages = _this.getPercentages2d();
 
           _this.subLabels.forEach(function (subLabel, j) {
-            percenageList += "<li>".concat(_this.subLabels[j], ":\n    <span class=\"percentage__list-label\">").concat(twoDimPercentages[index][j], "%</span>\n </li>");
+            var subLabelDisplayValue = _this.subLabelValue === 'percent' ? "".concat(twoDimPercentages[index][j], "%") : (0, _number.formatNumber)(_this.values[index][j]);
+            percentageList += "<li>".concat(_this.subLabels[j], ":\n    <span class=\"percentage__list-label\">").concat(subLabelDisplayValue, "</span>\n </li>");
           });
 
-          percenageList += '</ul>';
-          segmentPercentages.innerHTML = percenageList;
+          percentageList += '</ul>';
+          segmentPercentages.innerHTML = percentageList;
           labelElement.appendChild(segmentPercentages);
         }
 

@@ -1,3 +1,7 @@
+### 1.3.7 (Apr 12, 2019)
+
+* Add option to display sub-label raw value
+
 ### 1.3.6 (Mar 6, 2019)
 
 * Fix theme issue
