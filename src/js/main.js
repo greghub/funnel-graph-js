@@ -196,17 +196,17 @@ class FunnelGraph {
             if (this.is2d()) {
                 const segmentPercentages = document.createElement('div');
                 segmentPercentages.setAttribute('class', 'label__segment-percentages');
-                let percenageList = '<ul class="segment-percentage__list">';
+                let percentageList = '<ul class="segment-percentage__list">';
 
                 const twoDimPercentages = this.getPercentages2d();
 
                 this.subLabels.forEach((subLabel, j) => {
-                    percenageList += `<li>${this.subLabels[j]}:
+                    percentageList += `<li>${this.subLabels[j]}:
     <span class="percentage__list-label">${twoDimPercentages[index][j]}%</span>
  </li>`;
                 });
-                percenageList += '</ul>';
-                segmentPercentages.innerHTML = percenageList;
+                percentageList += '</ul>';
+                segmentPercentages.innerHTML = percentageList;
                 labelElement.appendChild(segmentPercentages);
             }
 
