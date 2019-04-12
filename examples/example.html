@@ -105,6 +105,11 @@
             graph.makeHorizontal();
         });
 
+        document.querySelector('#toggleDirection').addEventListener('click', () => {
+            graph.direction === 'horizontal' ? document.querySelector('#makeVertical').click() :
+                document.querySelector('#makeHorizontal').click();
+        });
+
         // gradient methods
         document.querySelector('#gradientMakeVertical').addEventListener('click', () => {
             graph.gradientMakeVertical();
