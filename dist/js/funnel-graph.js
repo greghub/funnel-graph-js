@@ -435,7 +435,7 @@ function () {
           return sum + value;
         }, 0);
         percentages.push(valueSet.map(function (value) {
-          return (0, _number.roundPoint)(value * 100 / total);
+          return total === 0 ? 0 : (0, _number.roundPoint)(value * 100 / total);
         }));
       });
       return percentages;

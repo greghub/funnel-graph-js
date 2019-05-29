@@ -1,3 +1,7 @@
+### 1.3.8 (May 29, 2019)
+
+* Fix bug with zero values
+
 ### 1.3.7 (Apr 12, 2019)
 
 * Add option to display sub-label raw value

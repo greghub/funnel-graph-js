@@ -306,7 +306,7 @@ class FunnelGraph {
 
         this.values.forEach((valueSet) => {
             const total = valueSet.reduce((sum, value) => sum + value, 0);
-            percentages.push(valueSet.map(value => roundPoint(value * 100 / total)));
+            percentages.push(valueSet.map(value => (total === 0 ? 0 : roundPoint(value * 100 / total))));
         });
 
         return percentages;
