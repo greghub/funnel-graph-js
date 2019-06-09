@@ -1,3 +1,7 @@
+### 1.3.9 (Jun 9, 2019)
+
+* Improve IE compatibility
+
 ### 1.3.8 (May 29, 2019)
 
 * Fix bug with zero values
