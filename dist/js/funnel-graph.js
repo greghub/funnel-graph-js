@@ -673,14 +673,16 @@ function () {
       if (this.gradientDirection === 'vertical') return true;
       this.gradientDirection = 'vertical';
       var gradients = this.graphContainer.querySelectorAll('linearGradient');
-      gradients.forEach(function (gradient) {
-        (0, _graph.setAttrs)(gradient, {
+
+      for (var i = 0; i < gradients.length; i++) {
+        (0, _graph.setAttrs)(gradients[i], {
           x1: '0',
           x2: '0',
           y1: '0',
           y2: '1'
         });
-      });
+      }
+
       return true;
     }
   }, {
@@ -689,9 +691,11 @@ function () {
       if (this.gradientDirection === 'horizontal') return true;
       this.gradientDirection = 'horizontal';
       var gradients = this.graphContainer.querySelectorAll('linearGradient');
-      gradients.forEach(function (gradient) {
-        (0, _graph.removeAttrs)(gradient, 'x1', 'x2', 'y1', 'y2');
-      });
+
+      for (var i = 0; i < gradients.length; i++) {
+        (0, _graph.removeAttrs)(gradients[i], 'x1', 'x2', 'y1', 'y2');
+      }
+
       return true;
     }
   }, {

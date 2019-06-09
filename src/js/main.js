@@ -533,14 +533,14 @@ class FunnelGraph {
         this.gradientDirection = 'vertical';
         const gradients = this.graphContainer.querySelectorAll('linearGradient');
 
-        gradients.forEach((gradient) => {
-            setAttrs(gradient, {
+        for (let i = 0; i < gradients.length; i++) {
+            setAttrs(gradients[i], {
                 x1: '0',
                 x2: '0',
                 y1: '0',
                 y2: '1'
             });
-        });
+        }
 
         return true;
     }
@@ -551,9 +551,9 @@ class FunnelGraph {
         this.gradientDirection = 'horizontal';
         const gradients = this.graphContainer.querySelectorAll('linearGradient');
 
-        gradients.forEach((gradient) => {
-            removeAttrs(gradient, 'x1', 'x2', 'y1', 'y2');
-        });
+        for (let i = 0; i < gradients.length; i++) {
+            removeAttrs(gradients[i], 'x1', 'x2', 'y1', 'y2');
+        }
 
         return true;
     }

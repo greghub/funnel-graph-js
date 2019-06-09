@@ -94,33 +94,33 @@
         graph.draw();
 
         // direction methods
-        document.querySelector('#makeVertical').addEventListener('click', () => {
+        document.querySelector('#makeVertical').addEventListener('click', function () {
             graph.setWidth(300);
             graph.setHeight(400);
             graph.makeVertical();
         });
 
-        document.querySelector('#makeHorizontal').addEventListener('click', () => {
+        document.querySelector('#makeHorizontal').addEventListener('click', function () {
             graph.setWidth(800);
             graph.setHeight(300);
             graph.makeHorizontal();
         });
 
-        document.querySelector('#toggleDirection').addEventListener('click', () => {
+        document.querySelector('#toggleDirection').addEventListener('click', function () {
             graph.direction === 'horizontal' ? document.querySelector('#makeVertical').click() :
                 document.querySelector('#makeHorizontal').click();
         });
 
         // gradient methods
-        document.querySelector('#gradientMakeVertical').addEventListener('click', () => {
+        document.querySelector('#gradientMakeVertical').addEventListener('click', function () {
             graph.gradientMakeVertical();
         });
 
-        document.querySelector('#gradientMakeHorizontal').addEventListener('click', () => {
+        document.querySelector('#gradientMakeHorizontal').addEventListener('click', function () {
             graph.gradientMakeHorizontal();
         });
 
-        document.querySelector('#gradientToggleDirection').addEventListener('click', () => {
+        document.querySelector('#gradientToggleDirection').addEventListener('click', function () {
             graph.gradientToggleDirection();
         });
 
