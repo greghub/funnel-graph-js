@@ -36,13 +36,11 @@ npm i funnel-graph-js
 
 #### CDN
 
-Add from jsDelivr: 
-
 ```html
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/greghub/funnel-graph-js/dist/css/main.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/greghub/funnel-graph-js/dist/css/theme.min.css">
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/funnel-graph-js@1.3.9/dist/css/main.min.css">
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/funnel-graph-js@1.3.9/dist/css/theme.min.css">
 
-<script src="https://cdn.jsdelivr.net/gh/greghub/funnel-graph-js/dist/js/funnel-graph.js"></script>
+<script src="https://unpkg.com/funnel-graph-js@1.3.9/dist/js/funnel-graph.min.js"></script>
 ```
 
 #### Download
