@@ -168,6 +168,7 @@ function () {
     this.subLabels = FunnelGraph.getSubLabels(options);
     this.values = FunnelGraph.getValues(options);
     this.percentages = this.createPercentages();
+    this.dropoff = this.createDropoffs();
     this.colors = options.data.colors || (0, _graph.getDefaultColors)(this.is2d() ? this.getSubDataSize() : 2);
     this.displayPercent = options.displayPercent || false;
     this.data = options.data;
@@ -326,8 +327,15 @@ function () {
         var percentageValue = document.createElement('div');
         percentageValue.setAttribute('class', 'label__percentage');
 
-        if (percentage !== 100) {
-          percentageValue.textContent = "".concat(percentage.toString(), "%");
+        if (percentage[0] !== 100) {
+          percentageValue.textContent = "".concat(percentage[0].toString(), "%");
+        }
+
+        var dropOffs = document.createElement('div');
+        dropOffs.setAttribute('class', 'label__dropoffs');
+
+        if (percentage[1] !== 0) {
+          dropOffs.textContent = "-".concat(percentage[1].toString(), "%");
         }
 
         labelElement.appendChild(value);
@@ -335,6 +343,7 @@ function () {
 
         if (_this.displayPercent) {
           labelElement.appendChild(percentageValue);
+          labelElement.appendChild(dropOffs);
         }
 
         if (_this.is2d()) {
@@ -452,8 +461,23 @@ function () {
       }
 
       var max = Math.max.apply(Math, _toConsumableArray(values));
-      return values.map(function (value) {
-        return (0, _number.roundPoint)(value * 100 / max);
+      return values.map(function (value, index, arr) {
+        return [(0, _number.roundPoint)(value * 100 / max), 100 - (0, _number.roundPoint)(value * 100 / (arr[index - 1] || value))];
+      });
+    }
+  }, {
+    key: "createDropoffs",
+    value: function createDropoffs() {
+      var values = [];
+
+      if (this.is2d()) {
+        values = this.getValues2d();
+      } else {
+        values = _toConsumableArray(this.values);
+      }
+
+      return values.map(function (value, index, arr) {
+        return 100 - (0, _number.roundPoint)(value * 100 / (arr[index - 1] || value));
       });
     }
   }, {

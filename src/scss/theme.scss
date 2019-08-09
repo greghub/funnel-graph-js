@@ -41,6 +41,12 @@ body {
 				color: $secondary;
 			}
 
+			.label__dropoffs {
+				font-size: 16px;
+				font-weight: bold;
+				color: $negative;
+			}
+
 			.label__segment-percentages {
 				position: absolute;
 				top: 50%;

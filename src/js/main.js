@@ -16,6 +16,7 @@ class FunnelGraph {
         this.subLabels = FunnelGraph.getSubLabels(options);
         this.values = FunnelGraph.getValues(options);
         this.percentages = this.createPercentages();
+        this.dropoff = this.createDropoffs();
         this.colors = options.data.colors || getDefaultColors(this.is2d() ? this.getSubDataSize() : 2);
         this.displayPercent = options.displayPercent || false;
         this.data = options.data;
@@ -184,14 +185,22 @@ class FunnelGraph {
             const percentageValue = document.createElement('div');
             percentageValue.setAttribute('class', 'label__percentage');
 
-            if (percentage !== 100) {
-                percentageValue.textContent = `${percentage.toString()}%`;
+            if (percentage[0] !== 100) {
+                percentageValue.textContent = `${percentage[0].toString()}%`;
+            }
+
+            const dropOffs = document.createElement('div');
+            dropOffs.setAttribute('class', 'label__dropoffs');
+
+            if (percentage[1] !== 0) {
+                dropOffs.textContent = `-${percentage[1].toString()}%`;
             }
 
             labelElement.appendChild(value);
             labelElement.appendChild(title);
             if (this.displayPercent) {
                 labelElement.appendChild(percentageValue);
+                labelElement.appendChild(dropOffs); 
             }
 
             if (this.is2d()) {
@@ -293,7 +302,7 @@ class FunnelGraph {
 
     getValues2d() {
         const values = [];
-
+        
         this.values.forEach((valueSet) => {
             values.push(valueSet.reduce((sum, value) => sum + value, 0));
         });
@@ -314,7 +323,6 @@ class FunnelGraph {
 
     createPercentages() {
         let values = [];
-
         if (this.is2d()) {
             values = this.getValues2d();
         } else {
@@ -322,7 +330,21 @@ class FunnelGraph {
         }
 
         const max = Math.max(...values);
-        return values.map(value => roundPoint(value * 100 / max));
+        return values.map((value, index, arr) => ([roundPoint(value * 100 / max), 
+            100 - roundPoint(value * 100 / (arr[index - 1] || value))]
+            
+        ));
+    }
+
+    createDropoffs() {
+        let values = [];
+        if (this.is2d()) {
+            values = this.getValues2d();
+        } else {
+            values = [...this.values];
+        }
+
+        return values.map((value, index, arr) => 100 - roundPoint(value * 100 / (arr[index - 1] || value)));
     }
 
     applyGradient(svg, path, colors, index) {
