@@ -168,7 +168,6 @@ function () {
     this.subLabels = FunnelGraph.getSubLabels(options);
     this.values = FunnelGraph.getValues(options);
     this.percentages = this.createPercentages();
-    this.dropoff = this.createDropoffs();
     this.colors = options.data.colors || (0, _graph.getDefaultColors)(this.is2d() ? this.getSubDataSize() : 2);
     this.displayPercent = options.displayPercent || false;
     this.data = options.data;
@@ -401,6 +400,19 @@ function () {
       }
     }
   }, {
+    key: "destroy",
+    value: function destroy() {
+      if (!this.containerSelector) {
+        throw new Error('Container is missing');
+      }
+
+      if (document.querySelector('.svg-funnel-js')) {
+        var node = document.querySelector(this.containerSelector);
+        node.innerHTML = "";
+        this.container.classList.remove('svg-funnel-js');
+      }
+    }
+  }, {
     key: "setValues",
     value: function setValues(v) {
       this.values = v;
@@ -462,22 +474,7 @@ function () {
 
       var max = Math.max.apply(Math, _toConsumableArray(values));
       return values.map(function (value, index, arr) {
-        return [(0, _number.roundPoint)(value * 100 / max), 100 - (0, _number.roundPoint)(value * 100 / (arr[index - 1] || value))];
-      });
-    }
-  }, {
-    key: "createDropoffs",
-    value: function createDropoffs() {
-      var values = [];
-
-      if (this.is2d()) {
-        values = this.getValues2d();
-      } else {
-        values = _toConsumableArray(this.values);
-      }
-
-      return values.map(function (value, index, arr) {
-        return 100 - (0, _number.roundPoint)(value * 100 / (arr[index - 1] || value));
+        return [(0, _number.roundPoint)(value * 100 / max), (0, _number.roundPoint)(100 - value * 100 / (arr[index - 1] || value))];
       });
     }
   }, {

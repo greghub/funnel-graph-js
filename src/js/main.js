@@ -16,7 +16,6 @@ class FunnelGraph {
         this.subLabels = FunnelGraph.getSubLabels(options);
         this.values = FunnelGraph.getValues(options);
         this.percentages = this.createPercentages();
-        this.dropoff = this.createDropoffs();
         this.colors = options.data.colors || getDefaultColors(this.is2d() ? this.getSubDataSize() : 2);
         this.displayPercent = options.displayPercent || false;
         this.data = options.data;
@@ -266,6 +265,18 @@ class FunnelGraph {
         }
     }
 
+    destroy() {
+        if (!this.containerSelector) {
+            throw new Error('Container is missing');
+        }
+
+        if (document.querySelector('.svg-funnel-js')) { 
+            const node = document.querySelector(this.containerSelector);
+            node.innerHTML = "";
+            this.container.classList.remove('svg-funnel-js');
+        }
+    }
+
     setValues(v) {
         this.values = v;
         return this;
@@ -331,20 +342,9 @@ class FunnelGraph {
 
         const max = Math.max(...values);
         return values.map((value, index, arr) => ([roundPoint(value * 100 / max), 
-            100 - roundPoint(value * 100 / (arr[index - 1] || value))]
+            roundPoint(100 - value * 100 / (arr[index - 1] || value))]
             
         ));
-    }
-
-    createDropoffs() {
-        let values = [];
-        if (this.is2d()) {
-            values = this.getValues2d();
-        } else {
-            values = [...this.values];
-        }
-
-        return values.map((value, index, arr) => 100 - roundPoint(value * 100 / (arr[index - 1] || value)));
     }
 
     applyGradient(svg, path, colors, index) {
@@ -504,7 +504,6 @@ class FunnelGraph {
 
         this.drawPaths();
     }
-
     /*
         Methods
      */

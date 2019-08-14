@@ -1,4 +1,4 @@
-# FunnelGraph.js 
+# FunnelGraph.js with extra features 
 
 ![npm](https://img.shields.io/npm/v/funnel-graph-js.svg)
 [![Build Status](https://travis-ci.org/greghub/funnel-graph-js.svg?branch=master)](https://travis-ci.org/greghub/funnel-graph-js)
