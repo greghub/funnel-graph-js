@@ -30,7 +30,10 @@ body {
       .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label .label__dropoffs {
         font-size: 16px;
         font-weight: bold;
-        color: #e60000; }
+        color: #e60000;
+        position: absolute;
+        bottom: 0;
+        left: -1em; }
       .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label .label__segment-percentages {
         position: absolute;
         top: 50%;

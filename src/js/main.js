@@ -1,16 +1,26 @@
 /* eslint-disable no-trailing-spaces */
-import { roundPoint, formatNumber } from './number';
-import { createPath, createVerticalPath } from './path';
 import {
-    generateLegendBackground, getDefaultColors, createSVGElement, setAttrs, removeAttrs
+    roundPoint,
+    formatNumber
+} from './number';
+import {
+    createPath,
+    createVerticalPath
+} from './path';
+import {
+    generateLegendBackground,
+    getDefaultColors,
+    createSVGElement,
+    setAttrs,
+    removeAttrs
 } from './graph';
 
 class FunnelGraph {
     constructor(options) {
         this.containerSelector = options.container;
-        this.gradientDirection = (options.gradientDirection && options.gradientDirection === 'vertical')
-            ? 'vertical'
-            : 'horizontal';
+        this.gradientDirection = (options.gradientDirection && options.gradientDirection === 'vertical') ?
+            'vertical' :
+            'horizontal';
         this.direction = (options.direction && options.direction === 'vertical') ? 'vertical' : 'horizontal';
         this.labels = FunnelGraph.getLabels(options);
         this.subLabels = FunnelGraph.getSubLabels(options);
@@ -144,7 +154,9 @@ class FunnelGraph {
             throw new Error('Data is missing');
         }
 
-        const { data } = options;
+        const {
+            data
+        } = options;
 
         if (typeof data.subLabels === 'undefined') return [];
 
@@ -156,7 +168,9 @@ class FunnelGraph {
             throw new Error('Data is missing');
         }
 
-        const { data } = options;
+        const {
+            data
+        } = options;
 
         if (typeof data.labels === 'undefined') return [];
 
@@ -166,6 +180,8 @@ class FunnelGraph {
     addLabels() {
         const holder = document.createElement('div');
         holder.setAttribute('class', 'svg-funnel-js__labels');
+        const body = document.querySelector('body');
+        const bgColor = window.getComputedStyle(body).getPropertyValue('background-color');
 
         this.percentages.forEach((percentage, index) => {
             const labelElement = document.createElement('div');
@@ -191,15 +207,20 @@ class FunnelGraph {
             const dropOffs = document.createElement('div');
             dropOffs.setAttribute('class', 'label__dropoffs');
 
-            if (percentage[1] !== 0) {
-                dropOffs.textContent = `-${percentage[1].toString()}%`;
+            if (index !== 0) {
+                const style = percentage[1] === 0 ? `color: #21ffa2; background-color: ${bgColor};` 
+                    : `background-color: ${bgColor};`;
+                    
+                dropOffs.setAttribute('style', style);
+                const val = percentage[1] * -1;
+                dropOffs.textContent = `${val.toString()}%`;
             }
 
             labelElement.appendChild(value);
             labelElement.appendChild(title);
             if (this.displayPercent) {
                 labelElement.appendChild(percentageValue);
-                labelElement.appendChild(dropOffs); 
+                labelElement.appendChild(dropOffs);
             }
 
             if (this.is2d()) {
@@ -210,9 +231,9 @@ class FunnelGraph {
                 const twoDimPercentages = this.getPercentages2d();
 
                 this.subLabels.forEach((subLabel, j) => {
-                    const subLabelDisplayValue = this.subLabelValue === 'percent'
-                        ? `${twoDimPercentages[index][j]}%`
-                        : formatNumber(this.values[index][j]);
+                    const subLabelDisplayValue = this.subLabelValue === 'percent' ?
+                        `${twoDimPercentages[index][j]}%` :
+                        formatNumber(this.values[index][j]);
                     percentageList += `<li>${this.subLabels[j]}:
     <span class="percentage__list-label">${subLabelDisplayValue}</span>
  </li>`;
@@ -270,7 +291,7 @@ class FunnelGraph {
             throw new Error('Container is missing');
         }
 
-        if (document.querySelector('.svg-funnel-js')) { 
+        if (document.querySelector('.svg-funnel-js')) {
             const node = document.querySelector(this.containerSelector);
             node.innerHTML = "";
             this.container.classList.remove('svg-funnel-js');
@@ -302,7 +323,9 @@ class FunnelGraph {
             return [];
         }
 
-        const { data } = options;
+        const {
+            data
+        } = options;
 
         if (typeof data === 'object') {
             return data.values;
@@ -313,7 +336,7 @@ class FunnelGraph {
 
     getValues2d() {
         const values = [];
-        
+
         this.values.forEach((valueSet) => {
             values.push(valueSet.reduce((sum, value) => sum + value, 0));
         });
@@ -341,16 +364,17 @@ class FunnelGraph {
         }
 
         const max = Math.max(...values);
-        return values.map((value, index, arr) => ([roundPoint(value * 100 / max), 
-            roundPoint(100 - value * 100 / (arr[index - 1] || value))]
-            
+        return values.map((value, index, arr) => ([roundPoint(value * 100 / max),
+            roundPoint(100 - value * 100 / (arr[index - 1] || value))
+        ]
+
         ));
     }
 
     applyGradient(svg, path, colors, index) {
-        const defs = (svg.querySelector('defs') === null)
-            ? createSVGElement('defs', svg)
-            : svg.querySelector('defs');
+        const defs = (svg.querySelector('defs') === null) ?
+            createSVGElement('defs', svg) :
+            svg.querySelector('defs');
         const gradientName = `funnelGradient-${index}`;
         const gradient = createSVGElement('linearGradient', defs, {
             id: gradientName
@@ -517,7 +541,10 @@ class FunnelGraph {
         const svg = this.getSVG();
         const height = this.getHeight();
         const width = this.getWidth();
-        setAttrs(svg, { height, width });
+        setAttrs(svg, {
+            height,
+            width
+        });
 
         this.drawPaths();
 
@@ -533,7 +560,10 @@ class FunnelGraph {
         const svg = this.getSVG();
         const height = this.getHeight();
         const width = this.getWidth();
-        setAttrs(svg, { height, width });
+        setAttrs(svg, {
+            height,
+            width
+        });
 
         this.drawPaths();
 
@@ -591,7 +621,9 @@ class FunnelGraph {
         this.width = w;
         const svg = this.getSVG();
         const width = this.getWidth();
-        setAttrs(svg, { width });
+        setAttrs(svg, {
+            width
+        });
 
         this.drawPaths();
 
@@ -602,7 +634,9 @@ class FunnelGraph {
         this.height = h;
         const svg = this.getSVG();
         const height = this.getHeight();
-        setAttrs(svg, { height });
+        setAttrs(svg, {
+            height
+        });
 
         this.drawPaths();
 
@@ -613,7 +647,9 @@ class FunnelGraph {
     updateData(d) {
         if (typeof d.labels !== 'undefined') {
             this.container.querySelector('.svg-funnel-js__labels').remove();
-            this.labels = FunnelGraph.getLabels({ data: d });
+            this.labels = FunnelGraph.getLabels({
+                data: d
+            });
             this.addLabels();
         }
         if (typeof d.colors !== 'undefined') {
@@ -622,17 +658,23 @@ class FunnelGraph {
         if (typeof d.values !== 'undefined') {
             if (Object.prototype.toString.call(d.values[0]) !== Object.prototype.toString.call(this.values[0])) {
                 this.container.querySelector('svg').remove();
-                this.values = FunnelGraph.getValues({ data: d });
+                this.values = FunnelGraph.getValues({
+                    data: d
+                });
                 this.makeSVG();
                 this.drawPaths();
             } else {
-                this.values = FunnelGraph.getValues({ data: d });
+                this.values = FunnelGraph.getValues({
+                    data: d
+                });
                 this.drawPaths();
             }
         }
         if (typeof d.subLabels !== 'undefined') {
             this.container.querySelector('.svg-funnel-js__subLabels').remove();
-            this.subLabels = FunnelGraph.getSubLabels({ data: d });
+            this.subLabels = FunnelGraph.getSubLabels({
+                data: d
+            });
             this.addSubLabels();
         }
     }

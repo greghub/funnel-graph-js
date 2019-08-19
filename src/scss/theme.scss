@@ -45,6 +45,9 @@ body {
 				font-size: 16px;
 				font-weight: bold;
 				color: $negative;
+				position: absolute;
+				bottom: 0;
+				left: -1em;
 			}
 
 			.label__segment-percentages {

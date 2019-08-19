@@ -55,8 +55,14 @@
     <script src="../dist/js/funnel-graph.js"></script>
     <script>
         var dataExample1 = {
-            colors: ['#FFB178', '#FF3C8E'],
-            values: [12000, 5700, 360]
+            labels: ["started","underwriting","submitted"],
+            sublabels: ["vhis-flexi-plus","vhis-flexi-regular","vhis-standard"],
+            colors:  [
+                ['#FFB178', '#FF78B1', '#FF3C8E'],
+                ['#A0BBFF', '#EC77FF'],
+                ['#A0F9FF', '#7795FF']
+        ],
+            values: [[37,291,115],[18,153,85],[4,9,6]]
         };
 
         var dataExample2 = {
@@ -66,18 +72,14 @@
         };
 
         var dataExample3 = {
-            labels: ['Impressions', 'Add To Cart', 'Buy'],
-            subLabels: ['Direct', 'Social Media', 'Ads'],
+            labels: ["start","pre-agreement","underwriting","quotation","affordability","personal-info","document","auth","summary","terms-and-conditions","payment","submitted"],
+            subLabels: ["vhis-flexi-plus","vhis-flexi-regular","vhis-standard"],
             colors: [
                 ['#FFB178', '#FF78B1', '#FF3C8E'],
                 ['#A0BBFF', '#EC77FF'],
                 ['#A0F9FF', '#7795FF']
             ],
-            values: [
-                [3500, 2500, 6500],
-                [3300, 1400, 1000],
-                [600, 200, 130]
-            ]
+            values: [[34,241,96],[22,124,60],[19,119,57],[7,44,23],[4,31,16],[4,28,18],[4,14,6],[3,13,6],[4,10,5],[4,8,5],[4,8,5],[4,7,5]]
         };
 
         var graph = new FunnelGraph({
@@ -86,7 +88,7 @@
             data: dataExample3,
             displayPercent: true,
             direction: 'horizontal',
-            width: 800,
+            width: 1500,
             height: 300,
             subLabelValue: 'percent'
         });

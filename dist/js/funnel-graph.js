@@ -313,6 +313,8 @@ function () {
 
       var holder = document.createElement('div');
       holder.setAttribute('class', 'svg-funnel-js__labels');
+      var body = document.querySelector('body');
+      var bgColor = window.getComputedStyle(body).getPropertyValue('background-color');
       this.percentages.forEach(function (percentage, index) {
         var labelElement = document.createElement('div');
         labelElement.setAttribute('class', "svg-funnel-js__label label-".concat(index + 1));
@@ -333,8 +335,12 @@ function () {
         var dropOffs = document.createElement('div');
         dropOffs.setAttribute('class', 'label__dropoffs');
 
-        if (percentage[1] !== 0) {
-          dropOffs.textContent = "-".concat(percentage[1].toString(), "%");
+        if (index !== 0) {
+          console.log(bgColor);
+          var style = percentage[1] === 0 ? "color: #21ffa2; background-color: ".concat(bgColor, ";") : "background-color: ".concat(bgColor, ";");
+          dropOffs.setAttribute('style', style);
+          var val = percentage[1] * -1;
+          dropOffs.textContent = "".concat(val.toString(), "%");
         }
 
         labelElement.appendChild(value);
