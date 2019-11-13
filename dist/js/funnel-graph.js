@@ -174,6 +174,8 @@ function () {
     this.height = options.height;
     this.width = options.width;
     this.subLabelValue = options.subLabelValue || 'percent';
+    this.hideSubLabels = options.hideSubLabels || false;
+    this.subLabelVisibility = options.subLabelVisibility || [];
   }
   /**
   An example of a two-dimensional funnel graph
@@ -346,7 +348,7 @@ function () {
 
           _this.subLabels.forEach(function (subLabel, j) {
             var subLabelDisplayValue = _this.subLabelValue === 'percent' ? "".concat(twoDimPercentages[index][j], "%") : (0, _number.formatNumber)(_this.values[index][j]);
-            percentageList += "<li>".concat(_this.subLabels[j], ":\n    <span class=\"percentage__list-label\">").concat(subLabelDisplayValue, "</span>\n </li>");
+            percentageList += "<li class=\"".concat(_this.getSubLabelVisibility(j) && 'hide', "\">").concat(_this.subLabels[j], ":\n    <span class=\"percentage__list-label\">").concat(subLabelDisplayValue, "</span>\n </li>");
           });
 
           percentageList += '</ul>';
@@ -357,6 +359,18 @@ function () {
         holder.appendChild(labelElement);
       });
       this.container.appendChild(holder);
+    } // eslint-disable-next-line consistent-return
+
+  }, {
+    key: "getSubLabelVisibility",
+    value: function getSubLabelVisibility(index) {
+      if (this.hideSubLabels) {
+        if (this.subLabelVisibility[index] === false) {
+          return true;
+        }
+      } else {
+        return false;
+      }
     }
   }, {
     key: "addSubLabels",
@@ -368,7 +382,7 @@ function () {
         subLabelsHolder.setAttribute('class', 'svg-funnel-js__subLabels');
         var subLabelsHTML = '';
         this.subLabels.forEach(function (subLabel, index) {
-          subLabelsHTML += "<div class=\"svg-funnel-js__subLabel svg-funnel-js__subLabel-".concat(index + 1, "\">\n    <div class=\"svg-funnel-js__subLabel--color\" \n        style=\"").concat((0, _graph.generateLegendBackground)(_this2.colors[index], _this2.gradientDirection), "\"></div>\n    <div class=\"svg-funnel-js__subLabel--title\">").concat(subLabel, "</div>\n</div>");
+          subLabelsHTML += "<div class=\"svg-funnel-js__subLabel svg-funnel-js__subLabel-".concat(index + 1, " ").concat(_this2.getSubLabelVisibility(index) && 'hide', "\">\n    <div class=\"svg-funnel-js__subLabel--color\" \n        style=\"").concat((0, _graph.generateLegendBackground)(_this2.colors[index], _this2.gradientDirection), "\"></div>\n    <div class=\"svg-funnel-js__subLabel--title\">").concat(subLabel, "</div>\n</div>");
         });
         subLabelsHolder.innerHTML = subLabelsHTML;
         this.container.appendChild(subLabelsHolder);

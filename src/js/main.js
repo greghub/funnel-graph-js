@@ -22,6 +22,8 @@ class FunnelGraph {
         this.height = options.height;
         this.width = options.width;
         this.subLabelValue = options.subLabelValue || 'percent';
+        this.hideSubLabels = options.hideSubLabels || false;
+        this.subLabelVisibility = options.subLabelVisibility || [];
     }
 
     /**
@@ -205,7 +207,7 @@ class FunnelGraph {
                     const subLabelDisplayValue = this.subLabelValue === 'percent'
                         ? `${twoDimPercentages[index][j]}%`
                         : formatNumber(this.values[index][j]);
-                    percentageList += `<li>${this.subLabels[j]}:
+                    percentageList += `<li class="${this.getSubLabelVisibility(j) && 'hide'}">${this.subLabels[j]}:
     <span class="percentage__list-label">${subLabelDisplayValue}</span>
  </li>`;
                 });
@@ -220,6 +222,17 @@ class FunnelGraph {
         this.container.appendChild(holder);
     }
 
+    // eslint-disable-next-line consistent-return
+    getSubLabelVisibility(index) {
+        if (this.hideSubLabels) {
+            if (this.subLabelVisibility[index] === false) {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
     addSubLabels() {
         if (this.subLabels) {
             const subLabelsHolder = document.createElement('div');
@@ -228,7 +241,7 @@ class FunnelGraph {
             let subLabelsHTML = '';
 
             this.subLabels.forEach((subLabel, index) => {
-                subLabelsHTML += `<div class="svg-funnel-js__subLabel svg-funnel-js__subLabel-${index + 1}">
+                subLabelsHTML += `<div class="svg-funnel-js__subLabel svg-funnel-js__subLabel-${index + 1} ${this.getSubLabelVisibility(index) && 'hide'}">
     <div class="svg-funnel-js__subLabel--color" 
         style="${generateLegendBackground(this.colors[index], this.gradientDirection)}"></div>
     <div class="svg-funnel-js__subLabel--title">${subLabel}</div>
