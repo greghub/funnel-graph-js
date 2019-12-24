@@ -1,4 +1,3 @@
-
 /* eslint-disable no-trailing-spaces */
 import { roundPoint, formatNumber } from './number';
 import { createPath, createVerticalPath } from './path';
