@@ -38,21 +38,17 @@ class FunnelGraph {
                                            ------
                        ---#1----------------
     #0-----------------
-
      Main axis is the primary axis of the graph.
      In a horizontal graph it's the X axis, and Y is the cross axis.
      However we use the names "main" and "cross" axis,
      because in a vertical graph the primary axis is the Y axis
      and the cross axis is the X axis.
-
      First step of drawing the funnel graph is getting the coordinates of points,
      that are used when drawing the paths.
-
      There are 4 paths in the example above: A, B, C and D.
      Such funnel has 3 labels and 3 subLabels.
      This means that the main axis has 4 points (number of labels + 1)
      One the ASCII illustrated graph above, those points are illustrated with a # symbol.
-
     */
     getMainAxisPoints() {
         const size = this.getDataSize();
@@ -183,10 +179,7 @@ class FunnelGraph {
 
             const percentageValue = document.createElement('div');
             percentageValue.setAttribute('class', 'label__percentage');
-
-            if (percentage !== 100) {
-                percentageValue.textContent = `${percentage.toString()}%`;
-            }
+            percentageValue.textContent = `${percentage.toString()}%`;
 
             labelElement.appendChild(value);
             labelElement.appendChild(title);
@@ -322,7 +315,7 @@ class FunnelGraph {
         }
 
         const max = Math.max(...values);
-        return values.map(value => roundPoint(value * 100 / max));
+        return values.map(value => value === 0 ? 0 : roundPoint(value * 100 / max));
     }
 
     applyGradient(svg, path, colors, index) {
