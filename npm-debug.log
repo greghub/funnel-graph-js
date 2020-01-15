@@ -1,0 +1,145 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/mhildenbrand/.nvm/versions/node/v7.2.0/bin/node',
+1 verbose cli   '/Users/mhildenbrand/.nvm/versions/node/v7.2.0/bin/npm',
+1 verbose cli   'publish' ]
+2 info using npm@3.10.9
+3 info using node@v7.2.0
+4 verbose publish [ '.' ]
+5 silly cache add args [ '.', null ]
+6 verbose cache add spec .
+7 silly cache add parsed spec Result {
+7 silly cache add   raw: '.',
+7 silly cache add   scope: null,
+7 silly cache add   escapedName: null,
+7 silly cache add   name: null,
+7 silly cache add   rawSpec: '.',
+7 silly cache add   spec: '/Users/mhildenbrand/Sites/ikizmet/github/funnel-graph-js',
+7 silly cache add   type: 'directory' }
+8 verbose addLocalDirectory /Users/mhildenbrand/.npm/ikizmet-funnel-graph-js/1.4.1/package.tgz not in flight; packing
+9 verbose correctMkdir /Users/mhildenbrand/.npm correctMkdir not in flight; initializing
+10 info lifecycle ikizmet-funnel-graph-js@1.4.1~prepublish: ikizmet-funnel-graph-js@1.4.1
+11 silly lifecycle ikizmet-funnel-graph-js@1.4.1~prepublish: no script for prepublish, continuing
+12 verbose tar pack [ '/Users/mhildenbrand/.npm/ikizmet-funnel-graph-js/1.4.1/package.tgz',
+12 verbose tar pack   '/Users/mhildenbrand/Sites/ikizmet/github/funnel-graph-js' ]
+13 verbose tarball /Users/mhildenbrand/.npm/ikizmet-funnel-graph-js/1.4.1/package.tgz
+14 verbose folder /Users/mhildenbrand/Sites/ikizmet/github/funnel-graph-js
+15 verbose addLocalTarball adding from inside cache /Users/mhildenbrand/.npm/ikizmet-funnel-graph-js/1.4.1/package.tgz
+16 verbose correctMkdir /Users/mhildenbrand/.npm correctMkdir not in flight; initializing
+17 silly cache afterAdd ikizmet-funnel-graph-js@1.4.1
+18 verbose afterAdd /Users/mhildenbrand/.npm/ikizmet-funnel-graph-js/1.4.1/package/package.json not in flight; writing
+19 verbose correctMkdir /Users/mhildenbrand/.npm correctMkdir not in flight; initializing
+20 verbose afterAdd /Users/mhildenbrand/.npm/ikizmet-funnel-graph-js/1.4.1/package/package.json written
+21 silly publish { name: 'ikizmet-funnel-graph-js',
+21 silly publish   version: '1.4.1',
+21 silly publish   description: 'SVG Funnel Graph Javascript Library',
+21 silly publish   main: 'main.js',
+21 silly publish   scripts:
+21 silly publish    { start: 'gulp',
+21 silly publish      test: 'nyc mocha --compilers js:babel-core/register' },
+21 silly publish   author: { name: 'Greg Hovanesyan' },
+21 silly publish   license: 'MIT',
+21 silly publish   repository:
+21 silly publish    { type: 'git',
+21 silly publish      url: 'git+https://github.com/greghub/funnel-graph-js.git' },
+21 silly publish   keywords:
+21 silly publish    [ 'funnel',
+21 silly publish      'chart',
+21 silly publish      'graph',
+21 silly publish      'funnel-chart',
+21 silly publish      'funnel-graph',
+21 silly publish      'svg-funnel-chart',
+21 silly publish      'svg-funnel-graph' ],
+21 silly publish   devDependencies:
+21 silly publish    { '@babel/core': '^7.4.5',
+21 silly publish      '@babel/preset-env': '^7.4.5',
+21 silly publish      '@babel/register': '^7.4.4',
+21 silly publish      autoprefixer: '^9.5.1',
+21 silly publish      'babel-cli': '^6.26.0',
+21 silly publish      'babel-preset-env': '^1.2.0',
+21 silly publish      babelify: '^10.0.0',
+21 silly publish      'browser-sync': '^2.26.5',
+21 silly publish      browserify: '^16.2.3',
+21 silly publish      chai: '^4.2.0',
+21 silly publish      cssnano: '^4.1.10',
+21 silly publish      eslint: '^5.16.0',
+21 silly publish      'eslint-config-airbnb-base': '^13.1.0',
+21 silly publish      'eslint-plugin-import': '^2.17.3',
+21 silly publish      gulp: '^4.0.2',
+21 silly publish      'gulp-babel': '^8.0.0',
+21 silly publish      'gulp-eslint': '^5.0.0',
+21 silly publish      'gulp-postcss': '^8.0.0',
+21 silly publish      'gulp-rename': '^1.2.2',
+21 silly publish      'gulp-sass': '^4.0.2',
+21 silly publish      'gulp-sass-lint': '^1.4.0',
+21 silly publish      'gulp-streamify': '^1.0.2',
+21 silly publish      'gulp-uglify': '^3.0.2',
+21 silly publish      'gulp-util': '^3.0.8',
+21 silly publish      mocha: '^5.2.0',
+21 silly publish      nyc: '^13.3.0',
+21 silly publish      'vinyl-source-stream': '^2.0.0' },
+21 silly publish   readme: '# FunnelGraph.js\n\n![npm](https://img.shields.io/npm/v/funnel-graph-js.svg)\n[![Build Status](https://travis-ci.org/greghub/funnel-graph-js.svg?branch=master)](https://travis-ci.org/greghub/funnel-graph-js)\n[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/greghub/funnel-graph-js/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/greghub/funnel-graph-js/?branch=master)\n![GitHub file size in bytes](https://img.shields.io/github/size/greghub/funnel-graph-js/dist/js/funnel-graph.min.js.svg)\n![GitHub](https://img.shields.io/github/license/greghub/funnel-graph-js.svg)\n![GitHub last commit](https://img.shields.io/github/last-commit/greghub/funnel-graph-js.svg)\n[![Gitter](https://img.shields.io/gitter/room/greghub/funnel-graph-js.svg)](https://gitter.im/funnel-graph-js/community)\n\nFunnel Graph JS is a library for generating a funnel chart. It generates an SVG chart, adds labels, legend and other info.\nSome of the features include generating horizontal and vertical funnel charts, applying solid colors and gradients,\npossibility to generate a two-dimensional funnel chart.\n\n<img width="640" src="https://i.imgur.com/3Zw9m2l.jpg" alt="SVG Two Dimensional Funnel Graph">\n\nFunnelGraph.js is also available as a Vue.js component: [Vue Funnel Graph](https://github.com/greghub/vue-funnel-graph-js)\n\n## Table of Contents\n\n-   [Installation](#installation)\n-   [Usage](#usage)\n-   [Options](#options)\n-   [Methods](#methods)\n\n## Installation\n\nYou can get the code by installing the NPM package, loading files from a CDN or downloading the repo.\n\n#### NPM\n\nRun the following script to install:\n\n```\nnpm i funnel-graph-js\n```\n\n#### CDN\n\n```html\n<link rel="stylesheet" type="text/css" href="https://unpkg.com/funnel-graph-js@1.3.9/dist/css/main.min.css" />\n<link rel="stylesheet" type="text/css" href="https://unpkg.com/funnel-graph-js@1.3.9/dist/css/theme.min.css" />\n\n<script src="https://unpkg.com/funnel-graph-js@1.3.9/dist/js/funnel-graph.min.js"></script>\n```\n\n#### Download\n\nDownload the repo ZIP, add `funnel-graph.js` or `funnel-graph.min.js`, and `main.css` or `main.min.css`.\nOptionally add `theme.min.css` to include the styling for labels, legend etc.\nIt is recommended to add the theme, to display the chart correctly.\n\nFunnelGraph.js is built in a way that most of the styling is controlled by theme file,\nso it is possible to adapt every element to your design. The chart is a SVG element and\n`colors` property of the options controls the colors of the chart.\n\nCSS:\n\n```html\n<link rel="stylesheet" type="text/css" href="../dist/css/main.min.css" />\n<link rel="stylesheet" type="text/css" href="../dist/css/theme.min.css" />\n```\n\nJS:\n\n```html\n<script src="../dist/js/funnel-graph.js"></script>\n```\n\n## Usage\n\n```js\nvar graph = new FunnelGraph({\n    container: \'.funnel\',\n    gradientDirection: \'horizontal\',\n    data: {...},\n    displayPercent: true,\n    direction: \'horizontal\'\n});\n\ngraph.draw();\n```\n\nYou can choose how you want to display your data on funnel graph.\nYou can display exact numbers, you can display percentages or both.\nThe library will generate percentages automatically,\ntaking the largest number as 100% and then calculating\nother numbers as a fraction of the largest number.\nFor example: 12000, 5700 and 360 will be displayed as 47.5% and 3%\n(100% is skipped in order to avoid redundancy).\n\n| Provided values        | 12000  | 5700  | 360 |\n| ---------------------- | ------ | ----- | --- |\n| Display values         | 12,000 | 5,700 | 360 |\n| Calculated percentages |        | 47.5% | 3%  |\n\nIf you want to hide percentages you set `displayPercent` to `false`:\n\n```js\n{\n\tdisplayPercent: false;\n}\n```\n\nYou can also display a vertical funnel graph:\n\n```js\n{\n\tdirection: \'vertical\';\n}\n```\n\nIf you want to add a solid color to your funnel:\n\n```js\n{\n\tcolor: \'#FF5500\';\n}\n```\n\nAnd if you want a gradient:\n\n```js\n{\n\tcolor: [\'orange\', \'red\'];\n}\n```\n\nAn array containing only one color will have the same effect\nas passing a single color as a string.\n\nIf you are using a gradient you can control the gradient direction using:\n\n```js\n{\n\tgradientDirection: \'vertical\'; // defaults to \'horizontal\'\n}\n```\n\nThere are 3 ways to define data for the funnel graph.\n\nThe most simple way is do define a data array:\n\n```js\ndata: [12000, 5700, 360];\n```\n\nthis will create the data without any titles. However you can still display the values as percentages, as number or both.\n\nIf you want to add labels to your numbers pass an array of labels to `data`.\n\n```js\ndata: {\n    labels: [\'Impressions\', \'Add To Cart\', \'Buy\'],\n    colors: [\'orange\', \'red\'],\n    values: [12000, 5700, 360]\n},\n```\n\nThat most explicit way to add data to the funnel graph.\n\n<img width="640" src="https://i.imgur.com/c2qbxGQ.jpg" alt="SVG Funnel Graph">\n\nIf using one of those two ways, you can control the graph\ncolor using `colors` param. Otherwise, the default color will be used.\nAnd if you are using gradient as color, then you can control\ngradient direction with `gradientDirection` param.\n`colors` shall be passed inside `data`, while `gradientDirection` with other options.\n\n```js\ndata: {\n\tgradientDirection: \'horizontal\';\n}\n```\n\nOtherwise it defaults to horizontal (left to right).\n\n## Two-dimensional funnel graph\n\nIf you want to break down your data into more details,\nyou can use two-dimensional svg funnel graph. It will\ngenerate a graph like this:\n\n<img width="640" src="https://i.imgur.com/3Zw9m2l.jpg" alt="SVG Two Dimensional Funnel Graph">\n\nIn this example we will add more details to the previous example.\nWe have Impressions, Add To Cart and Buy data, however this time\nwe also want to visualize the data sources. So we want to see\nthe traffic sources, how much of them are direct, from ads\nand from social media.\n\n```js\ndata: {\n    labels: [\'Impressions\', \'Add To Cart\', \'Buy\'],\n    subLabels: [\'Direct\', \'Social Media\', \'Ads\'],\n    colors: [\n        [\'#FFB178\', \'#FF78B1\', \'#FF3C8E\'],\n        \'red\',\n        [\'blue\']\n    ],\n    values: [\n        [2000, 4000, 6000],\n        [3000, 1000, 1700],\n        [200, 30, 130]\n    ]\n}\n```\n\nIn a two-dimensional graph each segment shall have it\'s own color or gradient.\nIf using a gradient the `gradientDirection` option will be applied to all of the segments.\nHowever all supported ways of defining colors in a simple funnel graph can be used here as\nwell and you can have both solid colors and gradients applied to segments of a single graph.\nIn the above example first segment, "Direct", will have a gradient,\n"Social Media" will have a solid red color, and "Ads" segment will have a solid blue.\n\n## Options\n\n| Option               | Description                                                                                                     | Type      | Required | Options                  | Default          | Example                       |\n| -------------------- | --------------------------------------------------------------------------------------------------------------- | --------- | -------- | ------------------------ | ---------------- | ----------------------------- |\n| `container`          | Selector of the element that will hold the chart                                                                | `string`  | Yes      |                          |                  | \'.funnel-container\'           |\n| `direction`          | Whether the chart visualization is displayed vertically or horizontally                                         | `string`  | No       | \'vertical\', \'horizontal\' | \'horizontal\'     |                               |\n| `gradientDirection`  | Whether the gradient applied to the segments of the graph is displayed from top to bottom or from left to right | `string`  | No       | \'vertical\', \'horizontal\' | \'horizontal\'     |\n| `displayPercent`     | Whether to display the automatically calculated percentage values below the labels                              | `boolean` | No       | `true`, `false`          | `true`           |                               |\n| `data`               | Object containing information about values, labels and colors of the chart                                      | `object`  | Yes      |                          |                  |                               |\n| `width`              | Width of the funnel graph                                                                                       | `number`  | No       |                          | Container width  | 800                           |\n| `height`             | Height of the funnel graph                                                                                      | `number`  | No       |                          | Container height | 300                           |\n| `subLabelValue`      | Whether display percentage or real value of segment                                                             | `string`  | No       | \'percent\', \'raw\'         | \'percent\'        |\n| `hideSubLabels`      | Whether to hide sub labels based sub label visibility array                                                     | `boolean` | No       | `true`, `false`          | `false`          |\n| `subLabelVisibility` | Array that maps to the number of values in data.subLablels. True will display, false will hide.                 | `array`   | No       |                          | `[]`             | `[true, false, false, false]` |\n\n## Methods\n\n| Method                      | Description                                         | Example                                                                                                                |\n| --------------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |\n| `makeVertical()`            | Display chart vertically                            |                                                                                                                        |\n| `makeHorizontal()`          | Display chart horizontally                          |                                                                                                                        |\n| `toggleDirection()`         | Toggle direction of chart                           |                                                                                                                        |\n| `gradientMakeVertical()`    | Display gradient on all sections from top to bottom |                                                                                                                        |\n| `gradientMakeHorizontal()`  | Display gradient on all sections from left to right |                                                                                                                        |\n| `gradientToggleDirection()` | Toggle direction of gradient on all sections        |                                                                                                                        |\n| `updateHeight()`            | Update funnel graph height                          |                                                                                                                        |\n| `updateWidth()`             | Update funnel graph width                           |                                                                                                                        |\n| `updateData({data})`        | Update funnel graph data                            | `labels: [\'Stage 1\', \'Stage 2\', \'Stage 3\']`                                                                            |\n| `update({options})`         | Update funnel options                               | `gradientDirection: \'horizontal\', data: {...}, displayPercent: true, direction: \'horizontal\', height: 300, width: 500` |\n',
+21 silly publish   readmeFilename: 'README.md',
+21 silly publish   gitHead: '17a63c364b17fda07f26e192123f2564ad53dac0',
+21 silly publish   bugs: { url: 'https://github.com/greghub/funnel-graph-js/issues' },
+21 silly publish   homepage: 'https://github.com/greghub/funnel-graph-js#readme',
+21 silly publish   _id: 'ikizmet-funnel-graph-js@1.4.1',
+21 silly publish   _shasum: '4fd49c8a50ad6c2c8f25177b06939c6dfdbbc161',
+21 silly publish   _from: '.' }
+22 verbose getPublishConfig undefined
+23 silly mapToRegistry name ikizmet-funnel-graph-js
+24 silly mapToRegistry using default registry
+25 silly mapToRegistry registry https://registry.npmjs.org/
+26 silly mapToRegistry data Result {
+26 silly mapToRegistry   raw: 'ikizmet-funnel-graph-js',
+26 silly mapToRegistry   scope: null,
+26 silly mapToRegistry   escapedName: 'ikizmet-funnel-graph-js',
+26 silly mapToRegistry   name: 'ikizmet-funnel-graph-js',
+26 silly mapToRegistry   rawSpec: '',
+26 silly mapToRegistry   spec: 'latest',
+26 silly mapToRegistry   type: 'tag' }
+27 silly mapToRegistry uri https://registry.npmjs.org/ikizmet-funnel-graph-js
+28 verbose publish registryBase https://registry.npmjs.org/
+29 silly publish uploading /Users/mhildenbrand/.npm/ikizmet-funnel-graph-js/1.4.1/package.tgz
+30 verbose request uri https://registry.npmjs.org/ikizmet-funnel-graph-js
+31 verbose request sending authorization for write operation
+32 info attempt registry request try #1 at 3:03:34 PM
+33 verbose request using bearer token for auth
+34 verbose request id 0ae04c36eb9aa13b
+35 http request PUT https://registry.npmjs.org/ikizmet-funnel-graph-js
+36 http 401 https://registry.npmjs.org/ikizmet-funnel-graph-js
+37 verbose headers { date: 'Wed, 15 Jan 2020 23:03:36 GMT',
+37 verbose headers   'content-type': 'application/json',
+37 verbose headers   'content-length': '100',
+37 verbose headers   connection: 'keep-alive',
+37 verbose headers   'set-cookie': [ '__cfduid=d1b06d550c85e1a8c7a55c411ea58f7781579129415; expires=Fri, 14-Feb-20 23:03:35 GMT; path=/; domain=.npmjs.org; HttpOnly; SameSite=Lax' ],
+37 verbose headers   'cf-ray': '555b7bdf2a53f126-IAD',
+37 verbose headers   'www-authenticate': 'OTP',
+37 verbose headers   'cf-cache-status': 'DYNAMIC',
+37 verbose headers   'expect-ct': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"',
+37 verbose headers   vary: 'Accept-Encoding',
+37 verbose headers   server: 'cloudflare' }
+38 verbose request invalidating /Users/mhildenbrand/.npm/registry.npmjs.org/ikizmet-funnel-graph-js on PUT
+39 error publish Failed PUT 401
+40 verbose stack Error: You must provide a one-time pass. Upgrade your client to npm@latest in order to use 2FA. : ikizmet-funnel-graph-js
+40 verbose stack     at makeError (/Users/mhildenbrand/.nvm/versions/node/v7.2.0/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:302:12)
+40 verbose stack     at CachingRegistryClient.<anonymous> (/Users/mhildenbrand/.nvm/versions/node/v7.2.0/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:290:14)
+40 verbose stack     at Request._callback (/Users/mhildenbrand/.nvm/versions/node/v7.2.0/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:210:14)
+40 verbose stack     at Request.self.callback (/Users/mhildenbrand/.nvm/versions/node/v7.2.0/lib/node_modules/npm/node_modules/request/request.js:187:22)
+40 verbose stack     at emitTwo (events.js:106:13)
+40 verbose stack     at Request.emit (events.js:191:7)
+40 verbose stack     at Request.<anonymous> (/Users/mhildenbrand/.nvm/versions/node/v7.2.0/lib/node_modules/npm/node_modules/request/request.js:1048:10)
+40 verbose stack     at emitOne (events.js:96:13)
+40 verbose stack     at Request.emit (events.js:188:7)
+40 verbose stack     at IncomingMessage.<anonymous> (/Users/mhildenbrand/.nvm/versions/node/v7.2.0/lib/node_modules/npm/node_modules/request/request.js:969:12)
+41 verbose statusCode 401
+42 verbose pkgid ikizmet-funnel-graph-js
+43 verbose cwd /Users/mhildenbrand/Sites/ikizmet/github/funnel-graph-js
+44 error Darwin 19.2.0
+45 error argv "/Users/mhildenbrand/.nvm/versions/node/v7.2.0/bin/node" "/Users/mhildenbrand/.nvm/versions/node/v7.2.0/bin/npm" "publish"
+46 error node v7.2.0
+47 error npm  v3.10.9
+48 error code E401
+49 error You must provide a one-time pass. Upgrade your client to npm@latest in order to use 2FA. : ikizmet-funnel-graph-js
+50 error If you need help, you may report this error at:
+50 error     <https://github.com/npm/npm/issues>
+51 verbose exit [ 1, true ]

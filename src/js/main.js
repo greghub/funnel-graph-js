@@ -14,8 +14,12 @@ class FunnelGraph {
         this.direction = (options.direction && options.direction === 'vertical') ? 'vertical' : 'horizontal';
         this.labels = FunnelGraph.getLabels(options);
         this.subLabels = FunnelGraph.getSubLabels(options);
+        this.percentLabels = FunnelGraph.getPercentLabels(options);
         this.values = FunnelGraph.getValues(options);
+        this.rawDataValues = FunnelGraph.getRawDataValues(options);     
         this.percentages = this.createPercentages();
+        this.subPercents = options.data.subPercents;
+        this.breakdownRawData = options.data.breakdownRawData;
         this.colors = options.data.colors || getDefaultColors(this.is2d() ? this.getSubDataSize() : 2);
         this.displayPercent = options.displayPercent || false;
         this.data = options.data;
@@ -153,6 +157,18 @@ class FunnelGraph {
         return data.subLabels;
     }
 
+    static getPercentLabels(options) {
+        if (!options.data) {
+            throw new Error('Data is missing');
+        }
+
+        const { data } = options;
+
+        if (typeof data.percentLabels === 'undefined') return [];
+
+        return data.percentLabels;
+    }
+
     static getLabels(options) {
         if (!options.data) {
             throw new Error('Data is missing');
@@ -170,6 +186,7 @@ class FunnelGraph {
         holder.setAttribute('class', 'svg-funnel-js__labels');
 
         this.percentages.forEach((percentage, index) => {
+            console.log(this)
             const labelElement = document.createElement('div');
             labelElement.setAttribute('class', `svg-funnel-js__label label-${index + 1}`);
 
@@ -181,19 +198,35 @@ class FunnelGraph {
             value.setAttribute('class', 'label__value');
 
             const valueNumber = this.is2d() ? this.getValues2d()[index] : this.values[index];
-            value.textContent = formatNumber(valueNumber);
+            if (this.rawDataValues !== undefined) {
+                value.innerHTML = `${this.labels[index] || ''}: <a target='_blank' href='${this.rawDataValues[index]}'>${formatNumber(valueNumber)}</a>`;
+            } else {
+                value.textContent = `${this.labels[index] || ''}: ${formatNumber(valueNumber)}`;
+            }
+            
 
             const percentageValue = document.createElement('div');
             percentageValue.setAttribute('class', 'label__percentage');
 
+            const percentageValue2 = document.createElement('div');
+            percentageValue2.setAttribute('class', 'label__percentage label__percentage2');
+
             if (percentage !== 100) {
-                percentageValue.textContent = `${percentage.toString()}%`;
+                if (this.percentLabels.length !== 0) {
+                    percentageValue.textContent = `${percentage.toString()}% - ${this.percentLabels[index - 1][0]}`;
+                    if (this.subPercents !== undefined && index > 1) {
+                        percentageValue2.textContent = `${(this.subPercents[index - 1] * 100).toFixed(1)}% - ${this.percentLabels[index - 1][1]}`;
+                    }
+                } else {
+                    percentageValue.textContent = `${percentage.toString()}% `;
+                }
             }
 
             labelElement.appendChild(value);
-            labelElement.appendChild(title);
+            // labelElement.appendChild(title);
             if (this.displayPercent) {
                 labelElement.appendChild(percentageValue);
+                labelElement.appendChild(percentageValue2);
             }
 
             if (this.is2d()) {
@@ -208,7 +241,7 @@ class FunnelGraph {
                         ? `${twoDimPercentages[index][j]}%`
                         : formatNumber(this.values[index][j]);
                     percentageList += `<li class="${this.getSubLabelVisibility(j) && 'hide'}">${this.subLabels[j]}:
-    <span class="percentage__list-label">${subLabelDisplayValue}</span>
+    <span class="percentage__list-label">${this.breakdownRawData !== undefined ? `<a target='_blank' href="${this.breakdownRawData[j]}">${subLabelDisplayValue}</a>` : subLabelDisplayValue}</span>
  </li>`;
                 });
                 percentageList += '</ul>';
@@ -299,6 +332,20 @@ class FunnelGraph {
 
         if (typeof data === 'object') {
             return data.values;
+        }
+
+        return [];
+    }
+
+    static getRawDataValues(options) {
+        if (!options.data) {
+            return [];
+        }
+
+        const { data } = options;
+
+        if (typeof data === 'object') {
+            return data.rawDataValues;
         }
 
         return [];

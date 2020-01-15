@@ -19,6 +19,14 @@ body {
         color: #fff;
         line-height: 18px;
         margin-bottom: 6px; }
+        .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label .label__value a {
+          font-size: 24px;
+          color: #fff;
+          line-height: 18px;
+          margin-bottom: 6px;
+          text-decoration: 'none'; }
+          .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label .label__value a:hover {
+            text-decoration: underline; }
       .svg-funnel-js .svg-funnel-js__labels .svg-funnel-js__label .label__title {
         font-size: 12px;
         font-weight: bold;

@@ -27,6 +27,16 @@ body {
 				color: $white;
 				line-height: 18px;
 				margin-bottom: 6px;
+				a{
+					font-size: 24px;
+					color: $white;
+					line-height: 18px;
+					margin-bottom: 6px;
+					text-decoration: 'none';
+					&:hover{
+						text-decoration: underline;
+					}
+				}
 			}
 
 			.label__title {

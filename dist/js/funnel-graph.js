@@ -166,8 +166,12 @@ function () {
     this.direction = options.direction && options.direction === 'vertical' ? 'vertical' : 'horizontal';
     this.labels = FunnelGraph.getLabels(options);
     this.subLabels = FunnelGraph.getSubLabels(options);
+    this.percentLabels = FunnelGraph.getPercentLabels(options);
     this.values = FunnelGraph.getValues(options);
+    this.rawDataValues = FunnelGraph.getRawDataValues(options);
     this.percentages = this.createPercentages();
+    this.subPercents = options.data.subPercents;
+    this.breakdownRawData = options.data.breakdownRawData;
     this.colors = options.data.colors || (0, _graph.getDefaultColors)(this.is2d() ? this.getSubDataSize() : 2);
     this.displayPercent = options.displayPercent || false;
     this.data = options.data;
@@ -316,6 +320,7 @@ function () {
       var holder = document.createElement('div');
       holder.setAttribute('class', 'svg-funnel-js__labels');
       this.percentages.forEach(function (percentage, index) {
+        console.log(_this);
         var labelElement = document.createElement('div');
         labelElement.setAttribute('class', "svg-funnel-js__label label-".concat(index + 1));
         var title = document.createElement('div');
@@ -324,19 +329,35 @@ function () {
         var value = document.createElement('div');
         value.setAttribute('class', 'label__value');
         var valueNumber = _this.is2d() ? _this.getValues2d()[index] : _this.values[index];
-        value.textContent = (0, _number.formatNumber)(valueNumber);
-        var percentageValue = document.createElement('div');
-        percentageValue.setAttribute('class', 'label__percentage');
 
-        if (percentage !== 100) {
-          percentageValue.textContent = "".concat(percentage.toString(), "%");
+        if (_this.rawDataValues !== undefined) {
+          value.innerHTML = "".concat(_this.labels[index] || '', ": <a target='_blank' href='").concat(_this.rawDataValues[index], "'>").concat((0, _number.formatNumber)(valueNumber), "</a>");
+        } else {
+          value.textContent = "".concat(_this.labels[index] || '', ": ").concat((0, _number.formatNumber)(valueNumber));
         }
 
-        labelElement.appendChild(value);
-        labelElement.appendChild(title);
+        var percentageValue = document.createElement('div');
+        percentageValue.setAttribute('class', 'label__percentage');
+        var percentageValue2 = document.createElement('div');
+        percentageValue2.setAttribute('class', 'label__percentage label__percentage2');
+
+        if (percentage !== 100) {
+          if (_this.percentLabels.length !== 0) {
+            percentageValue.textContent = "".concat(percentage.toString(), "% - ").concat(_this.percentLabels[index - 1][0]);
+
+            if (_this.subPercents !== undefined && index > 1) {
+              percentageValue2.textContent = "".concat((_this.subPercents[index - 1] * 100).toFixed(1), "% - ").concat(_this.percentLabels[index - 1][1]);
+            }
+          } else {
+            percentageValue.textContent = "".concat(percentage.toString(), "% ");
+          }
+        }
+
+        labelElement.appendChild(value); // labelElement.appendChild(title);
 
         if (_this.displayPercent) {
           labelElement.appendChild(percentageValue);
+          labelElement.appendChild(percentageValue2);
         }
 
         if (_this.is2d()) {
@@ -348,7 +369,7 @@ function () {
 
           _this.subLabels.forEach(function (subLabel, j) {
             var subLabelDisplayValue = _this.subLabelValue === 'percent' ? "".concat(twoDimPercentages[index][j], "%") : (0, _number.formatNumber)(_this.values[index][j]);
-            percentageList += "<li class=\"".concat(_this.getSubLabelVisibility(j) && 'hide', "\">").concat(_this.subLabels[j], ":\n    <span class=\"percentage__list-label\">").concat(subLabelDisplayValue, "</span>\n </li>");
+            percentageList += "<li class=\"".concat(_this.getSubLabelVisibility(j) && 'hide', "\">").concat(_this.subLabels[j], ":\n    <span class=\"percentage__list-label\">").concat(_this.breakdownRawData !== undefined ? "<a target='_blank' href=\"".concat(_this.breakdownRawData[j], "\">").concat(subLabelDisplayValue, "</a>") : subLabelDisplayValue, "</span>\n </li>");
           });
 
           percentageList += '</ul>';
@@ -851,6 +872,17 @@ function () {
       return data.subLabels;
     }
   }, {
+    key: "getPercentLabels",
+    value: function getPercentLabels(options) {
+      if (!options.data) {
+        throw new Error('Data is missing');
+      }
+
+      var data = options.data;
+      if (typeof data.percentLabels === 'undefined') return [];
+      return data.percentLabels;
+    }
+  }, {
     key: "getLabels",
     value: function getLabels(options) {
       if (!options.data) {
@@ -872,6 +904,21 @@ function () {
 
       if (_typeof(data) === 'object') {
         return data.values;
+      }
+
+      return [];
+    }
+  }, {
+    key: "getRawDataValues",
+    value: function getRawDataValues(options) {
+      if (!options.data) {
+        return [];
+      }
+
+      var data = options.data;
+
+      if (_typeof(data) === 'object') {
+        return data.rawDataValues;
       }
 
       return [];
