@@ -881,7 +881,7 @@ var roundPoint = function roundPoint(number) {
 exports.roundPoint = roundPoint;
 
 var formatNumber = function formatNumber(number) {
-  return Number(number).toFixed().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  return Number(number).toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
 };
 
 exports.formatNumber = formatNumber;
