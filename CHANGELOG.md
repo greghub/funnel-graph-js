@@ -1,3 +1,9 @@
+### 1.4.0 (Jan 26, 2020)
+
+* Add ability to handle data with all zero values
+* Allow decimals for values
+* Update packages
+
 ### 1.3.9 (Jun 9, 2019)
 
 * Improve IE compatibility

@@ -1,6 +1,6 @@
 {
   "name": "funnel-graph-js",
-  "version": "1.3.9",
+  "version": "1.4.0",
   "description": "SVG Funnel Graph Javascript Library",
   "main": "main.js",
   "scripts": {
