@@ -1,7 +1,7 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.FunnelGraph = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
 
-module.exports = require('./src/js/main')["default"];
+module.exports = require('./src/js/main').default;
 
 },{"./src/js/main":3}],2:[function(require,module,exports){
 "use strict";
@@ -131,7 +131,7 @@ exports.areEqual = areEqual;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = void 0;
+exports.default = void 0;
 
 var _number = require("./number");
 
@@ -189,18 +189,18 @@ function () {
                                          ------
                      ---#1----------------
   #0-----------------
-    Main axis is the primary axis of the graph.
+   Main axis is the primary axis of the graph.
    In a horizontal graph it's the X axis, and Y is the cross axis.
    However we use the names "main" and "cross" axis,
    because in a vertical graph the primary axis is the Y axis
    and the cross axis is the X axis.
-    First step of drawing the funnel graph is getting the coordinates of points,
+   First step of drawing the funnel graph is getting the coordinates of points,
    that are used when drawing the paths.
-    There are 4 paths in the example above: A, B, C and D.
+   There are 4 paths in the example above: A, B, C and D.
    Such funnel has 3 labels and 3 subLabels.
    This means that the main axis has 4 points (number of labels + 1)
    One the ASCII illustrated graph above, those points are illustrated with a # symbol.
-   */
+  */
 
 
   _createClass(FunnelGraph, [{
@@ -325,11 +325,7 @@ function () {
         value.textContent = (0, _number.formatNumber)(valueNumber);
         var percentageValue = document.createElement('div');
         percentageValue.setAttribute('class', 'label__percentage');
-
-        if (percentage !== 100) {
-          percentageValue.textContent = "".concat(percentage.toString(), "%");
-        }
-
+        percentageValue.textContent = "".concat(percentage.toString(), "%");
         labelElement.appendChild(value);
         labelElement.appendChild(title);
 
@@ -453,7 +449,7 @@ function () {
 
       var max = Math.max.apply(Math, _toConsumableArray(values));
       return values.map(function (value) {
-        return (0, _number.roundPoint)(value * 100 / max);
+        return value === 0 ? 0 : (0, _number.roundPoint)(value * 100 / max);
       });
     }
   }, {
@@ -868,7 +864,7 @@ function () {
 }();
 
 var _default = FunnelGraph;
-exports["default"] = _default;
+exports.default = _default;
 
 },{"./graph":2,"./number":4,"./path":5}],4:[function(require,module,exports){
 "use strict";
