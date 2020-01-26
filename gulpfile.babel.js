@@ -16,7 +16,7 @@ import uglify from 'gulp-uglify';
 const server = browserSync.create();
 
 const styles = () => {
-    const plugins = [autoprefixer({ browsers: ['last 2 versions'] }), cssnano()];
+    const plugins = [autoprefixer(), cssnano()];
 
     return (
         gulp.src(['./src/scss/main.scss', './src/scss/theme.scss'])
