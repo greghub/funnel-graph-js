@@ -315,7 +315,7 @@ class FunnelGraph {
         }
 
         const max = Math.max(...values);
-        return values.map(value => value === 0 ? 0 : roundPoint(value * 100 / max));
+        return values.map(value => (value === 0 ? 0 : roundPoint(value * 100 / max)));
     }
 
     applyGradient(svg, path, colors, index) {

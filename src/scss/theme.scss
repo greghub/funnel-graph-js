@@ -2,6 +2,7 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,700");
 
 body {
+	// sass-lint:disable-block no-vendor-prefixes
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
