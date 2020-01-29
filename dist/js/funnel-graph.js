@@ -731,12 +731,19 @@ function () {
   }, {
     key: "updateData",
     value: function updateData(d) {
+      var labels = this.container.querySelector('.svg-funnel-js__labels');
+      var subLabels = this.container.querySelector('.svg-funnel-js__subLabels');
+      if (labels) labels.remove();
+      if (subLabels) subLabels.remove();
+      this.labels = [];
+      this.colors = (0, _graph.getDefaultColors)(this.is2d() ? this.getSubDataSize() : 2);
+      this.values = [];
+      this.percentages = [];
+
       if (typeof d.labels !== 'undefined') {
-        this.container.querySelector('.svg-funnel-js__labels').remove();
         this.labels = FunnelGraph.getLabels({
           data: d
         });
-        this.addLabels();
       }
 
       if (typeof d.colors !== 'undefined') {
@@ -750,17 +757,19 @@ function () {
             data: d
           });
           this.makeSVG();
-          this.drawPaths();
         } else {
           this.values = FunnelGraph.getValues({
             data: d
           });
-          this.drawPaths();
         }
+
+        this.drawPaths();
       }
 
+      this.percentages = this.createPercentages();
+      this.addLabels();
+
       if (typeof d.subLabels !== 'undefined') {
-        this.container.querySelector('.svg-funnel-js__subLabels').remove();
         this.subLabels = FunnelGraph.getSubLabels({
           data: d
         });

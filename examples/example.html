@@ -50,17 +50,20 @@
         <button id="gradientMakeVertical">Gradient Make Vertical</button>
         <button id="gradientMakeHorizontal">Gradient Make Horizontal</button>
         <button id="gradientToggleDirection">Gradient Toggle Direction</button>
+        <button id="useData1">Use DataSet 1</button>
+        <button id="useData2">Use DataSet 2</button>
+        <button id="useData3">Use DataSet 3</button>
     </div>
 
     <script src="../dist/js/funnel-graph.js"></script>
     <script>
         var dataExample1 = {
             colors: ['#FFB178', '#FF3C8E'],
-            values: [12000, 5700, 360]
+            values: [11000, 3000, 240]
         };
 
         var dataExample2 = {
-            labels: ['Impressions', 'Add To Cart', 'Buy'],
+            labels: ['Impressions 2', 'Add To Cart 2', 'Buy 2'],
             colors: ['#FFB178', '#FF3C8E'],
             values: [12000, 5700, 360]
         };
@@ -122,6 +125,18 @@
 
         document.querySelector('#gradientToggleDirection').addEventListener('click', function () {
             graph.gradientToggleDirection();
+        });
+
+        document.querySelector('#useData1').addEventListener('click', function () {
+          graph.updateData(dataExample1);
+        });
+
+        document.querySelector('#useData2').addEventListener('click', function () {
+          graph.updateData(dataExample2);
+        });
+
+        document.querySelector('#useData3').addEventListener('click', function () {
+          graph.updateData(dataExample3);
         });
 
     </script>

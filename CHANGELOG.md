@@ -1,3 +1,7 @@
+### 1.4.1 (Jan 29, 2020)
+
+* Fix dynamic data update
+
 ### 1.4.0 (Jan 26, 2020)
 
 * Add ability to handle data with all zero values
