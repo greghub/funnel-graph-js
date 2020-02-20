@@ -335,7 +335,7 @@ class FunnelGraph {
             ? createSVGElement('defs', svg)
             : svg.querySelector('defs');
 
-        const gradientName = generateRandomIdString(`funnelGradient-${index}`);
+        const gradientName = generateRandomIdString(`funnelGradient-${index}-`);
 
         const gradient = createSVGElement('linearGradient', defs, {
             id: gradientName
