@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>SVG Funnel</title>
+	<link rel="stylesheet" type="text/css" href="../dist/css/main.min.css">
+    <link rel="stylesheet" type="text/css" href="../dist/css/theme.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/png" href="favicon.png"/>
+    <style>
+        html, body {
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+            background: #393862;
+        }
+
+        .funnel {
+            margin: 24px auto;
+        }
+
+        .example-funnels {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    <div class="example-funnels">
+        <div class="funnel" id="examplefunnel0"></div>
+        <div class="funnel" id="examplefunnel1"></div>
+        <div class="funnel" id="examplefunnel2"></div>
+    </div>
+
+    <script src="../dist/js/funnel-graph.js"></script>
+    <script>
+        var examples = [{
+            colors: ['red', 'purple'],
+            values: [11000, 3000, 240]
+        },{
+            labels: ['Impressions 2', 'Add To Cart 2', 'Buy 2'],
+            colors: ['green', 'cyan'],
+            values: [12000, 5700, 360]
+        },{
+            labels: ['Impressions', 'Add To Cart', 'Buy'],
+            subLabels: ['Direct', 'Social Media', 'Ads'],
+            colors: [
+                ['#FFB178', '#FF78B1', '#FF3C8E'],
+                ['#A0BBFF', '#EC77FF'],
+                ['#A0F9FF', '#7795FF']
+            ],
+            values: [
+                [3500, 2500, 6500],
+                [3300, 1400, 1000],
+                [600, 200, 130]
+            ]
+        }];
+
+        var graphs = [];
+
+        for(var i = 0; i < examples.length; i++) {
+
+            var graph = new FunnelGraph({
+                container: '#examplefunnel' + i,
+                gradientDirection: 'horizontal',
+                data: examples[i],
+                displayPercent: true,
+                direction: 'horizontal',
+                width: 800,
+                height: 300,
+                subLabelValue: 'percent'
+            });
+
+            graph.draw();
+            graphs.push(graph);
+        }
+
+        console.log("Graphs spawned: ", graphs);
+
+    </script>
+</body>
+</html>

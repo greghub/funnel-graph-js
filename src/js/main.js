@@ -1,9 +1,11 @@
 /* eslint-disable no-trailing-spaces */
+/* global HTMLElement */
 import { roundPoint, formatNumber } from './number';
 import { createPath, createVerticalPath } from './path';
 import {
     generateLegendBackground, getDefaultColors, createSVGElement, setAttrs, removeAttrs
 } from './graph';
+import generateRandomIdString from './random';
 
 class FunnelGraph {
     constructor(options) {
@@ -222,7 +224,7 @@ class FunnelGraph {
 
             this.subLabels.forEach((subLabel, index) => {
                 subLabelsHTML += `<div class="svg-funnel-js__subLabel svg-funnel-js__subLabel-${index + 1}">
-    <div class="svg-funnel-js__subLabel--color" 
+    <div class="svg-funnel-js__subLabel--color"
         style="${generateLegendBackground(this.colors[index], this.gradientDirection)}"></div>
     <div class="svg-funnel-js__subLabel--title">${subLabel}</div>
 </div>`;
@@ -238,7 +240,17 @@ class FunnelGraph {
             throw new Error('Container is missing');
         }
 
-        this.container = document.querySelector(this.containerSelector);
+        if (typeof this.containerSelector === 'string') {
+            this.container = document.querySelector(this.containerSelector);
+            if (!this.container) {
+                throw new Error(`Container cannot be found (selector: ${this.containerSelector}).`);
+            }
+        } else if (this.container instanceof HTMLElement) {
+            this.container = this.containerSelector;
+        } else {
+            throw new Error('Container must either be a selector string or an HTMLElement.');
+        }
+
         this.container.classList.add('svg-funnel-js');
 
         this.graphContainer = document.createElement('div');
@@ -322,7 +334,9 @@ class FunnelGraph {
         const defs = (svg.querySelector('defs') === null)
             ? createSVGElement('defs', svg)
             : svg.querySelector('defs');
-        const gradientName = `funnelGradient-${index}`;
+
+        const gradientName = generateRandomIdString(`funnelGradient-${index}`);
+
         const gradient = createSVGElement('linearGradient', defs, {
             id: gradientName
         });

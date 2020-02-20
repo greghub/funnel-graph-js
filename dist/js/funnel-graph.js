@@ -139,6 +139,10 @@ var _path = require("./path");
 
 var _graph = require("./graph");
 
+var _random = _interopRequireDefault(require("./random"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
@@ -364,7 +368,7 @@ function () {
         subLabelsHolder.setAttribute('class', 'svg-funnel-js__subLabels');
         var subLabelsHTML = '';
         this.subLabels.forEach(function (subLabel, index) {
-          subLabelsHTML += "<div class=\"svg-funnel-js__subLabel svg-funnel-js__subLabel-".concat(index + 1, "\">\n    <div class=\"svg-funnel-js__subLabel--color\" \n        style=\"").concat((0, _graph.generateLegendBackground)(_this2.colors[index], _this2.gradientDirection), "\"></div>\n    <div class=\"svg-funnel-js__subLabel--title\">").concat(subLabel, "</div>\n</div>");
+          subLabelsHTML += "<div class=\"svg-funnel-js__subLabel svg-funnel-js__subLabel-".concat(index + 1, "\">\n    <div class=\"svg-funnel-js__subLabel--color\"\n        style=\"").concat((0, _graph.generateLegendBackground)(_this2.colors[index], _this2.gradientDirection), "\"></div>\n    <div class=\"svg-funnel-js__subLabel--title\">").concat(subLabel, "</div>\n</div>");
         });
         subLabelsHolder.innerHTML = subLabelsHTML;
         this.container.appendChild(subLabelsHolder);
@@ -377,7 +381,18 @@ function () {
         throw new Error('Container is missing');
       }
 
-      this.container = document.querySelector(this.containerSelector);
+      if (typeof this.containerSelector === 'string') {
+        this.container = document.querySelector(this.containerSelector);
+
+        if (!this.container) {
+          throw new Error("Container cannot be found (selector: ".concat(this.containerSelector, ")."));
+        }
+      } else if (this.container instanceof HTMLElement) {
+        this.container = this.containerSelector;
+      } else {
+        throw new Error('Container must either be a selector string or an HTMLElement.');
+      }
+
       this.container.classList.add('svg-funnel-js');
       this.graphContainer = document.createElement('div');
       this.graphContainer.classList.add('svg-funnel-js__container');
@@ -456,7 +471,7 @@ function () {
     key: "applyGradient",
     value: function applyGradient(svg, path, colors, index) {
       var defs = svg.querySelector('defs') === null ? (0, _graph.createSVGElement)('defs', svg) : svg.querySelector('defs');
-      var gradientName = "funnelGradient-".concat(index);
+      var gradientName = (0, _random.default)("funnelGradient-".concat(index));
       var gradient = (0, _graph.createSVGElement)('linearGradient', defs, {
         id: gradientName
       });
@@ -875,7 +890,7 @@ function () {
 var _default = FunnelGraph;
 exports.default = _default;
 
-},{"./graph":2,"./number":4,"./path":5}],4:[function(require,module,exports){
+},{"./graph":2,"./number":4,"./path":5,"./random":6}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -990,5 +1005,20 @@ var createVerticalPath = function createVerticalPath(index, X, XNext, Y) {
 
 exports.createVerticalPath = createVerticalPath;
 
-},{"./number":4}]},{},[1])(1)
+},{"./number":4}],6:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var generateRandomIdString = function generateRandomIdString(prefix) {
+  return Math.random().toString(36).replace('0.', prefix || '');
+};
+
+var _default = generateRandomIdString;
+exports.default = _default;
+
+},{}]},{},[1])(1)
 });
