@@ -11,7 +11,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.defaultColors = exports.removeAttrs = exports.setAttrs = exports.createSVGElement = exports.areEqual = exports.getDefaultColors = exports.generateLegendBackground = void 0;
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 var setAttrs = function setAttrs(element, attributes) {
   if (_typeof(attributes) === 'object') {
@@ -143,7 +143,7 @@ var _random = _interopRequireDefault(require("./random"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
@@ -471,7 +471,7 @@ function () {
     key: "applyGradient",
     value: function applyGradient(svg, path, colors, index) {
       var defs = svg.querySelector('defs') === null ? (0, _graph.createSVGElement)('defs', svg) : svg.querySelector('defs');
-      var gradientName = (0, _random.default)("funnelGradient-".concat(index));
+      var gradientName = (0, _random.default)("funnelGradient-".concat(index, "-"));
       var gradient = (0, _graph.createSVGElement)('linearGradient', defs, {
         id: gradientName
       });
