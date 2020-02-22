@@ -1,3 +1,8 @@
+### 1.4.2 (Feb 22, 2020)
+
+* Fix gradient ID collision
+* Add ability to pass HTML DOM Element instance as container param
+
 ### 1.4.1 (Jan 29, 2020)
 
 * Fix dynamic data update
