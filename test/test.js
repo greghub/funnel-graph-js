@@ -2,9 +2,36 @@
 import { roundPoint, formatNumber } from '../src/js/number';
 import { createCurves, createVerticalCurves, createPath } from '../src/js/path';
 import { generateLegendBackground, areEqual } from '../src/js/graph';
+import generateRandomIdString from '../src/js/random';
 import FunnelGraph from '../index';
 
 const assert = require('assert');
+
+describe('Check randomly generated ids', () => {
+    const generatedIds = [];
+    it('don\'t collide often', () => {
+        for(let i = 0; i < 1000; i++) {
+            const newlyGeneratedId = generateRandomIdString();
+            for(let j = 0; j < generatedIds.length; j++) {
+                const previouslyGeneratedId = generatedIds[j];
+                assert.notEqual(newlyGeneratedId, previouslyGeneratedId);
+            }
+            generatedIds.push(newlyGeneratedId);
+        }
+    });
+    it('have correct prefix', () => {
+        ['test', '__', '-prefix-'].forEach(prefix => {
+            const generatedId = generateRandomIdString(prefix);
+            assert.equal(0, generatedId.indexOf(prefix));
+        });
+    });
+    it('are longer than just the prefix', () => {
+        ['test', '__', '-prefix-', ''].forEach(prefix => {
+            const generatedId = generateRandomIdString(prefix);
+            assert.equal(true, generatedId.length > prefix.length);
+        });
+    });
+});
 
 describe('Test number functions', () => {
     it('round number test', () => {
