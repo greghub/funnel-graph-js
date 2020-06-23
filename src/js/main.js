@@ -245,7 +245,7 @@ class FunnelGraph {
             if (!this.container) {
                 throw new Error(`Container cannot be found (selector: ${this.containerSelector}).`);
             }
-        } else if (this.container instanceof HTMLElement) {
+        } else if (this.containerSelector instanceof HTMLElement) {
             this.container = this.containerSelector;
         } else {
             throw new Error('Container must either be a selector string or an HTMLElement.');
