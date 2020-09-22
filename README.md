@@ -1,4 +1,4 @@
-# FunnelGraph.js 
+# FunnelGraph.js
 
 ![npm](https://img.shields.io/npm/v/funnel-graph-js.svg)
 [![Build Status](https://travis-ci.org/greghub/funnel-graph-js.svg?branch=master)](https://travis-ci.org/greghub/funnel-graph-js)
@@ -10,7 +10,7 @@
 
 Funnel Graph JS is a library for generating a funnel chart. It generates an SVG chart, adds labels, legend and other info.
 Some of the features include generating horizontal and vertical funnel charts, applying solid colors and gradients,
-possibility to generate a two-dimensional funnel chart. 
+possibility to generate a two-dimensional funnel chart.
 
 <img width="640" src="https://i.imgur.com/3Zw9m2l.jpg" alt="SVG Two Dimensional Funnel Graph">
 
@@ -25,7 +25,7 @@ FunnelGraph.js is also available as a Vue.js component: [Vue Funnel Graph](https
 
 ## Installation
 
-You can get the code by installing the NPM package, loading files from a CDN or downloading the repo. 
+You can get the code by installing the NPM package, loading files from a CDN or downloading the repo.
 
 #### NPM
 
@@ -37,20 +37,20 @@ npm i funnel-graph-js
 #### CDN
 
 ```html
-<link rel="stylesheet" type="text/css" href="https://unpkg.com/funnel-graph-js@1.3.9/dist/css/main.min.css">
-<link rel="stylesheet" type="text/css" href="https://unpkg.com/funnel-graph-js@1.3.9/dist/css/theme.min.css">
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/funnel-graph-js@1.4.2/dist/css/main.min.css">
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/funnel-graph-js@1.4.2/dist/css/theme.min.css">
 
-<script src="https://unpkg.com/funnel-graph-js@1.3.9/dist/js/funnel-graph.min.js"></script>
+<script src="https://unpkg.com/funnel-graph-js@1.4.2/dist/js/funnel-graph.min.js"></script>
 ```
 
 #### Download
 
 Download the repo ZIP, add `funnel-graph.js` or `funnel-graph.min.js`, and `main.css` or `main.min.css`.
-Optionally add `theme.min.css` to include the styling for labels, legend etc. 
+Optionally add `theme.min.css` to include the styling for labels, legend etc.
 It is recommended to add the theme, to display the chart correctly.
 
 FunnelGraph.js is built in a way that most of the styling is controlled by theme file,
-so it is possible to adapt every element to your design. The chart is a SVG element and 
+so it is possible to adapt every element to your design. The chart is a SVG element and
 `colors` property of the options controls the colors of the chart.
 
 CSS:
@@ -78,12 +78,12 @@ var graph = new FunnelGraph({
 graph.draw();
 ```
 
-You can choose how you want to display your data on funnel graph. 
+You can choose how you want to display your data on funnel graph.
 You can display exact numbers, you can display percentages or both.
 The library will generate percentages automatically,
-taking the largest number as 100% and then calculating 
+taking the largest number as 100% and then calculating
 other numbers as a fraction of the largest number.
-For example: 12000, 5700 and 360 will be displayed as 47.5% and 3% 
+For example: 12000, 5700 and 360 will be displayed as 47.5% and 3%
 (100% is skipped in order to avoid redundancy).
 
 Provided values | 12000 | 5700  | 360 |
@@ -99,7 +99,7 @@ If you want to hide percentages you set `displayPercent` to `false`:
 }
 ```
 
-You can also display a vertical funnel graph: 
+You can also display a vertical funnel graph:
 ```js
 {
     direction: 'vertical'
@@ -155,10 +155,10 @@ That most explicit way to add data to the funnel graph.
 
 <img width="640" src="https://i.imgur.com/c2qbxGQ.jpg" alt="SVG Funnel Graph">
 
-If using one of those two ways, you can control the graph 
-color using `colors` param. Otherwise, the default color will be used. 
+If using one of those two ways, you can control the graph
+color using `colors` param. Otherwise, the default color will be used.
 And if you are using gradient as color, then you can control
-gradient direction with `gradientDirection` param. 
+gradient direction with `gradientDirection` param.
 `colors` shall be passed inside `data`, while `gradientDirection` with other options.
 
 ```js
@@ -173,7 +173,7 @@ Otherwise it defaults to horizontal (left to right).
 
 If you want to break down your data into more details,
 you can use two-dimensional svg funnel graph. It will
-generate a graph like this: 
+generate a graph like this:
 
 <img width="640" src="https://i.imgur.com/3Zw9m2l.jpg" alt="SVG Two Dimensional Funnel Graph">
 
@@ -205,8 +205,8 @@ In a two-dimensional graph each segment shall have it's own color or gradient.
 If using a gradient the `gradientDirection` option will be applied to all of the segments.
 However all supported ways of defining colors in a simple funnel graph can be used here as
 well and you can have both solid colors and gradients applied to segments of a single graph.
-In the above example first segment, "Direct", will have a gradient, 
-"Social Media" will have a solid red color, and "Ads" segment will have a solid blue.   
+In the above example first segment, "Direct", will have a gradient,
+"Social Media" will have a solid red color, and "Ads" segment will have a solid blue.
 
 ## Options
 
@@ -219,7 +219,7 @@ In the above example first segment, "Direct", will have a gradient,
 | `data` | Object containing information about values, labels and colors of the chart | `object` | Yes | | | |
 | `width` | Width of the funnel graph | `number` | No | | Container width | 800 |
 | `height` | Height of the funnel graph | `number` | No | | Container height | 300 |
-| `subLabelValue` | Whether display percentage or real value of segment | `string` | No | `percent`, `raw` | `percent` | 
+| `subLabelValue` | Whether display percentage or real value of segment | `string` | No | `percent`, `raw` | `percent` |
 
 ## Methods
 
