@@ -2,7 +2,7 @@
   "name": "funnel-graph-js",
   "version": "1.4.2",
   "description": "SVG Funnel Graph Javascript Library",
-  "main": "main.js",
+  "main": "index.js",
   "scripts": {
     "start": "gulp",
     "test": "nyc mocha --compilers js:babel-core/register"
