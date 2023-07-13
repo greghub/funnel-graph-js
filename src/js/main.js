@@ -19,6 +19,7 @@ class FunnelGraph {
         this.rawDataValues = FunnelGraph.getRawDataValues(options);     
         this.percentages = this.createPercentages();
         this.subPercents = options.data.subPercents;
+        this.averageValues = options.data.averageValues || [];
         this.breakdownRawData = options.data.breakdownRawData;
         this.colors = options.data.colors || getDefaultColors(this.is2d() ? this.getSubDataSize() : 2);
         this.displayPercent = options.displayPercent || false;
@@ -186,7 +187,6 @@ class FunnelGraph {
         holder.setAttribute('class', 'svg-funnel-js__labels');
 
         this.percentages.forEach((percentage, index) => {
-            console.log(this)
             const labelElement = document.createElement('div');
             labelElement.setAttribute('class', `svg-funnel-js__label label-${index + 1}`);
 
@@ -196,29 +196,34 @@ class FunnelGraph {
 
             const value = document.createElement('div');
             value.setAttribute('class', 'label__value');
-
+            const subVal = this.averageValues.length ?  `<span class="average"> ${this.averageValues[0][index]}<span/>` : ""
             const valueNumber = this.is2d() ? this.getValues2d()[index] : this.values[index];
             if (this.rawDataValues !== undefined) {
-                value.innerHTML = `${this.labels[index] || ''}: <a target='_blank' href='${this.rawDataValues[index]}'>${formatNumber(valueNumber)}</a>`;
+                value.innerHTML = `${this.labels[index] || ''}: 
+                <a target='_blank' href='${this.rawDataValues[index]}'>${formatNumber(valueNumber)}</a> 
+                ${subVal}`;
             } else {
-                value.textContent = `${this.labels[index] || ''}: ${formatNumber(valueNumber)}`;
+                value.textContent = `${this.labels[index] || ''}: ${formatNumber(valueNumber)} 
+                <span> ${this.averageValues[0][index]}<span/>`;
             }
             
 
             const percentageValue = document.createElement('div');
-            percentageValue.setAttribute('class', 'label__percentage');
+            percentageValue.setAttribute('class', 'label__percentage')
 
             const percentageValue2 = document.createElement('div');
             percentageValue2.setAttribute('class', 'label__percentage label__percentage2');
 
             if (percentage !== 100) {
+              const subVal = this.averageValues.length ?  `<span class="average">${(this.averageValues[1][index] * 100).toFixed(1)}%</span>` : ""
                 if (this.percentLabels.length !== 0) {
-                    percentageValue.textContent = `${percentage.toString()}% - ${this.percentLabels[index - 1][0]}`;
+                    percentageValue.innerHTML = `${percentage.toString()}% ${subVal} - ${this.percentLabels[index - 1][0]}`;
                     if (this.subPercents !== undefined && index > 1) {
-                        percentageValue2.textContent = `${(this.subPercents[index - 1] * 100).toFixed(1)}% - ${this.percentLabels[index - 1][1]}`;
+                        const subVal = this.averageValues.length ?  `<span class="average">${(this.averageValues[2][index] *100).toFixed(1)}%</span>` : ""
+                        percentageValue2.innerHTML = `${(this.subPercents[index - 1] * 100).toFixed(1)}% ${subVal} - ${this.percentLabels[index - 1][1]}`;
                     }
                 } else {
-                    percentageValue.textContent = `${percentage.toString()}% `;
+                    percentageValue.textContent = `${percentage.toString()}% ${subVal}`;
                 }
             }
 
