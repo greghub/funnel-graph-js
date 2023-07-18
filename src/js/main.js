@@ -196,7 +196,7 @@ class FunnelGraph {
 
             const value = document.createElement('div');
             value.setAttribute('class', 'label__value');
-            const subVal = this.averageValues.length ?  `<span class="average"> ${this.averageValues[0][index]}<span/>` : ""
+            const subVal = this.averageValues.length ?  `<span class="average"> ${formatNumber(this.averageValues[0][index])}<span/>` : ""
             const valueNumber = this.is2d() ? this.getValues2d()[index] : this.values[index];
             if (this.rawDataValues !== undefined) {
                 value.innerHTML = `${this.labels[index] || ''}: 
