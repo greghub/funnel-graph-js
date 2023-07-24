@@ -1,37 +1,35 @@
 /* eslint-disable no-trailing-spaces */
 import { roundPoint, formatNumber } from './number';
 import { createPath, createVerticalPath } from './path';
-import {
-    generateLegendBackground, getDefaultColors, createSVGElement, setAttrs, removeAttrs
-} from './graph';
+import { generateLegendBackground, getDefaultColors, createSVGElement, setAttrs, removeAttrs } from './graph';
 
 class FunnelGraph {
-    constructor(options) {
-        this.containerSelector = options.container;
-        this.gradientDirection = (options.gradientDirection && options.gradientDirection === 'vertical')
-            ? 'vertical'
-            : 'horizontal';
-        this.direction = (options.direction && options.direction === 'vertical') ? 'vertical' : 'horizontal';
-        this.labels = FunnelGraph.getLabels(options);
-        this.subLabels = FunnelGraph.getSubLabels(options);
-        this.percentLabels = FunnelGraph.getPercentLabels(options);
-        this.values = FunnelGraph.getValues(options);
-        this.rawDataValues = FunnelGraph.getRawDataValues(options);     
-        this.percentages = this.createPercentages();
-        this.subPercents = options.data.subPercents;
-        this.averageValues = options.data.averageValues || [];
-        this.breakdownRawData = options.data.breakdownRawData;
-        this.colors = options.data.colors || getDefaultColors(this.is2d() ? this.getSubDataSize() : 2);
-        this.displayPercent = options.displayPercent || false;
-        this.data = options.data;
-        this.height = options.height;
-        this.width = options.width;
-        this.subLabelValue = options.subLabelValue || 'percent';
-        this.hideSubLabels = options.hideSubLabels || false;
-        this.subLabelVisibility = options.subLabelVisibility || [];
-    }
+	constructor(options) {
+		this.containerSelector = options.container;
+		this.gradientDirection =
+			options.gradientDirection && options.gradientDirection === 'vertical' ? 'vertical' : 'horizontal';
+		this.direction = options.direction && options.direction === 'vertical' ? 'vertical' : 'horizontal';
+		this.labels = FunnelGraph.getLabels(options);
+		this.subLabels = FunnelGraph.getSubLabels(options);
+		this.percentLabels = FunnelGraph.getPercentLabels(options);
+		this.values = FunnelGraph.getValues(options);
+		this.rawDataValues = FunnelGraph.getRawDataValues(options);
+		this.percentages = this.createPercentages();
+		this.subPercents = options.data.subPercents;
+		this.averageValues = options.data.averageValues || [];
+		this.averageTooltip = options.data.averageTooltip || '';
+		this.breakdownRawData = options.data.breakdownRawData;
+		this.colors = options.data.colors || getDefaultColors(this.is2d() ? this.getSubDataSize() : 2);
+		this.displayPercent = options.displayPercent || false;
+		this.data = options.data;
+		this.height = options.height;
+		this.width = options.width;
+		this.subLabelValue = options.subLabelValue || 'percent';
+		this.hideSubLabels = options.hideSubLabels || false;
+		this.subLabelVisibility = options.subLabelVisibility || [];
+	}
 
-    /**
+	/**
     An example of a two-dimensional funnel graph
     #0..................
                        ...#1................
@@ -61,671 +59,699 @@ class FunnelGraph {
      One the ASCII illustrated graph above, those points are illustrated with a # symbol.
 
     */
-    getMainAxisPoints() {
-        const size = this.getDataSize();
-        const points = [];
-        const fullDimension = this.isVertical() ? this.getHeight() : this.getWidth();
-        for (let i = 0; i <= size; i++) {
-            points.push(roundPoint(fullDimension * i / size));
-        }
-        return points;
-    }
+	getMainAxisPoints() {
+		const size = this.getDataSize();
+		const points = [];
+		const fullDimension = this.isVertical() ? this.getHeight() : this.getWidth();
+		for (let i = 0; i <= size; i++) {
+			points.push(roundPoint((fullDimension * i) / size));
+		}
+		return points;
+	}
 
-    getCrossAxisPoints() {
-        const points = [];
-        const fullDimension = this.getFullDimension();
-        // get half of the graph container height or width, since funnel shape is symmetric
-        // we use this when calculating the "A" shape
-        const dimension = fullDimension / 2;
-        if (this.is2d()) {
-            const totalValues = this.getValues2d();
-            const max = Math.max(...totalValues);
+	getCrossAxisPoints() {
+		const points = [];
+		const fullDimension = this.getFullDimension();
+		// get half of the graph container height or width, since funnel shape is symmetric
+		// we use this when calculating the "A" shape
+		const dimension = fullDimension / 2;
+		if (this.is2d()) {
+			const totalValues = this.getValues2d();
+			const max = Math.max(...totalValues);
 
-            // duplicate last value
-            totalValues.push([...totalValues].pop());
-            // get points for path "A"
-            points.push(totalValues.map(value => roundPoint((max - value) / max * dimension)));
-            // percentages with duplicated last value
-            const percentagesFull = this.getPercentages2d();
-            const pointsOfFirstPath = points[0];
+			// duplicate last value
+			totalValues.push([...totalValues].pop());
+			// get points for path "A"
+			points.push(totalValues.map((value) => roundPoint(((max - value) / max) * dimension)));
+			// percentages with duplicated last value
+			const percentagesFull = this.getPercentages2d();
+			const pointsOfFirstPath = points[0];
 
-            for (let i = 1; i < this.getSubDataSize(); i++) {
-                const p = points[i - 1];
-                const newPoints = [];
+			for (let i = 1; i < this.getSubDataSize(); i++) {
+				const p = points[i - 1];
+				const newPoints = [];
 
-                for (let j = 0; j < this.getDataSize(); j++) {
-                    newPoints.push(roundPoint(
-                        // eslint-disable-next-line comma-dangle
-                        p[j] + (fullDimension - pointsOfFirstPath[j] * 2) * (percentagesFull[j][i - 1] / 100)
-                    ));
-                }
+				for (let j = 0; j < this.getDataSize(); j++) {
+					newPoints.push(
+						roundPoint(
+							// eslint-disable-next-line comma-dangle
+							p[j] + (fullDimension - pointsOfFirstPath[j] * 2) * (percentagesFull[j][i - 1] / 100)
+						)
+					);
+				}
 
-                // duplicate the last value as points #2 and #3 have the same value on the cross axis
-                newPoints.push([...newPoints].pop());
-                points.push(newPoints);
-            }
+				// duplicate the last value as points #2 and #3 have the same value on the cross axis
+				newPoints.push([...newPoints].pop());
+				points.push(newPoints);
+			}
 
-            // add points for path "D", that is simply the "inverted" path "A"
-            points.push(pointsOfFirstPath.map(point => fullDimension - point));
-        } else {
-            // As you can see on the visualization above points #2 and #3 have the same cross axis coordinate
-            // so we duplicate the last value
-            const max = Math.max(...this.values);
-            const values = [...this.values].concat([...this.values].pop());
-            // if the graph is simple (not two-dimensional) then we have only paths "A" and "D"
-            // which are symmetric. So we get the points for "A" and then get points for "D" by subtracting "A"
-            // points from graph cross dimension length
-            points.push(values.map(value => roundPoint((max - value) / max * dimension)));
-            points.push(points[0].map(point => fullDimension - point));
-        }
+			// add points for path "D", that is simply the "inverted" path "A"
+			points.push(pointsOfFirstPath.map((point) => fullDimension - point));
+		} else {
+			// As you can see on the visualization above points #2 and #3 have the same cross axis coordinate
+			// so we duplicate the last value
+			const max = Math.max(...this.values);
+			const values = [...this.values].concat([...this.values].pop());
+			// if the graph is simple (not two-dimensional) then we have only paths "A" and "D"
+			// which are symmetric. So we get the points for "A" and then get points for "D" by subtracting "A"
+			// points from graph cross dimension length
+			points.push(values.map((value) => roundPoint(((max - value) / max) * dimension)));
+			points.push(points[0].map((point) => fullDimension - point));
+		}
 
-        return points;
-    }
+		return points;
+	}
 
-    getGraphType() {
-        return this.values && this.values[0] instanceof Array ? '2d' : 'normal';
-    }
+	getGraphType() {
+		return this.values && this.values[0] instanceof Array ? '2d' : 'normal';
+	}
 
-    is2d() {
-        return this.getGraphType() === '2d';
-    }
+	is2d() {
+		return this.getGraphType() === '2d';
+	}
 
-    isVertical() {
-        return this.direction === 'vertical';
-    }
+	isVertical() {
+		return this.direction === 'vertical';
+	}
 
-    getDataSize() {
-        return this.values.length;
-    }
+	getDataSize() {
+		return this.values.length;
+	}
 
-    getSubDataSize() {
-        return this.values[0].length;
-    }
+	getSubDataSize() {
+		return this.values[0].length;
+	}
 
-    getFullDimension() {
-        return this.isVertical() ? this.getWidth() : this.getHeight();
-    }
+	getFullDimension() {
+		return this.isVertical() ? this.getWidth() : this.getHeight();
+	}
 
-    static getSubLabels(options) {
-        if (!options.data) {
-            throw new Error('Data is missing');
-        }
+	static getSubLabels(options) {
+		if (!options.data) {
+			throw new Error('Data is missing');
+		}
 
-        const { data } = options;
+		const { data } = options;
 
-        if (typeof data.subLabels === 'undefined') return [];
+		if (typeof data.subLabels === 'undefined') return [];
 
-        return data.subLabels;
-    }
+		return data.subLabels;
+	}
 
-    static getPercentLabels(options) {
-        if (!options.data) {
-            throw new Error('Data is missing');
-        }
+	static getPercentLabels(options) {
+		if (!options.data) {
+			throw new Error('Data is missing');
+		}
 
-        const { data } = options;
+		const { data } = options;
 
-        if (typeof data.percentLabels === 'undefined') return [];
+		if (typeof data.percentLabels === 'undefined') return [];
 
-        return data.percentLabels;
-    }
+		return data.percentLabels;
+	}
 
-    static getLabels(options) {
-        if (!options.data) {
-            throw new Error('Data is missing');
-        }
+	static getLabels(options) {
+		if (!options.data) {
+			throw new Error('Data is missing');
+		}
 
-        const { data } = options;
+		const { data } = options;
 
-        if (typeof data.labels === 'undefined') return [];
+		if (typeof data.labels === 'undefined') return [];
 
-        return data.labels;
-    }
+		return data.labels;
+	}
 
-    addLabels() {
-        const holder = document.createElement('div');
-        holder.setAttribute('class', 'svg-funnel-js__labels');
+	addLabels() {
+		const holder = document.createElement('div');
+		holder.setAttribute('class', 'svg-funnel-js__labels');
 
-        this.percentages.forEach((percentage, index) => {
-            const labelElement = document.createElement('div');
-            labelElement.setAttribute('class', `svg-funnel-js__label label-${index + 1}`);
+		this.percentages.forEach((percentage, index) => {
+			const labelElement = document.createElement('div');
+			labelElement.setAttribute('class', `svg-funnel-js__label label-${index + 1}`);
 
-            const title = document.createElement('div');
-            title.setAttribute('class', 'label__title');
-            title.textContent = this.labels[index] || '';
+			const title = document.createElement('div');
+			title.setAttribute('class', 'label__title');
+			title.textContent = this.labels[index] || '';
 
-            const value = document.createElement('div');
-            value.setAttribute('class', 'label__value');
-            const subVal = this.averageValues.length ?  `<span class="average"> ${formatNumber(this.averageValues[0][index])}<span/>` : ""
-            const valueNumber = this.is2d() ? this.getValues2d()[index] : this.values[index];
-            if (this.rawDataValues !== undefined) {
-                value.innerHTML = `${this.labels[index] || ''}: 
+			const value = document.createElement('div');
+			value.setAttribute('class', 'label__value');
+			const subVal = this.averageValues.length
+				? `
+            <span class="average"> 
+              <span class="value">${formatNumber(this.averageValues[0][index])}</span>
+              <span class="tooltip">${this.averageTooltip}</span>
+            </span>`
+				: '';
+			const valueNumber = this.is2d() ? this.getValues2d()[index] : this.values[index];
+			if (this.rawDataValues !== undefined) {
+				value.innerHTML = `${this.labels[index] || ''}: 
                 <a target='_blank' href='${this.rawDataValues[index]}'>${formatNumber(valueNumber)}</a> 
                 ${subVal}`;
-            } else {
-                value.textContent = `${this.labels[index] || ''}: ${formatNumber(valueNumber)} 
-                <span> ${this.averageValues[0][index]}<span/>`;
-            }
-            
+			} else {
+				value.innerHTML = `${this.labels[index] || ''}: ${formatNumber(valueNumber)} 
+                ${subVal}`;
+			}
 
-            const percentageValue = document.createElement('div');
-            percentageValue.setAttribute('class', 'label__percentage')
+			const percentageValue = document.createElement('div');
+			percentageValue.setAttribute('class', 'label__percentage');
 
-            const percentageValue2 = document.createElement('div');
-            percentageValue2.setAttribute('class', 'label__percentage label__percentage2');
+			const percentageValue2 = document.createElement('div');
+			percentageValue2.setAttribute('class', 'label__percentage label__percentage2');
 
-            if (percentage !== 100) {
-              const subVal = this.averageValues.length ?  `<span class="average">${(this.averageValues[1][index] * 100).toFixed(1)}%</span>` : ""
-                if (this.percentLabels.length !== 0) {
-                    percentageValue.innerHTML = `${percentage.toString()}% ${subVal} - ${this.percentLabels[index - 1][0]}`;
-                    if (this.subPercents !== undefined && index > 1) {
-                        const subVal = this.averageValues.length ?  `<span class="average">${(this.averageValues[2][index] *100).toFixed(1)}%</span>` : ""
-                        percentageValue2.innerHTML = `${(this.subPercents[index - 1] * 100).toFixed(1)}% ${subVal} - ${this.percentLabels[index - 1][1]}`;
-                    }
-                } else {
-                    percentageValue.textContent = `${percentage.toString()}% ${subVal}`;
-                }
-            }
+			if (percentage !== 100) {
+				const subVal = this.averageValues.length
+					? `
+              <span class="average"> 
+               <span class="value">${(this.averageValues[1][index] * 100).toFixed(1)}%</span>
+               <span class="tooltip">${this.averageTooltip}</span>
+             </span>`
+					: '';
+				if (this.percentLabels.length !== 0) {
+					percentageValue.innerHTML = `${percentage.toFixed(1)}% ${subVal} - ${
+						this.percentLabels[index - 1][0]
+					}`;
+					if (this.subPercents !== undefined && index > 1) {
+						const subVal = this.averageValues.length
+							? `
+                        <span class="average"> 
+                         <span class="value">${(this.averageValues[2][index] * 100).toFixed(1)}%</span>
+                         <span class="tooltip">${this.averageTooltip}</span>
+                      </span>`
+							: '';
+						percentageValue2.innerHTML = `${(this.subPercents[index - 1] * 100).toFixed(1)}% ${subVal} - ${
+							this.percentLabels[index - 1][1]
+						}`;
+					}
+				} else {
+					percentageValue.textContent = `${percentage.toFixed(1).toString()}% ${subVal}`;
+				}
+			}
 
-            labelElement.appendChild(value);
-            // labelElement.appendChild(title);
-            if (this.displayPercent) {
-                labelElement.appendChild(percentageValue);
-                labelElement.appendChild(percentageValue2);
-            }
+			labelElement.appendChild(value);
+			// labelElement.appendChild(title);
+			if (this.displayPercent) {
+				labelElement.appendChild(percentageValue);
+				labelElement.appendChild(percentageValue2);
+			}
 
-            if (this.is2d()) {
-                const segmentPercentages = document.createElement('div');
-                segmentPercentages.setAttribute('class', 'label__segment-percentages');
-                let percentageList = '<ul class="segment-percentage__list">';
+			if (this.is2d()) {
+				const segmentPercentages = document.createElement('div');
+				segmentPercentages.setAttribute('class', 'label__segment-percentages');
+				let percentageList = '<ul class="segment-percentage__list">';
 
-                const twoDimPercentages = this.getPercentages2d();
+				const twoDimPercentages = this.getPercentages2d();
 
-                this.subLabels.forEach((subLabel, j) => {
-                    const subLabelDisplayValue = this.subLabelValue === 'percent'
-                        ? `${twoDimPercentages[index][j]}%`
-                        : formatNumber(this.values[index][j]);
-                    percentageList += `<li class="${this.getSubLabelVisibility(j) && 'hide'}">${this.subLabels[j]}:
-    <span class="percentage__list-label">${this.breakdownRawData !== undefined ? `<a target='_blank' href="${this.breakdownRawData[j]}">${subLabelDisplayValue}</a>` : subLabelDisplayValue}</span>
+				this.subLabels.forEach((subLabel, j) => {
+					const subLabelDisplayValue =
+						this.subLabelValue === 'percent'
+							? `${twoDimPercentages[index][j]}%`
+							: formatNumber(this.values[index][j]);
+					percentageList += `<li class="${this.getSubLabelVisibility(j) && 'hide'}">${this.subLabels[j]}:
+    <span class="percentage__list-label">${
+		this.breakdownRawData !== undefined
+			? `<a target='_blank' href="${this.breakdownRawData[j]}">${subLabelDisplayValue}</a>`
+			: subLabelDisplayValue
+	}</span>
  </li>`;
-                });
-                percentageList += '</ul>';
-                segmentPercentages.innerHTML = percentageList;
-                labelElement.appendChild(segmentPercentages);
-            }
+				});
+				percentageList += '</ul>';
+				segmentPercentages.innerHTML = percentageList;
+				labelElement.appendChild(segmentPercentages);
+			}
 
-            holder.appendChild(labelElement);
-        });
+			holder.appendChild(labelElement);
+		});
 
-        this.container.appendChild(holder);
-    }
+		this.container.appendChild(holder);
+	}
 
-    // eslint-disable-next-line consistent-return
-    getSubLabelVisibility(index) {
-        if (this.hideSubLabels) {
-            if (this.subLabelVisibility[index] === false) {
-                return true;
-            }
-        } else {
-            return false;
-        }
-    }
+	// eslint-disable-next-line consistent-return
+	getSubLabelVisibility(index) {
+		if (this.hideSubLabels) {
+			if (this.subLabelVisibility[index] === false) {
+				return true;
+			}
+		} else {
+			return false;
+		}
+	}
 
-    addSubLabels() {
-        if (this.subLabels) {
-            const subLabelsHolder = document.createElement('div');
-            subLabelsHolder.setAttribute('class', 'svg-funnel-js__subLabels');
+	addSubLabels() {
+		if (this.subLabels) {
+			const subLabelsHolder = document.createElement('div');
+			subLabelsHolder.setAttribute('class', 'svg-funnel-js__subLabels');
 
-            let subLabelsHTML = '';
+			let subLabelsHTML = '';
 
-            this.subLabels.forEach((subLabel, index) => {
-                subLabelsHTML += `<div class="svg-funnel-js__subLabel svg-funnel-js__subLabel-${index + 1} ${this.getSubLabelVisibility(index) && 'hide'}">
+			this.subLabels.forEach((subLabel, index) => {
+				subLabelsHTML += `<div class="svg-funnel-js__subLabel svg-funnel-js__subLabel-${index + 1} ${
+					this.getSubLabelVisibility(index) && 'hide'
+				}">
     <div class="svg-funnel-js__subLabel--color" 
         style="${generateLegendBackground(this.colors[index], this.gradientDirection)}"></div>
     <div class="svg-funnel-js__subLabel--title">${subLabel}</div>
 </div>`;
-            });
+			});
 
-            subLabelsHolder.innerHTML = subLabelsHTML;
-            this.container.appendChild(subLabelsHolder);
-        }
-    }
+			subLabelsHolder.innerHTML = subLabelsHTML;
+			this.container.appendChild(subLabelsHolder);
+		}
+	}
 
-    createContainer() {
-        if (!this.containerSelector) {
-            throw new Error('Container is missing');
-        }
+	createContainer() {
+		if (!this.containerSelector) {
+			throw new Error('Container is missing');
+		}
 
-        this.container = document.querySelector(this.containerSelector);
-        this.container.classList.add('svg-funnel-js');
+		this.container = document.querySelector(this.containerSelector);
+		this.container.classList.add('svg-funnel-js');
 
-        this.graphContainer = document.createElement('div');
-        this.graphContainer.classList.add('svg-funnel-js__container');
-        this.container.appendChild(this.graphContainer);
+		this.graphContainer = document.createElement('div');
+		this.graphContainer.classList.add('svg-funnel-js__container');
+		this.container.appendChild(this.graphContainer);
 
-        if (this.direction === 'vertical') {
-            this.container.classList.add('svg-funnel-js--vertical');
-        }
-    }
+		if (this.direction === 'vertical') {
+			this.container.classList.add('svg-funnel-js--vertical');
+		}
+	}
 
-    setValues(v) {
-        this.values = v;
-        return this;
-    }
+	setValues(v) {
+		this.values = v;
+		return this;
+	}
 
-    setDirection(d) {
-        this.direction = d;
-        return this;
-    }
+	setDirection(d) {
+		this.direction = d;
+		return this;
+	}
 
-    setHeight(h) {
-        this.height = h;
-        return this;
-    }
+	setHeight(h) {
+		this.height = h;
+		return this;
+	}
 
-    setWidth(w) {
-        this.width = w;
-        return this;
-    }
+	setWidth(w) {
+		this.width = w;
+		return this;
+	}
 
-    static getValues(options) {
-        if (!options.data) {
-            return [];
-        }
+	static getValues(options) {
+		if (!options.data) {
+			return [];
+		}
 
-        const { data } = options;
+		const { data } = options;
 
-        if (typeof data === 'object') {
-            return data.values;
-        }
+		if (typeof data === 'object') {
+			return data.values;
+		}
 
-        return [];
-    }
+		return [];
+	}
 
-    static getRawDataValues(options) {
-        if (!options.data) {
-            return [];
-        }
+	static getRawDataValues(options) {
+		if (!options.data) {
+			return [];
+		}
 
-        const { data } = options;
+		const { data } = options;
 
-        if (typeof data === 'object') {
-            return data.rawDataValues;
-        }
+		if (typeof data === 'object') {
+			return data.rawDataValues;
+		}
 
-        return [];
-    }
+		return [];
+	}
 
-    getValues2d() {
-        const values = [];
+	getValues2d() {
+		const values = [];
 
-        this.values.forEach((valueSet) => {
-            values.push(valueSet.reduce((sum, value) => sum + value, 0));
-        });
+		this.values.forEach((valueSet) => {
+			values.push(valueSet.reduce((sum, value) => sum + value, 0));
+		});
 
-        return values;
-    }
+		return values;
+	}
 
-    getPercentages2d() {
-        const percentages = [];
+	getPercentages2d() {
+		const percentages = [];
 
-        this.values.forEach((valueSet) => {
-            const total = valueSet.reduce((sum, value) => sum + value, 0);
-            percentages.push(valueSet.map(value => (total === 0 ? 0 : roundPoint(value * 100 / total))));
-        });
+		this.values.forEach((valueSet) => {
+			const total = valueSet.reduce((sum, value) => sum + value, 0);
+			percentages.push(valueSet.map((value) => (total === 0 ? 0 : roundPoint((value * 100) / total))));
+		});
 
-        return percentages;
-    }
+		return percentages;
+	}
 
-    createPercentages() {
-        let values = [];
+	createPercentages() {
+		let values = [];
 
-        if (this.is2d()) {
-            values = this.getValues2d();
-        } else {
-            values = [...this.values];
-        }
+		if (this.is2d()) {
+			values = this.getValues2d();
+		} else {
+			values = [...this.values];
+		}
 
-        const max = Math.max(...values);
-        return values.map(value => roundPoint(value * 100 / max));
-    }
+		const max = Math.max(...values);
+		return values.map((value) => roundPoint((value * 100) / max));
+	}
 
-    applyGradient(svg, path, colors, index) {
-        const defs = (svg.querySelector('defs') === null)
-            ? createSVGElement('defs', svg)
-            : svg.querySelector('defs');
-        const gradientName = `funnelGradient-${index}`;
-        const gradient = createSVGElement('linearGradient', defs, {
-            id: gradientName
-        });
+	applyGradient(svg, path, colors, index) {
+		const defs = svg.querySelector('defs') === null ? createSVGElement('defs', svg) : svg.querySelector('defs');
+		const gradientName = `funnelGradient-${index}`;
+		const gradient = createSVGElement('linearGradient', defs, {
+			id: gradientName
+		});
 
-        if (this.gradientDirection === 'vertical') {
-            setAttrs(gradient, {
-                x1: '0',
-                x2: '0',
-                y1: '0',
-                y2: '1'
-            });
-        }
+		if (this.gradientDirection === 'vertical') {
+			setAttrs(gradient, {
+				x1: '0',
+				x2: '0',
+				y1: '0',
+				y2: '1'
+			});
+		}
 
-        const numberOfColors = colors.length;
+		const numberOfColors = colors.length;
 
-        for (let i = 0; i < numberOfColors; i++) {
-            createSVGElement('stop', gradient, {
-                'stop-color': colors[i],
-                offset: `${Math.round(100 * i / (numberOfColors - 1))}%`
-            });
-        }
+		for (let i = 0; i < numberOfColors; i++) {
+			createSVGElement('stop', gradient, {
+				'stop-color': colors[i],
+				offset: `${Math.round((100 * i) / (numberOfColors - 1))}%`
+			});
+		}
 
-        setAttrs(path, {
-            fill: `url("#${gradientName}")`,
-            stroke: `url("#${gradientName}")`
-        });
-    }
+		setAttrs(path, {
+			fill: `url("#${gradientName}")`,
+			stroke: `url("#${gradientName}")`
+		});
+	}
 
-    makeSVG() {
-        const svg = createSVGElement('svg', this.graphContainer, {
-            width: this.getWidth(),
-            height: this.getHeight()
-        });
+	makeSVG() {
+		const svg = createSVGElement('svg', this.graphContainer, {
+			width: this.getWidth(),
+			height: this.getHeight()
+		});
 
-        const valuesNum = this.getCrossAxisPoints().length - 1;
-        for (let i = 0; i < valuesNum; i++) {
-            const path = createSVGElement('path', svg);
+		const valuesNum = this.getCrossAxisPoints().length - 1;
+		for (let i = 0; i < valuesNum; i++) {
+			const path = createSVGElement('path', svg);
 
-            const color = (this.is2d()) ? this.colors[i] : this.colors;
-            const fillMode = (typeof color === 'string' || color.length === 1) ? 'solid' : 'gradient';
+			const color = this.is2d() ? this.colors[i] : this.colors;
+			const fillMode = typeof color === 'string' || color.length === 1 ? 'solid' : 'gradient';
 
-            if (fillMode === 'solid') {
-                setAttrs(path, {
-                    fill: color,
-                    stroke: color
-                });
-            } else if (fillMode === 'gradient') {
-                this.applyGradient(svg, path, color, i + 1);
-            }
+			if (fillMode === 'solid') {
+				setAttrs(path, {
+					fill: color,
+					stroke: color
+				});
+			} else if (fillMode === 'gradient') {
+				this.applyGradient(svg, path, color, i + 1);
+			}
 
-            svg.appendChild(path);
-        }
+			svg.appendChild(path);
+		}
 
-        this.graphContainer.appendChild(svg);
-    }
+		this.graphContainer.appendChild(svg);
+	}
 
-    getSVG() {
-        const svg = this.container.querySelector('svg');
+	getSVG() {
+		const svg = this.container.querySelector('svg');
 
-        if (!svg) {
-            throw new Error('No SVG found inside of the container');
-        }
+		if (!svg) {
+			throw new Error('No SVG found inside of the container');
+		}
 
-        return svg;
-    }
+		return svg;
+	}
 
-    getWidth() {
-        return this.width || this.graphContainer.clientWidth;
-    }
+	getWidth() {
+		return this.width || this.graphContainer.clientWidth;
+	}
 
-    getHeight() {
-        return this.height || this.graphContainer.clientHeight;
-    }
+	getHeight() {
+		return this.height || this.graphContainer.clientHeight;
+	}
 
-    getPathDefinitions() {
-        const valuesNum = this.getCrossAxisPoints().length - 1;
-        const paths = [];
-        for (let i = 0; i < valuesNum; i++) {
-            if (this.isVertical()) {
-                const X = this.getCrossAxisPoints()[i];
-                const XNext = this.getCrossAxisPoints()[i + 1];
-                const Y = this.getMainAxisPoints();
+	getPathDefinitions() {
+		const valuesNum = this.getCrossAxisPoints().length - 1;
+		const paths = [];
+		for (let i = 0; i < valuesNum; i++) {
+			if (this.isVertical()) {
+				const X = this.getCrossAxisPoints()[i];
+				const XNext = this.getCrossAxisPoints()[i + 1];
+				const Y = this.getMainAxisPoints();
 
-                const d = createVerticalPath(i, X, XNext, Y);
-                paths.push(d);
-            } else {
-                const X = this.getMainAxisPoints();
-                const Y = this.getCrossAxisPoints()[i];
-                const YNext = this.getCrossAxisPoints()[i + 1];
+				const d = createVerticalPath(i, X, XNext, Y);
+				paths.push(d);
+			} else {
+				const X = this.getMainAxisPoints();
+				const Y = this.getCrossAxisPoints()[i];
+				const YNext = this.getCrossAxisPoints()[i + 1];
 
-                const d = createPath(i, X, Y, YNext);
-                paths.push(d);
-            }
-        }
+				const d = createPath(i, X, Y, YNext);
+				paths.push(d);
+			}
+		}
 
-        return paths;
-    }
+		return paths;
+	}
 
-    getPathMedian(i) {
-        if (this.isVertical()) {
-            const cross = this.getCrossAxisPoints()[i];
-            const next = this.getCrossAxisPoints()[i + 1];
-            const Y = this.getMainAxisPoints();
-            const X = [];
-            const XNext = [];
+	getPathMedian(i) {
+		if (this.isVertical()) {
+			const cross = this.getCrossAxisPoints()[i];
+			const next = this.getCrossAxisPoints()[i + 1];
+			const Y = this.getMainAxisPoints();
+			const X = [];
+			const XNext = [];
 
-            cross.forEach((point, index) => {
-                const m = (point + next[index]) / 2;
-                X.push(m - 1);
-                XNext.push(m + 1);
-            });
+			cross.forEach((point, index) => {
+				const m = (point + next[index]) / 2;
+				X.push(m - 1);
+				XNext.push(m + 1);
+			});
 
-            return createVerticalPath(i, X, XNext, Y);
-        }
+			return createVerticalPath(i, X, XNext, Y);
+		}
 
-        const X = this.getMainAxisPoints();
-        const cross = this.getCrossAxisPoints()[i];
-        const next = this.getCrossAxisPoints()[i + 1];
-        const Y = [];
-        const YNext = [];
+		const X = this.getMainAxisPoints();
+		const cross = this.getCrossAxisPoints()[i];
+		const next = this.getCrossAxisPoints()[i + 1];
+		const Y = [];
+		const YNext = [];
 
-        cross.forEach((point, index) => {
-            const m = (point + next[index]) / 2;
-            Y.push(m - 1);
-            YNext.push(m + 1);
-        });
+		cross.forEach((point, index) => {
+			const m = (point + next[index]) / 2;
+			Y.push(m - 1);
+			YNext.push(m + 1);
+		});
 
-        return createPath(i, X, Y, YNext);
-    }
+		return createPath(i, X, Y, YNext);
+	}
 
-    drawPaths() {
-        const svg = this.getSVG();
-        const paths = svg.querySelectorAll('path');
-        const definitions = this.getPathDefinitions();
+	drawPaths() {
+		const svg = this.getSVG();
+		const paths = svg.querySelectorAll('path');
+		const definitions = this.getPathDefinitions();
 
-        definitions.forEach((definition, index) => {
-            paths[index].setAttribute('d', definition);
-        });
-    }
+		definitions.forEach((definition, index) => {
+			paths[index].setAttribute('d', definition);
+		});
+	}
 
-    draw() {
-        this.createContainer();
-        this.makeSVG();
+	draw() {
+		this.createContainer();
+		this.makeSVG();
 
-        this.addLabels();
+		this.addLabels();
 
-        if (this.is2d()) {
-            this.addSubLabels();
-        }
+		if (this.is2d()) {
+			this.addSubLabels();
+		}
 
-        this.drawPaths();
-    }
+		this.drawPaths();
+	}
 
-    /*
+	/*
         Methods
      */
 
-    makeVertical() {
-        if (this.direction === 'vertical') return true;
+	makeVertical() {
+		if (this.direction === 'vertical') return true;
 
-        this.direction = 'vertical';
-        this.container.classList.add('svg-funnel-js--vertical');
+		this.direction = 'vertical';
+		this.container.classList.add('svg-funnel-js--vertical');
 
-        const svg = this.getSVG();
-        const height = this.getHeight();
-        const width = this.getWidth();
-        setAttrs(svg, { height, width });
+		const svg = this.getSVG();
+		const height = this.getHeight();
+		const width = this.getWidth();
+		setAttrs(svg, { height, width });
 
-        this.drawPaths();
+		this.drawPaths();
 
-        return true;
-    }
+		return true;
+	}
 
-    makeHorizontal() {
-        if (this.direction === 'horizontal') return true;
+	makeHorizontal() {
+		if (this.direction === 'horizontal') return true;
 
-        this.direction = 'horizontal';
-        this.container.classList.remove('svg-funnel-js--vertical');
+		this.direction = 'horizontal';
+		this.container.classList.remove('svg-funnel-js--vertical');
 
-        const svg = this.getSVG();
-        const height = this.getHeight();
-        const width = this.getWidth();
-        setAttrs(svg, { height, width });
+		const svg = this.getSVG();
+		const height = this.getHeight();
+		const width = this.getWidth();
+		setAttrs(svg, { height, width });
 
-        this.drawPaths();
+		this.drawPaths();
 
-        return true;
-    }
+		return true;
+	}
 
-    toggleDirection() {
-        if (this.direction === 'horizontal') {
-            this.makeVertical();
-        } else {
-            this.makeHorizontal();
-        }
-    }
+	toggleDirection() {
+		if (this.direction === 'horizontal') {
+			this.makeVertical();
+		} else {
+			this.makeHorizontal();
+		}
+	}
 
-    gradientMakeVertical() {
-        if (this.gradientDirection === 'vertical') return true;
+	gradientMakeVertical() {
+		if (this.gradientDirection === 'vertical') return true;
 
-        this.gradientDirection = 'vertical';
-        const gradients = this.graphContainer.querySelectorAll('linearGradient');
+		this.gradientDirection = 'vertical';
+		const gradients = this.graphContainer.querySelectorAll('linearGradient');
 
-        for (let i = 0; i < gradients.length; i++) {
-            setAttrs(gradients[i], {
-                x1: '0',
-                x2: '0',
-                y1: '0',
-                y2: '1'
-            });
-        }
+		for (let i = 0; i < gradients.length; i++) {
+			setAttrs(gradients[i], {
+				x1: '0',
+				x2: '0',
+				y1: '0',
+				y2: '1'
+			});
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    gradientMakeHorizontal() {
-        if (this.gradientDirection === 'horizontal') return true;
+	gradientMakeHorizontal() {
+		if (this.gradientDirection === 'horizontal') return true;
 
-        this.gradientDirection = 'horizontal';
-        const gradients = this.graphContainer.querySelectorAll('linearGradient');
+		this.gradientDirection = 'horizontal';
+		const gradients = this.graphContainer.querySelectorAll('linearGradient');
 
-        for (let i = 0; i < gradients.length; i++) {
-            removeAttrs(gradients[i], 'x1', 'x2', 'y1', 'y2');
-        }
+		for (let i = 0; i < gradients.length; i++) {
+			removeAttrs(gradients[i], 'x1', 'x2', 'y1', 'y2');
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    gradientToggleDirection() {
-        if (this.gradientDirection === 'horizontal') {
-            this.gradientMakeVertical();
-        } else {
-            this.gradientMakeHorizontal();
-        }
-    }
+	gradientToggleDirection() {
+		if (this.gradientDirection === 'horizontal') {
+			this.gradientMakeVertical();
+		} else {
+			this.gradientMakeHorizontal();
+		}
+	}
 
-    updateWidth(w) {
-        this.width = w;
-        const svg = this.getSVG();
-        const width = this.getWidth();
-        setAttrs(svg, { width });
+	updateWidth(w) {
+		this.width = w;
+		const svg = this.getSVG();
+		const width = this.getWidth();
+		setAttrs(svg, { width });
 
-        this.drawPaths();
+		this.drawPaths();
 
-        return true;
-    }
+		return true;
+	}
 
-    updateHeight(h) {
-        this.height = h;
-        const svg = this.getSVG();
-        const height = this.getHeight();
-        setAttrs(svg, { height });
+	updateHeight(h) {
+		this.height = h;
+		const svg = this.getSVG();
+		const height = this.getHeight();
+		setAttrs(svg, { height });
 
-        this.drawPaths();
+		this.drawPaths();
 
-        return true;
-    }
+		return true;
+	}
 
-    // @TODO: refactor data update
-    updateData(d) {
-        if (typeof d.labels !== 'undefined') {
-            this.container.querySelector('.svg-funnel-js__labels').remove();
-            this.labels = FunnelGraph.getLabels({ data: d });
-            this.addLabels();
-        }
-        if (typeof d.colors !== 'undefined') {
-            this.colors = d.colors || getDefaultColors(this.is2d() ? this.getSubDataSize() : 2);
-        }
-        if (typeof d.values !== 'undefined') {
-            if (Object.prototype.toString.call(d.values[0]) !== Object.prototype.toString.call(this.values[0])) {
-                this.container.querySelector('svg').remove();
-                this.values = FunnelGraph.getValues({ data: d });
-                this.makeSVG();
-                this.drawPaths();
-            } else {
-                this.values = FunnelGraph.getValues({ data: d });
-                this.drawPaths();
-            }
-        }
-        if (typeof d.subLabels !== 'undefined') {
-            this.container.querySelector('.svg-funnel-js__subLabels').remove();
-            this.subLabels = FunnelGraph.getSubLabels({ data: d });
-            this.addSubLabels();
-        }
-    }
+	// @TODO: refactor data update
+	updateData(d) {
+		if (typeof d.labels !== 'undefined') {
+			this.container.querySelector('.svg-funnel-js__labels').remove();
+			this.labels = FunnelGraph.getLabels({ data: d });
+			this.addLabels();
+		}
+		if (typeof d.colors !== 'undefined') {
+			this.colors = d.colors || getDefaultColors(this.is2d() ? this.getSubDataSize() : 2);
+		}
+		if (typeof d.values !== 'undefined') {
+			if (Object.prototype.toString.call(d.values[0]) !== Object.prototype.toString.call(this.values[0])) {
+				this.container.querySelector('svg').remove();
+				this.values = FunnelGraph.getValues({ data: d });
+				this.makeSVG();
+				this.drawPaths();
+			} else {
+				this.values = FunnelGraph.getValues({ data: d });
+				this.drawPaths();
+			}
+		}
+		if (typeof d.subLabels !== 'undefined') {
+			this.container.querySelector('.svg-funnel-js__subLabels').remove();
+			this.subLabels = FunnelGraph.getSubLabels({ data: d });
+			this.addSubLabels();
+		}
+	}
 
-    update(o) {
-        if (typeof o.displayPercent !== 'undefined') {
-            if (this.displayPercent !== o.displayPercent) {
-                if (this.displayPercent === true) {
-                    this.container.querySelectorAll('.label__percentage').forEach((label) => {
-                        label.remove();
-                    });
-                } else {
-                    this.container.querySelectorAll('.svg-funnel-js__label').forEach((label, index) => {
-                        const percentage = this.percentages[index];
-                        const percentageValue = document.createElement('div');
-                        percentageValue.setAttribute('class', 'label__percentage');
+	update(o) {
+		if (typeof o.displayPercent !== 'undefined') {
+			if (this.displayPercent !== o.displayPercent) {
+				if (this.displayPercent === true) {
+					this.container.querySelectorAll('.label__percentage').forEach((label) => {
+						label.remove();
+					});
+				} else {
+					this.container.querySelectorAll('.svg-funnel-js__label').forEach((label, index) => {
+						const percentage = this.percentages[index];
+						const percentageValue = document.createElement('div');
+						percentageValue.setAttribute('class', 'label__percentage');
 
-                        if (percentage !== 100) {
-                            percentageValue.textContent = `${percentage.toString()}%`;
-                            label.appendChild(percentageValue);
-                        }
-                    });
-                }
-            }
-        }
-        if (typeof o.height !== 'undefined') {
-            this.updateHeight(o.height);
-        }
-        if (typeof o.width !== 'undefined') {
-            this.updateWidth(o.width);
-        }
-        if (typeof o.gradientDirection !== 'undefined') {
-            if (o.gradientDirection === 'vertical') {
-                this.gradientMakeVertical();
-            } else if (o.gradientDirection === 'horizontal') {
-                this.gradientMakeHorizontal();
-            }
-        }
-        if (typeof o.direction !== 'undefined') {
-            if (o.direction === 'vertical') {
-                this.makeVertical();
-            } else if (o.direction === 'horizontal') {
-                this.makeHorizontal();
-            }
-        }
-        if (typeof o.data !== 'undefined') {
-            this.updateData(o.data);
-        }
-    }
+						if (percentage !== 100) {
+							percentageValue.textContent = `${percentage.toString()}%`;
+							label.appendChild(percentageValue);
+						}
+					});
+				}
+			}
+		}
+		if (typeof o.height !== 'undefined') {
+			this.updateHeight(o.height);
+		}
+		if (typeof o.width !== 'undefined') {
+			this.updateWidth(o.width);
+		}
+		if (typeof o.gradientDirection !== 'undefined') {
+			if (o.gradientDirection === 'vertical') {
+				this.gradientMakeVertical();
+			} else if (o.gradientDirection === 'horizontal') {
+				this.gradientMakeHorizontal();
+			}
+		}
+		if (typeof o.direction !== 'undefined') {
+			if (o.direction === 'vertical') {
+				this.makeVertical();
+			} else if (o.direction === 'horizontal') {
+				this.makeHorizontal();
+			}
+		}
+		if (typeof o.data !== 'undefined') {
+			this.updateData(o.data);
+		}
+	}
 }
 
 export default FunnelGraph;
