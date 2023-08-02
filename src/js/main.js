@@ -219,7 +219,7 @@ class FunnelGraph {
 			const percentageValue2 = document.createElement('div');
 			percentageValue2.setAttribute('class', 'label__percentage label__percentage2');
 
-			if (percentage !== 100) {
+			if (index > 0) {
 				const subVal = this.averageValues.length
 					? `
               <span class="average"> 
