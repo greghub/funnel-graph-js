@@ -1,10 +1,10 @@
 import { roundPoint } from './number';
 
-const createCurves = (x1, y1, x2, y2) => ` C${roundPoint((x2 + x1) / 2)},${y1} `
-    + `${roundPoint((x2 + x1) / 2)},${y2} ${x2},${y2}`;
+const createCurves = (x1, y1, x2, y2) =>
+	` C${roundPoint((x2 + x1) / 2)},${y1} ` + `${roundPoint((x2 + x1) / 2)},${y2} ${x2},${y2}`;
 
-const createVerticalCurves = (x1, y1, x2, y2) => ` C${x1},${roundPoint((y2 + y1) / 2)} `
-    + `${x2},${roundPoint((y2 + y1) / 2)} ${x2},${y2}`;
+const createVerticalCurves = (x1, y1, x2, y2) =>
+	` C${x1},${roundPoint((y2 + y1) / 2)} ` + `${x2},${roundPoint((y2 + y1) / 2)} ${x2},${y2}`;
 
 /*
     A funnel segment is draw in a clockwise direction.
@@ -25,21 +25,25 @@ const createVerticalCurves = (x1, y1, x2, y2) => ` C${x1},${roundPoint((y2 + y1)
  */
 
 const createPath = (index, X, Y, YNext) => {
-    let str = `M${X[0]},${Y[0]}`;
+	const max = Math.max(...Y);
 
-    for (let i = 0; i < X.length - 1; i++) {
-        str += createCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
-    }
+	if (max === 0) return '';
 
-    str += ` L${[...X].pop()},${[...YNext].pop()}`;
+	let str = `M${X[0]},${Y[0]}`;
 
-    for (let i = X.length - 1; i > 0; i--) {
-        str += createCurves(X[i], YNext[i], X[i - 1], YNext[i - 1]);
-    }
+	for (let i = 0; i < X.length - 1; i++) {
+		str += createCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
+	}
 
-    str += ' Z';
+	str += ` L${[...X].pop()},${[...YNext].pop()}`;
 
-    return str;
+	for (let i = X.length - 1; i > 0; i--) {
+		str += createCurves(X[i], YNext[i], X[i - 1], YNext[i - 1]);
+	}
+
+	str += ' Z';
+
+	return str;
 };
 
 /*
@@ -52,23 +56,21 @@ const createPath = (index, X, Y, YNext) => {
  */
 
 const createVerticalPath = (index, X, XNext, Y) => {
-    let str = `M${X[0]},${Y[0]}`;
+	let str = `M${X[0]},${Y[0]}`;
 
-    for (let i = 0; i < X.length - 1; i++) {
-        str += createVerticalCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
-    }
+	for (let i = 0; i < X.length - 1; i++) {
+		str += createVerticalCurves(X[i], Y[i], X[i + 1], Y[i + 1]);
+	}
 
-    str += ` L${[...XNext].pop()},${[...Y].pop()}`;
+	str += ` L${[...XNext].pop()},${[...Y].pop()}`;
 
-    for (let i = X.length - 1; i > 0; i--) {
-        str += createVerticalCurves(XNext[i], Y[i], XNext[i - 1], Y[i - 1]);
-    }
+	for (let i = X.length - 1; i > 0; i--) {
+		str += createVerticalCurves(XNext[i], Y[i], XNext[i - 1], Y[i - 1]);
+	}
 
-    str += ' Z';
+	str += ' Z';
 
-    return str;
+	return str;
 };
 
-export {
-    createCurves, createVerticalCurves, createPath, createVerticalPath
-};
+export { createCurves, createVerticalCurves, createPath, createVerticalPath };

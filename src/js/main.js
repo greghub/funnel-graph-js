@@ -82,7 +82,9 @@ class FunnelGraph {
 			// duplicate last value
 			totalValues.push([...totalValues].pop());
 			// get points for path "A"
-			points.push(totalValues.map((value) => roundPoint(((max - value) / max) * dimension)));
+			points.push(
+				totalValues.map((value) => (max === 0 ? value : roundPoint(((max - value) / max) * dimension)))
+			);
 			// percentages with duplicated last value
 			const percentagesFull = this.getPercentages2d();
 			const pointsOfFirstPath = points[0];
@@ -115,7 +117,7 @@ class FunnelGraph {
 			// if the graph is simple (not two-dimensional) then we have only paths "A" and "D"
 			// which are symmetric. So we get the points for "A" and then get points for "D" by subtracting "A"
 			// points from graph cross dimension length
-			points.push(values.map((value) => roundPoint(((max - value) / max) * dimension)));
+			points.push(values.map((value) => (max === 0 ? value : roundPoint(((max - value) / max) * dimension))));
 			points.push(points[0].map((point) => fullDimension - point));
 		}
 
@@ -415,7 +417,7 @@ class FunnelGraph {
 		}
 
 		const max = Math.max(...values);
-		return values.map((value) => roundPoint((value * 100) / max));
+		return values.map((value) => (max === 0 ? value : roundPoint((value * 100) / max)));
 	}
 
 	applyGradient(svg, path, colors, index) {
